@@ -1,0 +1,66 @@
+\documentclass[runningheads]{llncs}
+
+% Packages
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{orcidlink}
+
+% Our custom helper functions we can define here, don't clutter pls. KISS (keep it simple stupid)
+\renewcommand{\orcidID}[1]{%
+  \nobreak\hspace{0.15em}\orcidlink{#1}%
+}
+
+% Figures path
+\graphicspath{{figures/}}
+
+% Paths for imported .tex files
+\makeatletter
+\def\input@path{{sections/}{tables/}}
+\makeatother
+
+\begin{document}
+
+\title{Wavelet-Domain Conditional Denoising Diffusion Probabilistic Models for Anatomically Plausible Counterfactual 3D Healthy Brain Tissue Reconstruction via Volumetric MRI Inpainting} 
+\titlerunning{Wavelet Diffusion for 3D Healthy Brain Inpainting}
+
+% Authors 
+\author{
+Simon Winther Albertsen\inst{1}\orcidID{0009-0004-0655-6664}
+\and
+Hjalte Bjoernstrup\inst{1}\orcidID{0009-0009-7757-4225}
+\and
+Mostafa Mehdipour Ghazi\inst{3}\orcidID{0000-0002-8473-281X}
+}
+
+% Running author
+\authorrunning{S. W. Albertsen et al.}
+
+% Institutes 
+\institute{
+Department of Computer Science, University of Copenhagen,
+Copenhagen, Denmark\\
+\email{\{zlp616,fhz806\}@alumni.ku.dk}
+\and
+Pioneer Centre for AI, Department of Computer Science,
+University of Copenhagen, Copenhagen, Denmark\\
+\email{ghazi@di.ku.dk}
+}
+
+\maketitle
+
+% Content
+\input{sections/00_abstract}
+\input{sections/01_introduction}
+\input{sections/02_related_work}
+\input{sections/03_method}
+\input{sections/04_experiments}
+\input{sections/05_results}
+\input{sections/06_discussion}
+\input{sections/07_credits}
+
+% Bibliography
+\bibliographystyle{splncs04}
+\bibliography{references}
+
+\end{document}
