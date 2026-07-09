@@ -51,6 +51,9 @@ schedule ($\beta_{\min}=0.1$, $\beta_{\max}=20$), the predict-$x_0$ parameteriza
 and a fixed reverse variance. Optimization uses AdamW~\cite{loshchilov2019adamw} with
 a learning rate of $1\times10^{-5}$, no weight decay, and a batch size of $1$ volume
 per GPU in full ($32$-bit) precision; the mask-weighting coefficient is $\lambda=10$.
+We maintain an exponential moving average (EMA) of the weights with decay $0.9999$,
+updated after each optimizer step, and use the EMA weights for all sampling and
+evaluation.
 Training is implemented in PyTorch (2.2, CUDA 11.8) with distributed data-parallel
 training across GPUs. Runs are performed on the DIKU Slurm cluster using NVIDIA A100
 GPUs. % TODO: report the exact number of training iterations used for the submitted

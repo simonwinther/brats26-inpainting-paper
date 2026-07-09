@@ -7,9 +7,8 @@ We discuss the behavior and limitations of the approach and outline directions f
 future work. The hard-blend compositing guarantees that observed anatomy is preserved
 exactly, so errors are confined to the masked region; the healthy-tissue objective is
 intended to bias those completions toward tumor-free anatomy. Known limitations include
-the use of a single modality (T1n), the compute cost of full $1000$-step sampling, and
-that the reported checkpoints use the raw trained weights rather than an
-exponential-moving-average of them. Promising directions include accelerated sampling,
+the use of a single modality (T1n) and the compute cost of full $1000$-step sampling.
+Promising directions include accelerated sampling,
 multi-modal conditioning, and further study of the masked training objective.
 % TODO: revisit and expand this discussion once quantitative and qualitative results
 % are available (e.g. failure cases, effect of the healthy-tissue objective).
