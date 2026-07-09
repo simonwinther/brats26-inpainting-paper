@@ -1,0 +1,160 @@
+% references.bib -- BraTS 2026 Task 4 (inpainting) submission.
+% NOTE: entries below are curated from well-established works; please verify
+% exact page numbers / DOIs / author lists against the publisher of record
+% before camera-ready submission.
+
+% ---------------------------------------------------------------------------
+% Diffusion models
+% ---------------------------------------------------------------------------
+@inproceedings{ho2020ddpm,
+  title     = {Denoising Diffusion Probabilistic Models},
+  author    = {Ho, Jonathan and Jain, Ajay and Abbeel, Pieter},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  volume    = {33},
+  pages     = {6840--6851},
+  year      = {2020}
+}
+
+@inproceedings{song2021ddim,
+  title     = {Denoising Diffusion Implicit Models},
+  author    = {Song, Jiaming and Meng, Chenlin and Ermon, Stefano},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2021}
+}
+
+@inproceedings{song2021scoresde,
+  title     = {Score-Based Generative Modeling through Stochastic Differential Equations},
+  author    = {Song, Yang and Sohl-Dickstein, Jascha and Kingma, Diederik P. and Kumar, Abhishek and Ermon, Stefano and Poole, Ben},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2021}
+}
+
+@inproceedings{nichol2021improved,
+  title     = {Improved Denoising Diffusion Probabilistic Models},
+  author    = {Nichol, Alexander Quinn and Dhariwal, Prafulla},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  pages     = {8162--8171},
+  year      = {2021},
+  organization = {PMLR}
+}
+
+@inproceedings{dhariwal2021diffusion,
+  title     = {Diffusion Models Beat {GANs} on Image Synthesis},
+  author    = {Dhariwal, Prafulla and Nichol, Alexander Quinn},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  volume    = {34},
+  pages     = {8780--8794},
+  year      = {2021}
+}
+
+@inproceedings{rombach2022ldm,
+  title     = {High-Resolution Image Synthesis with Latent Diffusion Models},
+  author    = {Rombach, Robin and Blattmann, Andreas and Lorenz, Dominik and Esser, Patrick and Ommer, Bj{\"o}rn},
+  booktitle = {IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pages     = {10684--10695},
+  year      = {2022}
+}
+
+% ---------------------------------------------------------------------------
+% Diffusion-based image inpainting / image-to-image
+% ---------------------------------------------------------------------------
+@inproceedings{lugmayr2022repaint,
+  title     = {{RePaint}: Inpainting using Denoising Diffusion Probabilistic Models},
+  author    = {Lugmayr, Andreas and Danelljan, Martin and Romero, Andres and Yu, Fisher and Timofte, Radu and Van Gool, Luc},
+  booktitle = {IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pages     = {11461--11471},
+  year      = {2022}
+}
+
+@inproceedings{saharia2022palette,
+  title     = {{Palette}: Image-to-Image Diffusion Models},
+  author    = {Saharia, Chitwan and Chan, William and Chang, Huiwen and Lee, Chris and Ho, Jonathan and Salimans, Tim and Fleet, David and Norouzi, Mohammad},
+  booktitle = {ACM SIGGRAPH 2022 Conference Proceedings},
+  pages     = {1--10},
+  year      = {2022}
+}
+
+% ---------------------------------------------------------------------------
+% Architectures / optimization
+% ---------------------------------------------------------------------------
+@inproceedings{ronneberger2015unet,
+  title     = {{U-Net}: Convolutional Networks for Biomedical Image Segmentation},
+  author    = {Ronneberger, Olaf and Fischer, Philipp and Brox, Thomas},
+  booktitle = {Medical Image Computing and Computer-Assisted Intervention (MICCAI)},
+  pages     = {234--241},
+  year      = {2015},
+  organization = {Springer}
+}
+
+@inproceedings{loshchilov2019adamw,
+  title     = {Decoupled Weight Decay Regularization},
+  author    = {Loshchilov, Ilya and Hutter, Frank},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2019}
+}
+
+% ---------------------------------------------------------------------------
+% Wavelet / 3D medical diffusion and healthy-tissue inpainting
+% ---------------------------------------------------------------------------
+@inproceedings{friedrich2024wdm,
+  title     = {{WDM}: 3D Wavelet Diffusion Models for High-Resolution Medical Image Synthesis},
+  author    = {Friedrich, Paul and Wolleb, Julia and Bieder, Florentin and Durrer, Alicia and Cattin, Philippe C.},
+  booktitle = {MICCAI Workshop on Deep Generative Models},
+  year      = {2024},
+  organization = {Springer}
+}
+
+@inproceedings{friedrich2024cwdm,
+  title     = {{cWDM}: Conditional Wavelet Diffusion Models for Cross-Modality 3D Medical Image Synthesis},
+  author    = {Friedrich, Paul and Durrer, Alicia and Wolleb, Julia and Cattin, Philippe C.},
+  booktitle = {MICCAI Brain Tumor Segmentation (BraTS) Challenge},
+  year      = {2024},
+  note      = {arXiv:2411.17203}
+}
+
+@inproceedings{durrer2024inpainting,
+  title     = {Denoising Diffusion Models for 3D Healthy Brain Tissue Inpainting},
+  author    = {Durrer, Alicia and Wolleb, Julia and Bieder, Florentin and Friedrich, Paul and Cattin, Philippe C.},
+  booktitle = {MICCAI Workshop on Deep Generative Models},
+  year      = {2024},
+  organization = {Springer}
+}
+
+% ---------------------------------------------------------------------------
+% BraTS benchmark and inpainting / local-synthesis task
+% ---------------------------------------------------------------------------
+@article{menze2015brats,
+  title     = {The Multimodal Brain Tumor Image Segmentation Benchmark ({BRATS})},
+  author    = {Menze, Bjoern H. and Jakab, Andras and Bauer, Stefan and Kalpathy-Cramer, Jayashree and Farahani, Keyvan and Kirby, Justin and others},
+  journal   = {IEEE Transactions on Medical Imaging},
+  volume    = {34},
+  number    = {10},
+  pages     = {1993--2024},
+  year      = {2015},
+  publisher = {IEEE}
+}
+
+@article{bakas2017advancing,
+  title     = {Advancing The Cancer Genome Atlas glioma {MRI} collections with expert segmentation labels and radiomic features},
+  author    = {Bakas, Spyridon and Akbari, Hamed and Sotiras, Aristeidis and Bilello, Michel and Rozycki, Martin and Kirby, Justin S. and Freymann, John B. and Farahani, Keyvan and Davatzikos, Christos},
+  journal   = {Scientific Data},
+  volume    = {4},
+  number    = {1},
+  pages     = {1--13},
+  year      = {2017},
+  publisher = {Nature Publishing Group}
+}
+
+@article{baid2021rsna,
+  title     = {The {RSNA-ASNR-MICCAI} {BraTS} 2021 Benchmark on Brain Tumor Segmentation and Radiogenomic Classification},
+  author    = {Baid, Ujjwal and Ghodasara, Satyam and Mohan, Suyash and Bilello, Michel and Calabrese, Evan and Colak, Errol and Farahani, Keyvan and Kalpathy-Cramer, Jayashree and Kitamura, Felipe C. and Pati, Sarthak and others},
+  journal   = {arXiv preprint arXiv:2107.02314},
+  year      = {2021}
+}
+
+@article{kofler2023inpainting,
+  title     = {The Brain Tumor Segmentation ({BraTS}) Challenge 2023: Local Synthesis of Healthy Brain Tissue via Inpainting},
+  author    = {Kofler, Florian and Meissen, Felix and Steinbauer, Felix and Graf, Robert and Oswald, Eva and de la Rosa, Ezequiel and others},
+  journal   = {arXiv preprint arXiv:2305.08992},
+  year      = {2023}
+}

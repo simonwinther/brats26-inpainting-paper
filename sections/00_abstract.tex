@@ -1,6 +1,23 @@
 \begin{abstract}
-Briefly summarize the problem, proposed method, experimental setup,
-main results, and conclusion.
+Automated neuroimaging pipelines are typically built for healthy anatomy, so brain
+tumors that distort surrounding tissue can degrade their reliability. The BraTS local
+synthesis task addresses this by asking for anatomically plausible, tumor-free
+(counterfactual) tissue to be synthesized inside a masked region of a brain MRI, while
+the observed anatomy is left unchanged. We present a 3D wavelet-domain conditional
+denoising diffusion model for this inpainting task. The diffusion process runs on the
+eight-channel 3D Haar wavelet representation of the volume, which keeps
+full-resolution volumetric generation tractable on a single GPU; the model is
+conditioned on the voided T1n volume and the inpainting mask by channel concatenation,
+predicts the clean target directly, and restores the observed voxels exactly through a
+hard-blend compositing step. To match the challenge setting, we train with a
+healthy-tissue objective that supervises the artificially removed healthy region,
+excludes the tumor region from the reconstruction loss, and adds a mask-weighted term
+focused on the inpainted region. We evaluate with the official healthy-mask
+SSIM/PSNR/MSE metrics on a deterministic held-out split of the BraTS local synthesis
+data.
+% TODO: add one or two sentences summarizing the main quantitative results and the
+% conclusion once the full training run has been evaluated.
 
-\keywords{MRI inpainting \and Brain MRI \and Medical image synthesis}
+\keywords{MRI inpainting \and Brain MRI \and Medical image synthesis
+\and Diffusion models \and Wavelet transform \and BraTS}
 \end{abstract}

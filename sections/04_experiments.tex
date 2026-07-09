@@ -3,4 +3,69 @@
 \section{Experiments}
 \label{sec:experiments}
 
-This section describes the dataset, preprocessing, implementation details, evaluation metrics, and experimental protocol.
+This section describes the dataset, the held-out validation protocol, the
+preprocessing pipeline, the implementation details, and the evaluation metrics.
+
+\subsection{Dataset}
+\label{sec:exp:data}
+
+We use the ASNR-MICCAI BraTS Local Synthesis of Healthy Brain Tissue via Inpainting
+dataset~\cite{kofler2023inpainting,menze2015brats,bakas2017advancing,baid2021rsna},
+which underlies the BraTS 2026 inpainting task. The public release contains $1{,}251$
+training cases and $219$ validation cases. Each training case provides the full
+healthy T1n volume (the reconstruction target), a voided T1n volume in which a region
+has been zeroed, the binary inpainting mask, an artificially removed healthy sub-mask,
+and the tumor sub-mask; the two sub-masks are disjoint and partition the inpainting
+mask. The validation cases provide only the voided volume and the inpainting mask,
+without ground truth, so quantitative scores cannot be computed on them locally.
+
+\subsection{Held-out Validation Split}
+\label{sec:exp:split}
+
+To obtain honest, locally computable validation numbers we construct a deterministic
+hold-out from the training cases. A fixed random seed ($2026$) selects $100$ cases
+that are excluded from training and scored as validation, leaving $1{,}151$ cases for
+training. The split is disjoint by case identifier and is versioned (case list plus a
+content hash) so that experiments are reproducible and comparable across runs. For the
+final submission model the same pipeline is run with the hold-out disabled so that all
+available cases are used for training.
+
+\subsection{Preprocessing}
+\label{sec:exp:preproc}
+
+All volumes are reoriented to canonical (RAS) orientation and center-padded from the
+native $240\times240\times155$ grid to $256^3$ without resampling; the inverse crop is
+applied to predictions before they are written. Intensities are normalized by the
+maximum of the voided volume, clipped to $[0,1]$, and mapped to $[-1,1]$
+(Section~\ref{sec:method:objective}). A single-level 3D Haar wavelet transform then
+produces the eight-channel representation used by the model.
+
+\subsection{Implementation Details}
+\label{sec:exp:impl}
+
+The model follows the configuration in Section~\ref{sec:method}: base width $64$,
+channel multipliers $(1,2,2,4,4,4)$, two residual blocks per level, group
+normalization ($32$ groups), no attention, and scale-and-shift timestep conditioning,
+with $24$ input and $8$ output channels. Diffusion uses $T=1000$ steps with a VP-SDE
+schedule ($\beta_{\min}=0.1$, $\beta_{\max}=20$), the predict-$x_0$ parameterization,
+and a fixed reverse variance. Optimization uses AdamW~\cite{loshchilov2019adamw} with
+a learning rate of $1\times10^{-5}$, no weight decay, and a batch size of $1$ volume
+per GPU in full ($32$-bit) precision; the mask-weighting coefficient is $\lambda=10$.
+Training is implemented in PyTorch (2.2, CUDA 11.8) with distributed data-parallel
+training across GPUs. Runs are performed on the DIKU Slurm cluster using NVIDIA A100
+GPUs. % TODO: report the exact number of training iterations used for the submitted
+% model once the full run has completed.
+
+\subsection{Evaluation Metrics}
+\label{sec:exp:metrics}
+
+We adopt the official BraTS local-synthesis evaluation~\cite{kofler2023inpainting}.
+Metrics are computed inside the healthy mask only, after normalizing the prediction
+and ground truth to $[0,1]$ using percentile ($0.5$--$99.5$) clipping derived from the
+voided volume. We report structural similarity (SSIM), peak signal-to-noise ratio
+(PSNR), and mean squared error (MSE) as the primary ranking metrics, and additionally
+root mean squared error (RMSE), mean absolute error (MAE), and mean squared
+logarithmic error (MSLE). During training, validation is run periodically (every
+$5{,}000$ steps) on cases from the held-out split by sampling each case with the full
+$1000$-step sampler and computing the metrics above, giving an honest estimate of
+generalization throughout training.

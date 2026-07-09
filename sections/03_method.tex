@@ -3,4 +3,143 @@
 \section{Method}
 \label{sec:method}
 
-The proposed method is described here.
+We cast healthy-tissue inpainting as conditional 3D image generation with a
+denoising diffusion probabilistic model~\cite{ho2020ddpm} that operates in the
+discrete wavelet domain, following the wavelet-diffusion line of
+work~\cite{friedrich2024wdm,friedrich2024cwdm}. The model is conditioned on the
+voided volume and the inpainting mask, is trained to reconstruct the missing
+\emph{healthy} tissue, and produces a final volume by compositing its prediction
+back into the observed anatomy. An overview of the components is given below.
+% TODO figure: pipeline overview (voided + mask -> DWT conditioning -> reverse
+% diffusion in wavelet space -> IDWT -> hard-blend compositing).
+
+\subsection{Problem Formulation}
+\label{sec:method:problem}
+
+Each case provides a voided T1-weighted volume $x_v$ in which a region has been
+removed, together with a binary mask $m \in \{0,1\}^{H\times W\times D}$ marking
+the voxels to be synthesized. The goal is to produce a volume that is identical to
+$x_v$ outside the mask and contains anatomically plausible, tumor-free tissue
+inside it. Formally, we seek $\hat{x}$ with
+$\hat{x}\odot(1-m) = x_v\odot(1-m)$ and $\hat{x}\odot m$ a plausible healthy
+completion, where $\odot$ denotes elementwise multiplication. We only model the
+single native modality used by the task (T1n); the remaining BraTS modalities are
+not used.
+
+\subsection{Wavelet Representation}
+\label{sec:method:wavelet}
+
+High-resolution 3D volumes make voxel-space diffusion memory intensive. We
+therefore run the diffusion process in the wavelet domain, as
+in~\cite{friedrich2024wdm}. Native BraTS volumes of size $240\times240\times155$
+are reoriented to canonical (RAS) orientation and center-padded to a cube of size
+$256^3$. A single-level 3D Haar discrete wavelet transform (DWT), denoted $\mathcal{W}$,
+decomposes a volume into eight subbands
+$\{\mathrm{LLL},\mathrm{LLH},\mathrm{LHL},\mathrm{LHH},\mathrm{HLL},\mathrm{HLH},\mathrm{HHL},\mathrm{HHH}\}$,
+each of spatial size $128^3$, which are stacked into an eight-channel tensor. This
+gives an eightfold reduction in spatial volume relative to the padded voxel grid
+while preserving spatial structure, so that a $256^3$ volume is generated on a
+compact $8\times128^3$ representation. The low-frequency $\mathrm{LLL}$ subband,
+which carries most of the signal energy, is scaled by $1/3$ when the eight-channel
+tensor is assembled and rescaled by $3$ on inversion, to balance the dynamic range
+across subbands. The inverse transform $\mathcal{W}^{-1}$ (inverse 3D Haar DWT)
+maps an eight-channel tensor back to a $256^3$ volume.
+
+\subsection{Conditional Diffusion in the Wavelet Domain}
+\label{sec:method:diffusion}
+
+Let $z_0 = \mathcal{W}(x_0)$ be the wavelet coefficients of the (unknown) target
+healthy volume $x_0$. A forward process gradually corrupts $z_0$ over $T=1000$
+steps,
+\begin{equation}
+  q(z_t \mid z_0) = \mathcal{N}\!\big(z_t; \sqrt{\bar\alpha_t}\, z_0,\; (1-\bar\alpha_t)\,\mathbf{I}\big),
+\end{equation}
+with $\bar\alpha_t = \prod_{s=1}^{t}(1-\beta_s)$ and a variance-preserving (VP-SDE)
+noise schedule~\cite{song2021scoresde} whose per-step rates increase from
+$\beta_{\min}=0.1$ to $\beta_{\max}=20$. The reverse process is parameterized by a
+network that, unlike the standard noise prediction of~\cite{ho2020ddpm}, directly
+predicts the clean coefficients $\hat z_0$ (i.e.\ the \emph{predict-}$x_0$
+parameterization) and uses a fixed reverse-process variance.
+
+The network is conditioned on the observed context by channel concatenation in the
+wavelet domain. At each step it receives a $24$-channel input, formed by stacking
+the eight noisy target subbands $z_t$ with the eight subbands of the voided volume
+$\mathcal{W}(x_v)$ and the eight subbands of the mask $\mathcal{W}(m)$:
+\begin{equation}
+  \hat z_0 = D_\theta\!\big(\,[\,z_t \,\|\, \mathcal{W}(x_v) \,\|\, \mathcal{W}(m)\,],\; t\,\big),
+\end{equation}
+where $[\cdot\,\|\,\cdot]$ denotes channel concatenation and $D_\theta$ returns the
+eight predicted target subbands. The voided-volume and mask subbands are recomputed
+once and reused across all reverse steps, so the conditioning signal is fixed while
+only $z_t$ evolves.
+
+\subsection{Network Architecture}
+\label{sec:method:network}
+
+$D_\theta$ is a fully 3D wavelet U-Net~\cite{ronneberger2015unet,friedrich2024wdm}.
+It uses a base width of $64$ channels and a six-level encoder/decoder with channel
+multipliers $(1,2,2,4,4,4)$ and two residual blocks per level. Normalization is
+group normalization with $32$ groups and the activation is SiLU. The diffusion
+timestep is embedded with a sinusoidal encoding followed by a two-layer MLP and
+injected into every residual block through a feature-wise scale-and-shift
+(FiLM-style) modulation. Down- and up-sampling are performed with Haar wavelet
+transforms rather than strided convolutions or interpolation, and the high-frequency
+subbands are carried across frequency-aware skip connections; a progressive-input
+pyramid additionally injects wavelet-downsampled copies of the network input at each
+scale. The configuration used here employs no self-attention layers, which keeps the
+memory footprint tractable for full-resolution $256^3$ volumes on a single GPU.
+
+\subsection{Healthy-Tissue Training Objective}
+\label{sec:method:objective}
+
+Intensities are normalized in a way that is identical at training and inference
+time: each volume is divided by the maximum intensity of the \emph{voided} image
+(available in both regimes, since the complete target is not available at
+inference), clipped to $[0,1]$, and mapped to $[-1,1]$.
+
+The training target is the artificially removed \emph{healthy} region. BraTS local
+synthesis training cases provide, in addition to the voided volume and the full
+inpainting mask, a healthy sub-mask $m_h$ (an artificially removed healthy region
+for which ground truth is available) and an unhealthy sub-mask $m_u$ (the tumor
+region), with $m = m_h \cup m_u$. The base objective is a wavelet-domain mean
+squared error between the predicted and ground-truth subbands, averaged over the
+eight subbands with equal weight:
+\begin{equation}
+  \mathcal{L}_{\mathrm{wav}} = \frac{1}{8}\sum_{k=1}^{8}\big\| \hat z_0^{(k)} - z_0^{(k)} \big\|_2^2 .
+\end{equation}
+Because no healthy ground truth exists inside the tumor region $m_u$, that region is
+excluded from $\mathcal{L}_{\mathrm{wav}}$. To concentrate capacity on the region
+that is actually scored, we add a mask-weighted reconstruction term
+$\mathcal{L}_{\mathrm{mask}}$: the healthy mask $m_h$ is downsampled to the
+low-frequency ($\mathrm{LLL}$) grid and Gaussian-blurred ($\sigma = 2$) to obtain a
+soft, per-voxel weight, and the squared error is accumulated under this weight. The
+total loss is
+\begin{equation}
+  \mathcal{L} = \mathcal{L}_{\mathrm{wav}} + \lambda\, \mathcal{L}_{\mathrm{mask}},
+  \qquad \lambda = 10 .
+\end{equation}
+Crucially, the spatial conditioning input still uses the full voided volume and the
+full mask, so the model input at training time matches the challenge setting exactly;
+only the \emph{supervision} is restricted to the healthy region. The model therefore
+learns to fill removed healthy tissue with plausible healthy content, a behavior that
+transfers to the challenge void at inference time.
+
+\subsection{Inference and Compositing}
+\label{sec:method:inference}
+
+At inference we form the fixed conditioning $[\mathcal{W}(x_v)\,\|\,\mathcal{W}(m)]$,
+draw Gaussian noise on the eight-channel $128^3$ wavelet grid, and run the full
+$1000$-step ancestral sampler. At every step the predicted clean coefficients are
+clipped by inverting to voxel space, clamping to $[-1,1]$, and transforming back,
+which keeps the trajectory in a valid intensity range. After the final step the
+inverse wavelet transform $\mathcal{W}^{-1}$ reconstructs a $256^3$ volume, which is
+rescaled by the stored per-case intensity factor and cropped back to the native
+shape. The known anatomy is preserved exactly by a hard-blend compositing step,
+\begin{equation}
+  \hat{x} = x_v \odot (1-m) + \hat{x}_{\mathrm{gen}} \odot m ,
+\end{equation}
+so that only masked voxels take synthesized values while all observed voxels remain
+pixel-exact. The result is reoriented to the input's native voxel layout and written
+as the case's inpainting prediction. A deterministic accelerated (DDIM-style)
+sampler~\cite{song2021ddim} is also available, but the submission path uses the full
+DDPM sampler.

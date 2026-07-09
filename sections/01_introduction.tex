@@ -3,4 +3,47 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Introduction begins here.
+Brain tumors distort the surrounding anatomy and violate the tissue-appearance
+assumptions of many automated neuroimaging pipelines. Tools for registration,
+brain-region parcellation, and atlas-based analysis are typically developed and
+validated on healthy anatomy, and their behavior on scans containing large lesions
+can be unreliable. A practical way to reconcile pathological scans with such tools is
+to replace the tumor region with a plausible, tumor-free (counterfactual) completion
+of the underlying healthy tissue, so that downstream analysis can proceed as if the
+pathology were absent. The BraTS local synthesis task~\cite{kofler2023inpainting}
+formalizes this as an inpainting problem: given a brain MRI with a masked-out region
+and the corresponding mask, synthesize anatomically plausible healthy tissue inside
+the mask while leaving the observed anatomy unchanged.
+
+Denoising diffusion probabilistic models~\cite{ho2020ddpm} have become the leading
+approach for high-fidelity image synthesis and
+inpainting~\cite{lugmayr2022repaint,saharia2022palette}, and are increasingly used
+for 3D medical image generation.
+Applying them directly to full-resolution brain volumes is memory intensive, however,
+which has motivated diffusion in a compressed representation such as the wavelet
+domain~\cite{friedrich2024wdm,friedrich2024cwdm}. Building on this line of work, we
+develop a 3D wavelet-domain conditional diffusion model for the BraTS healthy-tissue
+inpainting task and adapt both its conditioning and its training objective to the
+specific structure of the challenge.
+
+We do not claim to introduce wavelet-domain diffusion; rather, we present a careful
+adaptation and extension of cWDM/WDM-style 3D wavelet diffusion
+\cite{friedrich2024wdm,friedrich2024cwdm} to healthy-tissue inpainting, together with
+a reproducible challenge pipeline. Our contributions are:
+
+\begin{itemize}
+  \item A \textbf{3D wavelet-domain conditional DDPM} for BraTS healthy-tissue
+    inpainting. The model runs the diffusion process on the eight-channel 3D Haar
+    wavelet representation of the volume, conditions on the voided MRI and the mask by
+    channel concatenation, predicts the clean target directly (predict-$x_0$), and
+    reconstructs the missing tissue with a hard-blend compositing step that keeps all
+    observed voxels pixel-exact.
+  \item A \textbf{task-specific healthy-tissue training objective}. We supervise the
+    artificially removed healthy region, where ground truth is available, exclude the
+    tumor region from the reconstruction loss, and add a mask-weighted term that
+    focuses learning on the region that is actually scored, while keeping the model's
+    conditioning input identical to the inference-time setting.
+  \item A \textbf{reproducible BraTS challenge pipeline}: a deterministic held-out
+    validation split, evaluation with the official healthy-mask SSIM/PSNR/MSE metrics,
+    and a documented training and evaluation setup on the DIKU Slurm cluster.
+\end{itemize}

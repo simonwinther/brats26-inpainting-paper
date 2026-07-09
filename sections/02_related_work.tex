@@ -3,4 +3,40 @@
 \section{Related Work}
 \label{sec:related-work}
 
-Related work begins here.
+\subsubsection{Diffusion models.}
+Denoising diffusion probabilistic models~\cite{ho2020ddpm} generate data by learning
+to reverse a gradual noising process, and were shown to rival or surpass GANs on image
+synthesis~\cite{dhariwal2021diffusion}. A continuous, score-based formulation unifies
+these models through stochastic differential equations and introduces the
+variance-preserving (VP) schedule~\cite{song2021scoresde} that we adopt. Subsequent
+work improved sample quality and likelihood~\cite{nichol2021improved} and accelerated
+sampling with deterministic implicit samplers~\cite{song2021ddim}. To reduce the cost
+of high-resolution generation, latent diffusion models run the process in a learned
+compressed space~\cite{rombach2022ldm}; wavelet-domain diffusion follows the same
+motivation using a fixed, invertible transform instead of a learned autoencoder.
+
+\subsubsection{Diffusion-based inpainting.}
+Diffusion models are well suited to inpainting because the reverse process can be
+guided by known pixels. RePaint~\cite{lugmayr2022repaint} conditions an unconditional
+model by repeatedly replacing the known region with a correctly noised version of the
+observed image during sampling, whereas conditional image-to-image approaches such as
+Palette~\cite{saharia2022palette} feed the observed context directly to the network as
+an additional input. Our model follows the conditional route: the voided volume and
+mask are concatenated as extra channels, and observed voxels are restored exactly by a
+final compositing step rather than by per-step resampling.
+
+\subsubsection{3D medical image synthesis and healthy-tissue inpainting.}
+Generating full 3D medical volumes with diffusion is challenging due to memory
+constraints. Wavelet diffusion models (WDM)~\cite{friedrich2024wdm} address this by
+denoising in the 3D discrete wavelet domain, enabling high-resolution volumetric
+synthesis on a single GPU, and their conditional extension
+(cWDM)~\cite{friedrich2024cwdm} adds channel-wise conditioning for cross-modality and
+inpainting-style tasks. Diffusion models have also been applied specifically to 3D
+healthy brain tissue inpainting~\cite{durrer2024inpainting} for the BraTS local
+synthesis task~\cite{kofler2023inpainting}, which builds on the multimodal BraTS
+benchmark and its data
+collections~\cite{menze2015brats,bakas2017advancing,baid2021rsna}. Our approach is a
+direct adaptation and extension of this
+wavelet-diffusion line of work: we retain the 3D wavelet-domain conditional diffusion
+backbone and tailor the conditioning and training objective to the healthy-tissue
+inpainting setting of the BraTS challenge.
