@@ -3,12 +3,31 @@
 \section{Discussion}
 \label{sec:discussion}
 
-We discuss the behavior and limitations of the approach and outline directions for
-future work. The hard-blend compositing guarantees that observed anatomy is preserved
-exactly, so errors are confined to the masked region; the healthy-tissue objective is
-intended to bias those completions toward tumor-free anatomy. Known limitations include
-the use of a single modality (T1n) and the compute cost of full $1000$-step sampling.
-Promising directions include accelerated sampling,
-multi-modal conditioning, and further study of the masked training objective.
-% TODO: revisit and expand this discussion once quantitative and qualitative results
-% are available (e.g. failure cases, effect of the healthy-tissue objective).
+The design separates three questions that are otherwise easy to conflate: how the
+mask is represented, how the condition enters the denoiser, and how healthy holes are
+sampled during training. The one-channel signed mask preserves explicit inside/outside
+semantics without expanding the mask into eight Haar subbands. Concatenation exposes
+all 17 channels directly to the U-Net. Input FiLM reduces the main U-Net input to eight
+channels and begins as an identity transform, but it is not free: its conditioning
+network applies two 32-channel 3D convolutions at the full $128^3$ wavelet resolution.
+The ablation must therefore be judged on reconstruction quality and measured runtime,
+not on U-Net input width alone.
+
+The corrected region-focused loss has a stable interpretation across hole sizes:
+its coefficient multiplies an average in-mask squared error. Excluding every wavelet
+cell that touches the real tumor prevents direct regression toward pathological
+appearance, although this conservative rule also removes some healthy boundary voxels
+from supervision. Online mask augmentation increases the diversity of supervised
+healthy holes while retaining the real tumor in the excluded region. Tumor-derived
+shapes are anatomically plausible masks, whereas blobs and ellipsoids broaden shape
+coverage at the risk of departing from the challenge distribution.
+
+Several limitations remain. Only the T1n modality is used, each reported training arm
+currently has one seed, and the local 100-case split is a development set drawn from
+the released training cohort rather than an independent test set. The augmentation
+and fixed-mask pairs also use different training budgets, so a strict augmentation
+effect requires a future matched-budget fixed-mask run. Finally, full 1000-step
+ancestral sampling is computationally expensive. Accelerated sampling, multimodal
+conditioning, repeated seeds, and external evaluation are natural next steps. Until
+the full saved evaluations are available, no ranking among the four arms should be
+inferred from the small monitoring cohort.

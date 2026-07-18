@@ -1,0 +1,60 @@
+\begin{thebibliography}{10}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\providecommand{\doi}[1]{https://doi.org/#1}
+
+\bibitem{baid2021rsna}
+Baid, U., Ghodasara, S., Mohan, S., Bilello, M., Calabrese, E., Colak, E., Farahani, K., Kalpathy-Cramer, J., Kitamura, F.C., Pati, S., et~al.: The {RSNA-ASNR-MICCAI} {BraTS} 2021 benchmark on brain tumor segmentation and radiogenomic classification. arXiv preprint arXiv:2107.02314  (2021)
+
+\bibitem{bakas2017advancing}
+Bakas, S., Akbari, H., Sotiras, A., Bilello, M., Rozycki, M., Kirby, J.S., Freymann, J.B., Farahani, K., Davatzikos, C.: Advancing the cancer genome atlas glioma {MRI} collections with expert segmentation labels and radiomic features. Scientific Data  \textbf{4}(1),  1--13 (2017)
+
+\bibitem{dhariwal2021diffusion}
+Dhariwal, P., Nichol, A.Q.: Diffusion models beat {GANs} on image synthesis. In: Advances in Neural Information Processing Systems (NeurIPS). vol.~34, pp. 8780--8794 (2021)
+
+\bibitem{durrer2024inpainting}
+Durrer, A., Wolleb, J., Bieder, F., Friedrich, P., Cattin, P.C.: Denoising diffusion models for 3d healthy brain tissue inpainting. In: MICCAI Workshop on Deep Generative Models. Springer (2024)
+
+\bibitem{friedrich2024cwdm}
+Friedrich, P., Durrer, A., Wolleb, J., Cattin, P.C.: {cWDM}: Conditional wavelet diffusion models for cross-modality 3d medical image synthesis. In: MICCAI Brain Tumor Segmentation (BraTS) Challenge (2024), arXiv:2411.17203
+
+\bibitem{friedrich2024wdm}
+Friedrich, P., Wolleb, J., Bieder, F., Durrer, A., Cattin, P.C.: {WDM}: 3d wavelet diffusion models for high-resolution medical image synthesis. In: MICCAI Workshop on Deep Generative Models. Springer (2024)
+
+\bibitem{ho2020ddpm}
+Ho, J., Jain, A., Abbeel, P.: Denoising diffusion probabilistic models. In: Advances in Neural Information Processing Systems (NeurIPS). vol.~33, pp. 6840--6851 (2020)
+
+\bibitem{kofler2023inpainting}
+Kofler, F., Meissen, F., Steinbauer, F., Graf, R., Oswald, E., de~la Rosa, E., et~al.: The brain tumor segmentation ({BraTS}) challenge 2023: Local synthesis of healthy brain tissue via inpainting. arXiv preprint arXiv:2305.08992  (2023)
+
+\bibitem{loshchilov2019adamw}
+Loshchilov, I., Hutter, F.: Decoupled weight decay regularization. In: International Conference on Learning Representations (ICLR) (2019)
+
+\bibitem{lugmayr2022repaint}
+Lugmayr, A., Danelljan, M., Romero, A., Yu, F., Timofte, R., Van~Gool, L.: {RePaint}: Inpainting using denoising diffusion probabilistic models. In: IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR). pp. 11461--11471 (2022)
+
+\bibitem{menze2015brats}
+Menze, B.H., Jakab, A., Bauer, S., Kalpathy-Cramer, J., Farahani, K., Kirby, J., et~al.: The multimodal brain tumor image segmentation benchmark ({BRATS}). IEEE Transactions on Medical Imaging  \textbf{34}(10),  1993--2024 (2015)
+
+\bibitem{nichol2021improved}
+Nichol, A.Q., Dhariwal, P.: Improved denoising diffusion probabilistic models. In: International Conference on Machine Learning (ICML). pp. 8162--8171. PMLR (2021)
+
+\bibitem{perez2018film}
+Perez, E., Strub, F., de~Vries, H., Dumoulin, V., Courville, A.: {FiLM}: Visual reasoning with a general conditioning layer. In: AAAI Conference on Artificial Intelligence. vol.~32 (2018)
+
+\bibitem{rombach2022ldm}
+Rombach, R., Blattmann, A., Lorenz, D., Esser, P., Ommer, B.: High-resolution image synthesis with latent diffusion models. In: IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR). pp. 10684--10695 (2022)
+
+\bibitem{ronneberger2015unet}
+Ronneberger, O., Fischer, P., Brox, T.: {U-Net}: Convolutional networks for biomedical image segmentation. In: Medical Image Computing and Computer-Assisted Intervention (MICCAI). pp. 234--241. Springer (2015)
+
+\bibitem{saharia2022palette}
+Saharia, C., Chan, W., Chang, H., Lee, C., Ho, J., Salimans, T., Fleet, D., Norouzi, M.: {Palette}: Image-to-image diffusion models. In: ACM SIGGRAPH 2022 Conference Proceedings. pp. 1--10 (2022)
+
+\bibitem{song2021ddim}
+Song, J., Meng, C., Ermon, S.: Denoising diffusion implicit models. In: International Conference on Learning Representations (ICLR) (2021)
+
+\bibitem{song2021scoresde}
+Song, Y., Sohl-Dickstein, J., Kingma, D.P., Kumar, A., Ermon, S., Poole, B.: Score-based generative modeling through stochastic differential equations. In: International Conference on Learning Representations (ICLR) (2021)
+
+\end{thebibliography}

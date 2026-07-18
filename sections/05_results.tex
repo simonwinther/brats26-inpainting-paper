@@ -3,11 +3,21 @@
 \section{Results}
 \label{sec:results}
 
-We report quantitative results on the deterministic held-out split
-(Section~\ref{sec:exp:split}) and on the official BraTS validation set, using the
-healthy-mask SSIM, PSNR, and MSE metrics (with RMSE, MAE, and MSLE as secondary
-measures), together with qualitative reconstructions.
-% TODO: results table -- SSIM (up), PSNR (up), MSE (down), RMSE (down), MAE (down),
-% MSLE (down) on the held-out split (and the official validation leaderboard).
-% TODO: qualitative figure -- voided input | reconstruction | ground truth | error map.
-% Numbers to be filled in after the full training run has been evaluated.
+The corrected seed-0 training runs and their full 100-case evaluations were still in
+progress when this manuscript revision was prepared. We therefore do not promote the
+five-case monitoring curves to quantitative results. Those curves are intended for
+training diagnostics only and are especially unsuitable for comparison with earlier
+runs, which used a different mask-loss normalization and a different five-case
+monitoring cohort.
+
+The final ablation table will be populated from the immutable aggregate JSON and
+per-case CSV files produced by the shared evaluator. It will report mean $\pm$ sample
+standard deviation for SSIM, PSNR, and MSE for the four arms in
+Table~\ref{tab:ablation-design}, each evaluated on the exact same 100 case IDs. The
+official validation result will be reported separately because its hidden ground truth
+and ranking protocol are distinct from the local hold-out.
+
+% TODO: Insert the four-arm 100-case table only after each summary JSON has been
+% checked for the same split hash, full-DDPM sampling, EMA weights, and terminal step.
+% TODO: Add a qualitative figure generated from saved NIfTI predictions:
+% voided input | reconstruction | ground truth | absolute error, with both sub-masks.

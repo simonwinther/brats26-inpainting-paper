@@ -6,17 +6,18 @@ synthesis task addresses this by asking for anatomically plausible, tumor-free
 the observed anatomy is left unchanged. We present a 3D wavelet-domain conditional
 denoising diffusion model for this inpainting task. The diffusion process runs on the
 eight-channel 3D Haar wavelet representation of the volume, which keeps
-full-resolution volumetric generation tractable on a single GPU; the model is
-conditioned on the voided T1n volume and the inpainting mask by channel concatenation,
-predicts the clean target directly, and restores the observed voxels exactly through a
-hard-blend compositing step. To match the challenge setting, we train with a
-healthy-tissue objective that supervises the artificially removed healthy region,
-excludes the tumor region from the reconstruction loss, and adds a mask-weighted term
-focused on the inpainted region. We evaluate with the official healthy-mask
-SSIM/PSNR/MSE metrics on a deterministic held-out split of the BraTS local synthesis
-data.
+full-resolution volumetric generation tractable on a single GPU. Our baseline
+concatenates the noisy target subbands, the voided-image subbands, and a compact signed
+mask, while a spatial FiLM ablation instead uses the voided image and mask to modulate
+the eight noisy target subbands before the U-Net. The model predicts the clean target
+directly and restores observed voxels exactly through hard-blend compositing. To match
+the challenge setting, we exclude tumor-containing cells from reconstruction loss,
+normalize a mask-weighted term by the active healthy-mask area, and study online
+augmentation of the artificially removed healthy region. We evaluate with the
+official healthy-mask SSIM, PSNR, and MSE metrics on a deterministic 100-case hold-out
+from the BraTS local synthesis training data.
 % TODO: add one or two sentences summarizing the main quantitative results and the
-% conclusion once the full training run has been evaluated.
+% conclusion once all four 100-case evaluations have completed.
 
 \keywords{MRI inpainting \and Brain MRI \and Medical image synthesis
 \and Diffusion models \and Wavelet transform \and BraTS}

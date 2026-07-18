@@ -34,16 +34,18 @@ a reproducible challenge pipeline. Our contributions are:
 \begin{itemize}
   \item A \textbf{3D wavelet-domain conditional DDPM} for BraTS healthy-tissue
     inpainting. The model runs the diffusion process on the eight-channel 3D Haar
-    wavelet representation of the volume, conditions on the voided MRI and the mask by
-    channel concatenation, predicts the clean target directly (predict-$x_0$), and
-    reconstructs the missing tissue with a hard-blend compositing step that keeps all
-    observed voxels pixel-exact.
+    wavelet representation of the volume, represents the spatial mask as one signed
+    channel, predicts the clean target directly (predict-$x_0$), and reconstructs the
+    missing tissue with a hard-blend compositing step that keeps all observed voxels
+    pixel-exact. We compare 17-channel concatenation with an eight-channel spatial
+    input-FiLM formulation.
   \item A \textbf{task-specific healthy-tissue training objective}. We supervise the
     artificially removed healthy region, where ground truth is available, exclude the
-    tumor region from the reconstruction loss, and add a mask-weighted term that
-    focuses learning on the region that is actually scored, while keeping the model's
-    conditioning input identical to the inference-time setting.
-  \item A \textbf{reproducible BraTS challenge pipeline}: a deterministic held-out
-    validation split, evaluation with the official healthy-mask SSIM/PSNR/MSE metrics,
-    and a documented training and evaluation setup on the DIKU Slurm cluster.
+    tumor region from reconstruction, and normalize a soft mask-weighted MSE by its
+    active mass so its coefficient has consistent meaning across mask sizes.
+  \item \textbf{Online healthy-mask augmentation and reproducible evaluation}. We
+    compare fixed masks with augmented tumor shapes and a mixture of irregular mask
+    families. We enforce split isolation and no overlap with the real tumor. All
+    variants use a deterministic held-out split and the official healthy-mask
+    SSIM/PSNR/MSE implementation.
 \end{itemize}

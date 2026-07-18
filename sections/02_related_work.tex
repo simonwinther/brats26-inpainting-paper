@@ -22,8 +22,13 @@ model by repeatedly replacing the known region with a correctly noised version o
 observed image during sampling, whereas conditional image-to-image approaches such as
 Palette~\cite{saharia2022palette} feed the observed context directly to the network as
 an additional input. Our model follows the conditional route: the voided volume and
-mask are concatenated as extra channels, and observed voxels are restored exactly by a
-final compositing step rather than by per-step resampling.
+mask are supplied directly to the denoiser, and observed voxels are restored exactly
+by a final compositing step rather than by per-step resampling. In addition to channel
+concatenation, we study feature-wise linear modulation
+(FiLM)~\cite{perez2018film}, which applies a learned affine transformation whose
+parameters are generated from the conditioning input. Unlike the global per-channel
+parameters in the original FiLM formulation, our conditioning branch predicts spatial
+parameter maps aligned with the wavelet grid.
 
 \subsubsection{3D medical image synthesis and healthy-tissue inpainting.}
 Generating full 3D medical volumes with diffusion is challenging due to memory
