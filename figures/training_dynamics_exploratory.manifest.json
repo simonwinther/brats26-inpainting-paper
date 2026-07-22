@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-07-22T00:01:06.313377+00:00",
+  "input": "/home/simon/dev/brats2026/brats26-inpainting-paper/data/wandb_training_dynamics.csv",
+  "input_sha256": "3a0aaa6f7a5a7e0bf27ef33804d0fa9d8419df02bdfab225352bd37626509765",
+  "outputs": [
+    "figures/training_dynamics_exploratory.pdf",
+    "figures/training_dynamics_exploratory.png"
+  ],
+  "include_exploratory": true,
+  "dashboard_smoothing": false,
+  "metrics": [
+    "val_ema_ssim",
+    "val_ema_psnr",
+    "val_ema_mse"
+  ],
+  "runs": [
+    {
+      "label": "Concat-fixed",
+      "run_id": "c2a3ihw5",
+      "points": 39,
+      "latest_validation_step": 195000
+    },
+    {
+      "label": "FiLM-fixed",
+      "run_id": "lklejvva",
+      "points": 27,
+      "latest_validation_step": 135000
+    },
+    {
+      "label": "Concat-random",
+      "run_id": "2lv4kupi",
+      "points": 15,
+      "latest_validation_step": 150000
+    },
+    {
+      "label": "Concat-weighted",
+      "run_id": "ymeita5c",
+      "points": 19,
+      "latest_validation_step": 195000
+    },
+    {
+      "label": "FiLM-weighted",
+      "run_id": "4c959uqa",
+      "points": 12,
+      "latest_validation_step": 125000
+    }
+  ]
+}

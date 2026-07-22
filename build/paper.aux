@@ -53,26 +53,30 @@
 \newlabel{sec:method:augmentation}{{3.6}{6}{Online Healthy-Mask Augmentation}{subsection.3.6}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.7}Inference and Compositing}{6}{subsection.3.7}\protected@file@percent }
 \newlabel{sec:method:inference}{{3.7}{6}{Inference and Compositing}{subsection.3.7}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Experiments}{6}{section.4}\protected@file@percent }
-\newlabel{sec:experiments}{{4}{6}{Experiments}{section.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Dataset and Held-Out Split}{6}{subsection.4.1}\protected@file@percent }
-\newlabel{sec:exp:data}{{4.1}{6}{Dataset and Held-Out Split}{subsection.4.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Healthy-mask policies used for training. (a)--(e) The provided fixed healthy mask, challenge-like random augmentation, and the three families in the weighted policy are overlaid on one audited training case selected nearest the audit median fixed mask-to-brain ratio. Each mask is shown on its own maximum-area axial slice. Cyan denotes healthy supervision; dashed orange denotes the real tumor region excluded from supervision. Examples are mask-geometry representatives from deterministic production samples. (f) Configured and realized family composition. (g) Empirical distributions of final healthy-mask volume relative to brain volume. (h) Final-mask geometry; crosses mark category medians. The descriptive audit uses a deterministic sample of 100 of the 1,151 optimization cases, all five samples per online policy, seed 0, and epoch 0; the component bank excludes the 100-case hold-out. Random masks are epoch-invariant, whereas weighted masks vary by epoch. This figure characterizes sampling and does not by itself establish a reconstruction benefit.}}{7}{figure.1}\protected@file@percent }
+\newlabel{fig:mask-augmentation}{{1}{7}{Healthy-mask policies used for training. (a)--(e) The provided fixed healthy mask, challenge-like random augmentation, and the three families in the weighted policy are overlaid on one audited training case selected nearest the audit median fixed mask-to-brain ratio. Each mask is shown on its own maximum-area axial slice. Cyan denotes healthy supervision; dashed orange denotes the real tumor region excluded from supervision. Examples are mask-geometry representatives from deterministic production samples. (f) Configured and realized family composition. (g) Empirical distributions of final healthy-mask volume relative to brain volume. (h) Final-mask geometry; crosses mark category medians. The descriptive audit uses a deterministic sample of 100 of the 1,151 optimization cases, all five samples per online policy, seed 0, and epoch 0; the component bank excludes the 100-case hold-out. Random masks are epoch-invariant, whereas weighted masks vary by epoch. This figure characterizes sampling and does not by itself establish a reconstruction benefit}{figure.1}{}}
 \citation{loshchilov2019adamw}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Predeclared seed-0 ablation arms. ``Fixed'' denotes the healthy mask supplied with each case.}}{7}{table.1}\protected@file@percent }
-\newlabel{tab:ablation-design}{{1}{7}{Predeclared seed-0 ablation arms. ``Fixed'' denotes the healthy mask supplied with each case}{table.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Preprocessing}{7}{subsection.4.2}\protected@file@percent }
-\newlabel{sec:exp:preproc}{{4.2}{7}{Preprocessing}{subsection.4.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Ablation Design}{7}{subsection.4.3}\protected@file@percent }
-\newlabel{sec:exp:ablations}{{4.3}{7}{Ablation Design}{subsection.4.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Implementation Details}{7}{subsection.4.4}\protected@file@percent }
-\newlabel{sec:exp:impl}{{4.4}{7}{Implementation Details}{subsection.4.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Predeclared seed-0 ablation arms. ``Fixed'' denotes the healthy mask supplied with each case.}}{8}{table.1}\protected@file@percent }
+\newlabel{tab:ablation-design}{{1}{8}{Predeclared seed-0 ablation arms. ``Fixed'' denotes the healthy mask supplied with each case}{table.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Experiments}{8}{section.4}\protected@file@percent }
+\newlabel{sec:experiments}{{4}{8}{Experiments}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Dataset and Held-Out Split}{8}{subsection.4.1}\protected@file@percent }
+\newlabel{sec:exp:data}{{4.1}{8}{Dataset and Held-Out Split}{subsection.4.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Preprocessing}{8}{subsection.4.2}\protected@file@percent }
+\newlabel{sec:exp:preproc}{{4.2}{8}{Preprocessing}{subsection.4.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Ablation Design}{8}{subsection.4.3}\protected@file@percent }
+\newlabel{sec:exp:ablations}{{4.3}{8}{Ablation Design}{subsection.4.3}{}}
 \citation{kofler2023inpainting}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Evaluation Metrics}{8}{subsection.4.5}\protected@file@percent }
-\newlabel{sec:exp:metrics}{{4.5}{8}{Evaluation Metrics}{subsection.4.5}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Results}{8}{section.5}\protected@file@percent }
-\newlabel{sec:results}{{5}{8}{Results}{section.5}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{8}{section.6}\protected@file@percent }
-\newlabel{sec:discussion}{{6}{8}{Discussion}{section.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Implementation Details}{9}{subsection.4.4}\protected@file@percent }
+\newlabel{sec:exp:impl}{{4.4}{9}{Implementation Details}{subsection.4.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Evaluation Metrics}{9}{subsection.4.5}\protected@file@percent }
+\newlabel{sec:exp:metrics}{{4.5}{9}{Evaluation Metrics}{subsection.4.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Results}{9}{section.5}\protected@file@percent }
+\newlabel{sec:results}{{5}{9}{Results}{section.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Interim EMA training diagnostics for the four predeclared seed-0 arms on the same deterministic five-case monitoring cohort. Fixed-mask arms are evaluated every 5,000 steps and augmented arms every 10,000 steps. Curves end at the latest event available in the current snapshot, so unfinished runs have different horizons. Because the fixed and augmented arms use 200k- and 300k-step learning-rate schedules, respectively, cross-pair comparisons are exploratory; final claims use the shared 100-case evaluation.}}{10}{figure.2}\protected@file@percent }
+\newlabel{fig:training-dynamics}{{2}{10}{Interim EMA training diagnostics for the four predeclared seed-0 arms on the same deterministic five-case monitoring cohort. Fixed-mask arms are evaluated every 5,000 steps and augmented arms every 10,000 steps. Curves end at the latest event available in the current snapshot, so unfinished runs have different horizons. Because the fixed and augmented arms use 200k- and 300k-step learning-rate schedules, respectively, cross-pair comparisons are exploratory; final claims use the shared 100-case evaluation}{figure.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{10}{section.6}\protected@file@percent }
+\newlabel{sec:discussion}{{6}{10}{Discussion}{section.6}{}}
 \bibstyle{splncs04}
 \bibdata{references}
 \bibcite{baid2021rsna}{1}
@@ -80,8 +84,6 @@
 \bibcite{dhariwal2021diffusion}{3}
 \bibcite{durrer2024inpainting}{4}
 \bibcite{friedrich2024cwdm}{5}
-\@writefile{toc}{\contentsline {subsubsection}{Acknowledgments.}{9}{section*.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Disclosure of Interests.}{9}{section*.6}\protected@file@percent }
 \bibcite{friedrich2024wdm}{6}
 \bibcite{ho2020ddpm}{7}
 \bibcite{kofler2023inpainting}{8}
@@ -89,10 +91,12 @@
 \bibcite{lugmayr2022repaint}{10}
 \bibcite{menze2015brats}{11}
 \bibcite{nichol2021improved}{12}
+\@writefile{toc}{\contentsline {subsubsection}{Acknowledgments.}{11}{section*.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Disclosure of Interests.}{11}{section*.6}\protected@file@percent }
 \bibcite{perez2018film}{13}
 \bibcite{rombach2022ldm}{14}
 \bibcite{ronneberger2015unet}{15}
 \bibcite{saharia2022palette}{16}
 \bibcite{song2021ddim}{17}
 \bibcite{song2021scoresde}{18}
-\gdef \@abspage@last{10}
+\gdef \@abspage@last{12}

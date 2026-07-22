@@ -149,6 +149,34 @@ background overlap, and no overlap with the real tumor. If weighted augmentation
 exhausts its placement attempts, it falls back to the provided fixed healthy mask; the
 random arm fails rather than silently changing its distribution.
 
+Figure~\ref{fig:mask-augmentation} visualizes the resulting policies using the
+production sampler. The displayed training case and masks are selected
+deterministically from mask geometry alone; no reconstruction metric enters the
+selection. Exact case IDs, seeds, mask hashes, configurations, and the sampled
+distribution are stored with the figure manifest. Each overlay uses its mask's
+maximum-area axial slice. Weighted family exemplars are located deterministically
+across epochs, whereas the distribution audit is fixed at epoch 0.
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{mask_augmentation}
+  \caption{Healthy-mask policies used for training. (a)--(e) The provided fixed
+  healthy mask, challenge-like random augmentation, and the three families in the
+  weighted policy are overlaid on one audited training case selected nearest the
+  audit median fixed mask-to-brain ratio. Each mask is shown on its own maximum-area axial slice.
+  Cyan denotes healthy supervision; dashed orange denotes the real tumor region
+  excluded from supervision. Examples are mask-geometry representatives from
+  deterministic production samples. (f) Configured and
+  realized family composition. (g) Empirical distributions of final healthy-mask
+  volume relative to brain volume. (h) Final-mask geometry; crosses mark category
+  medians. The descriptive audit uses a deterministic sample of 100 of the 1,151
+  optimization cases, all five samples per online policy, seed 0, and epoch 0; the
+  component bank excludes the 100-case hold-out. Random masks are epoch-invariant,
+  whereas weighted masks vary by epoch. This figure characterizes sampling and does
+  not by itself establish a reconstruction benefit.}
+  \label{fig:mask-augmentation}
+\end{figure}
+
 \subsection{Inference and Compositing}
 \label{sec:method:inference}
 

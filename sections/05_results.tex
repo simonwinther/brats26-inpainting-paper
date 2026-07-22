@@ -10,6 +10,24 @@ training diagnostics only and are especially unsuitable for comparison with earl
 runs, which used a different mask-loss normalization and a different five-case
 monitoring cohort.
 
+To make the convergence behavior auditable while the final evaluations are pending,
+Fig.~\ref{fig:training-dynamics} records the current corrected-run histories. The
+figure uses the raw validation events without dashboard smoothing and is included as
+a training diagnostic rather than as evidence for the final method ranking.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\textwidth]{training_dynamics}
+  \caption{Interim EMA training diagnostics for the four predeclared seed-0 arms on
+  the same deterministic five-case monitoring cohort. Fixed-mask arms are evaluated
+  every 5,000 steps and augmented arms every 10,000 steps. Curves end at the latest
+  event available in the current snapshot, so unfinished runs have different
+  horizons. Because the fixed and augmented arms use 200k- and 300k-step learning-rate
+  schedules, respectively, cross-pair comparisons are exploratory; final claims use
+  the shared 100-case evaluation.}
+  \label{fig:training-dynamics}
+\end{figure}
+
 The final ablation table will be populated from the immutable aggregate JSON and
 per-case CSV files produced by the shared evaluator. It will report mean $\pm$ sample
 standard deviation for SSIM, PSNR, and MSE for the four arms in

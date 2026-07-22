@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex build/paper"] 1784311804.52363 "build/paper.aux" "build/paper.bbl" "build/paper" 1784311805.27756 0
+["bibtex build/paper"] 1784684338.91195 "build/paper.aux" "build/paper.bbl" "build/paper" 1784684339.75627 0
   "./references.bib" 1784296970.25244 7658 44eded487b8e4354f40a325f8185a2e9 ""
   "./splncs04.bst" 1783463432.65775 32146 aadf770ded437d161532035219ea6f45 ""
-  "build/paper.aux" 1784311805.10431 6508 080337cfa7cd10a02210a7f8a22446e9 "pdflatex"
+  "build/paper.aux" 1784684339.54395 9986 86b89e7622a880c49a83a6a382a09a61 "pdflatex"
   (generated)
   "build/paper.bbl"
   "build/paper.blg"
   (rewritten before read)
-["pdflatex"] 1784311804.58528 "paper.tex" "build/paper.pdf" "paper" 1784311805.2777 0
+["pdflatex"] 1784684338.97744 "paper.tex" "build/paper.pdf" "paper" 1784684339.75646 0
   "/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1775415801 2971 def0b6c1f0b107b3b936def894055589 ""
   "/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1775415801 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/share/texmf-dist/fonts/map/fontname/texfonts.map" 1775415801 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -170,17 +170,19 @@
   "/usr/share/texmf-dist/web2c/texmf.cnf" 1775415801 43569 fd570f2fa160877d211e859f687312ba ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1782755878 5385779 47c0c393a77fd4a098bacfd57d66b88a ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1782755836 2328190 fa4751e1f6a619a776e214606e2b6332 ""
-  "build/paper.aux" 1784311805.10431 6508 080337cfa7cd10a02210a7f8a22446e9 "pdflatex"
-  "build/paper.bbl" 1784311804.58031 4412 fa86a118ae937da717d150307d479d9d "bibtex build/paper"
-  "build/paper.out" 1784311805.10543 563 34e0b6c24808837cb96d8c11f6877d68 "pdflatex"
+  "build/paper.aux" 1784684339.54395 9986 86b89e7622a880c49a83a6a382a09a61 "pdflatex"
+  "build/paper.bbl" 1784684338.97395 4490 7e0cc3424b081134f2f05b8e0b2c0d8b "bibtex build/paper"
+  "build/paper.out" 1784684339.54495 563 34e0b6c24808837cb96d8c11f6877d68 "pdflatex"
+  "figures/mask_augmentation.pdf" 1784684162.35291 89112 c0be15953b023c787a8adf576ac6c1c0 ""
+  "figures/training_dynamics.pdf" 1784678466.02893 33850 7a8be920554d98860cb0458c292db55d ""
   "llncs.cls" 1783463432.65557 43402 5fb5a2dc40571aa40f3d199c00cbb986 ""
-  "paper.tex" 1784242191.83169 1617 97ff20c01cfd59be99f70d6516e50647 ""
+  "paper.tex" 1784679987.87959 1646 19e9d79a95512d8adc322dd8af569807 ""
   "sections/00_abstract.tex" 1784296490.81083 1683 f06cda8de624b3295d69a660347ad256 ""
   "sections/01_introduction.tex" 1784297250.05775 3206 1e82d23267eaeeabc74c6129eae43fd4 ""
   "sections/02_related_work.tex" 1784296568.13206 3097 330e43c33230abe48cf1139e17900084 ""
-  "sections/03_method.tex" 1784296970.52745 8733 09e5993820ec055c1c6fa372349c9275 ""
+  "sections/03_method.tex" 1784684251.08043 10504 84e24b83d76fe0b0f71aa6c4b6ad999c ""
   "sections/04_experiments.tex" 1784296813.67107 4860 5c7e9436a73acb8899f2c9cbf9d5fe81 ""
-  "sections/05_results.tex" 1784296867.34171 1291 ba8ed92569135f2a017055b550fa879d ""
+  "sections/05_results.tex" 1784678512.86241 2287 3c68699f9f756102bb502f922de866bb ""
   "sections/06_discussion.tex" 1784296867.60872 2149 88cadf1eac2035f546868126a2dcf3e6 ""
   "sections/07_credits.tex" 1784296867.72672 570 a0a6f581dc8f8c075c95032c888fd301 ""
   (generated)

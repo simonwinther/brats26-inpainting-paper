@@ -274,6 +274,10 @@ INPUT /usr/share/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm
 INPUT /usr/share/texmf-dist/fonts/tfm/public/cm/cmbx7.tfm
 INPUT /usr/share/texmf-dist/fonts/tfm/public/cm/cmbx5.tfm
 INPUT /usr/share/texmf-dist/fonts/tfm/jknappen/ec/ecti1000.tfm
+INPUT ./figures/mask_augmentation.pdf
+INPUT ./figures/mask_augmentation.pdf
+INPUT ./figures/mask_augmentation.pdf
+INPUT ./figures/mask_augmentation.pdf
 INPUT ./sections/04_experiments.tex
 INPUT ./sections/04_experiments.tex
 INPUT ./sections/04_experiments.tex
@@ -286,6 +290,10 @@ INPUT ./sections/05_results.tex
 INPUT ./sections/05_results.tex
 INPUT ./sections/05_results.tex
 INPUT sections/05_results.tex
+INPUT ./figures/training_dynamics.pdf
+INPUT ./figures/training_dynamics.pdf
+INPUT ./figures/training_dynamics.pdf
+INPUT ./figures/training_dynamics.pdf
 INPUT ./sections/06_discussion.tex
 INPUT ./sections/06_discussion.tex
 INPUT ./sections/06_discussion.tex

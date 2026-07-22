@@ -1,0 +1,27 @@
+{
+  "generated_at_utc": "2026-07-22T01:36:02.920048+00:00",
+  "metadata_json": "/home/simon/dev/brats2026/brats26-inpainting-paper/data/mask_augmentation_metadata.json",
+  "metadata_json_sha256": "3914fec6c87557cd266484bafb06ff6fa343ab6a191bab0245701a84f7643aa8",
+  "outputs": [
+    {
+      "path": "/home/simon/dev/brats2026/brats26-inpainting-paper/figures/mask_augmentation.pdf",
+      "sha256": "811f62efc7a62344956c164d26298105e697a00be61f219ae35978c419c7797f"
+    },
+    {
+      "path": "/home/simon/dev/brats2026/brats26-inpainting-paper/figures/mask_augmentation.png",
+      "sha256": "74957e9a9c507f692b9e5b9c94b9e82ed8f17bdf853ffb2878366bd279b0209b"
+    }
+  ],
+  "panels": {
+    "a-e": "Fixed, random, and weighted-family mask overlays on one deterministic training case.",
+    "f": "Configured and realized mask-family composition.",
+    "g": "Empirical CDF of healthy-mask/brain volume ratio.",
+    "h": "Final-mask bounding-box elongation and fill-ratio distribution."
+  },
+  "plot_only": true,
+  "plot_script": "/home/simon/dev/brats2026/brats26-inpainting-paper/scripts/plot_mask_augmentation.py",
+  "plot_script_sha256": "979235eec1f8e80be2393a6390ac4bc7203590cce110bd0c403be894761ebc47",
+  "samples_csv": "/home/simon/dev/brats2026/brats26-inpainting-paper/data/mask_augmentation_samples.csv",
+  "samples_csv_sha256": "c4fd17d715a66606af0a913c8d77707e680ce5ca97bd492a447cd6185c8e5d6f",
+  "schema_version": 1
+}
