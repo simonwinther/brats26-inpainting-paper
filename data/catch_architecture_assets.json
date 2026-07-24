@@ -1,0 +1,82 @@
+{
+  "case_id": "BraTS-GLI-01004-000",
+  "case_selection": {
+    "method": "Optimization case in the audit subset nearest the median fixed healthy-mask/brain ratio; case ID breaks ties.",
+    "metric_independent": true,
+    "source": "/home/simon/dev/brats2026/brats26-inpainting-paper/data/mask_augmentation_metadata.json",
+    "source_sha256": "3914fec6c87557cd266484bafb06ff6fa343ab6a191bab0245701a84f7643aa8"
+  },
+  "display": {
+    "crop_bounds_row_col": [
+      44,
+      209,
+      39,
+      204
+    ],
+    "intensity_percentiles": [
+      1.0,
+      99.5
+    ],
+    "intensity_window": [
+      97.0,
+      573.0
+    ],
+    "output_size_pixels": [
+      384,
+      384
+    ],
+    "plane_transform": "numpy.rot90"
+  },
+  "generated_at_utc": "2026-07-22T17:08:36.426829+00:00",
+  "invocation": [
+    "/home/simon/.local/share/micromamba/envs/wdm/bin/python",
+    "scripts/render_architecture_thumbnails.py",
+    "--overwrite"
+  ],
+  "outputs": {
+    "complete_t1n": {
+      "path": "/home/simon/dev/brats2026/brats26-inpainting-paper/figures/catch_architecture_complete.png",
+      "sha256": "8ec9c32d9b67f5e610bcb76767397a8ae854eca270fae684008acef35a6d6c20"
+    },
+    "mask": {
+      "path": "/home/simon/dev/brats2026/brats26-inpainting-paper/figures/catch_architecture_mask.png",
+      "sha256": "211ed597fb8b43eb7bdce94b2ef6edf94f6077378b255b82942fffebc3d49bc4"
+    },
+    "voided_t1n": {
+      "path": "/home/simon/dev/brats2026/brats26-inpainting-paper/figures/catch_architecture_voided.png",
+      "sha256": "d733b573d00a8a0dc9d93bc35aaa1ee27d5bb72c01835955924eded0bbb8d53c"
+    }
+  },
+  "purpose": "Audited input thumbnails for the CATCH architecture figure.",
+  "schema_version": 1,
+  "script": {
+    "path": "/home/simon/dev/brats2026/brats26-inpainting-paper/scripts/render_architecture_thumbnails.py",
+    "sha256": "f3104fb0f1da173f5cb7e3cc87b0ded2508b92c4c2a20a5bb7406435ba49dc22"
+  },
+  "slice_selection": {
+    "axis": "canonical RAS axial",
+    "index": 98,
+    "mask_area_voxels": 4482,
+    "method": "Maximum full inpainting-mask area; first index breaks ties."
+  },
+  "software": {
+    "nibabel": "5.2.0",
+    "numpy": "1.26.4",
+    "pillow": "12.3.0",
+    "python": "3.10.13 | packaged by conda-forge | (main, Dec 23 2023, 15:36:39) [GCC 12.3.0]"
+  },
+  "sources": {
+    "complete_t1n": {
+      "path": "/home/simon/dev/brats2026/data/ASNR-MICCAI-BraTS2023-Local-Synthesis-Challenge-Training/BraTS-GLI-01004-000/BraTS-GLI-01004-000-t1n.nii.gz",
+      "sha256": "e24316114d2ed53876251b5d687585d4e8cf2457c477e50302410caea1dbb2dd"
+    },
+    "mask": {
+      "path": "/home/simon/dev/brats2026/data/ASNR-MICCAI-BraTS2023-Local-Synthesis-Challenge-Training/BraTS-GLI-01004-000/BraTS-GLI-01004-000-mask.nii.gz",
+      "sha256": "f7d8b41c08bfc448f1ddba1b59cd3302962128420d3fc6b4a16044a6a9d87390"
+    },
+    "voided_t1n": {
+      "path": "/home/simon/dev/brats2026/data/ASNR-MICCAI-BraTS2023-Local-Synthesis-Challenge-Training/BraTS-GLI-01004-000/BraTS-GLI-01004-000-t1n-voided.nii.gz",
+      "sha256": "3935a137a1bc59275fa8d4244f58e57619be51b5e8c8442433c38b1cf0bff27b"
+    }
+  }
+}

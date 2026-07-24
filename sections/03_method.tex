@@ -10,6 +10,26 @@ only information available at challenge inference time: the voided T1n image and
 full inpainting mask. Training additionally uses the provided healthy and unhealthy
 sub-masks to determine where the complete T1n image is a valid healthy target.
 
+Figure~\ref{fig:catch-architecture} summarizes the shared conditioning,
+training, and reverse-sampling paths.
+
+\begin{figure}[!t]
+  \centering
+  \includegraphics[width=\textwidth]{catch_architecture}
+  \caption{Overview of CATCH. The voided image and downsampled signed mask are
+  the only inference-time conditions. Each experiment selects either channel
+  concatenation or spatial input FiLM. During training, the WavUNet predicts
+  clean Haar coefficients and is supervised by the tumor-excluded wavelet loss
+  and healthy-hole-focused mask loss. During inference, the current latent
+  $z_t$ and clean prediction $\hat z_0$ enter the DDPM posterior separately,
+  and $z_{t-1}$ returns through the selected fusion module. The final sampled
+  $z_0$ is decoded into the output volume, after which hard compositing
+  preserves $x_v$ outside $m$ exactly. The thumbnails show a geometry-selected
+  training case on its maximum-mask-area axial slice; they are illustrative and
+  were not selected using reconstruction performance.}
+  \label{fig:catch-architecture}
+\end{figure}
+
 \subsection{Problem Formulation}
 \label{sec:method:problem}
 
@@ -192,3 +212,14 @@ We then hard-blend the generated image $\hat{x}_{\mathrm{gen}}$ with the observa
 \end{equation}
 Consequently, every voxel outside the requested inpainting region is preserved
 exactly.
+
+We additionally evaluate a single-sample reference ($N=1$) and test-time
+stochastic reconstruction ensembles with $N\in\{3,5\}$ trajectories from the
+same checkpoint and conditioning inputs, using distinct deterministic seeds for
+each case. Every trajectory is independently decoded, restored to native image
+space, and hard-composited as above. We aggregate the first $N$ reconstructions
+voxel-wise by either the arithmetic mean or median and then reapply hard
+compositing to guarantee exact preservation outside $m$. The ensemble sizes share
+a nested sample prefix, so all variants are compared using the same underlying
+reconstructions. This procedure ensembles samples from one model; it does not
+combine separately trained networks.

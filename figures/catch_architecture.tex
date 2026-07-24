@@ -1,0 +1,246 @@
+\documentclass[tikz,border=2pt]{standalone}
+
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usetikzlibrary{arrows.meta,calc,positioning}
+\graphicspath{{figures/}}
+
+\definecolor{ink}{HTML}{111827}
+\definecolor{muted}{HTML}{4B5563}
+\definecolor{linegray}{HTML}{9CA3AF}
+\definecolor{condition}{HTML}{4C78A8}
+\definecolor{fusion}{HTML}{0F766E}
+\definecolor{network}{HTML}{D97706}
+\definecolor{wavelet}{HTML}{8B5CF6}
+\definecolor{objective}{HTML}{54A24B}
+
+\tikzset{
+  panel/.style={
+    draw=#1,
+    fill=#1!3,
+    rounded corners=3pt,
+    line width=0.7pt,
+  },
+  block/.style={
+    draw=ink!75,
+    fill=white,
+    rounded corners=2pt,
+    line width=0.55pt,
+    align=center,
+    inner xsep=4pt,
+    inner ysep=3pt,
+    minimum height=0.72cm,
+  },
+  conditionblock/.style={block,draw=condition,fill=condition!7},
+  fusionblock/.style={block,draw=fusion,fill=fusion!7},
+  networkblock/.style={block,draw=network,fill=network!7},
+  waveletblock/.style={block,draw=wavelet,fill=wavelet!7},
+  lossblock/.style={block,draw=objective,fill=objective!7},
+  imageblock/.style={
+    draw=#1,
+    fill=white,
+    rounded corners=2pt,
+    line width=0.65pt,
+    align=center,
+    inner sep=1.2pt,
+  },
+  operator/.style={
+    draw=ink!65,
+    fill=ink!3,
+    rounded corners=2pt,
+    line width=0.5pt,
+    align=center,
+    inner xsep=3pt,
+    inner ysep=2.5pt,
+    minimum height=0.58cm,
+  },
+  arrow/.style={
+    -{Latex[length=1.6mm,width=1.05mm]},
+    draw=ink,
+    line width=0.65pt,
+    shorten >=0.8pt,
+  },
+  softarrow/.style={arrow,draw=muted},
+  finalarrow/.style={arrow,dashed,draw=fusion},
+  note/.style={align=center,text=muted,font=\scriptsize},
+  dimension/.style={align=center,text=muted,font=\scriptsize},
+}
+
+\begin{document}
+\begin{tikzpicture}[x=1cm,y=1cm,font=\footnotesize,text=ink]
+
+% Shared conditioning and fusion definition.
+\draw[panel=condition] (0,8.85) rectangle (15,13.20);
+\node[font=\small\bfseries] at (7.5,12.96)
+  {Shared inference-available conditioning and selected fusion $F$};
+
+\node[font=\small\bfseries,text=condition] at (2.55,12.52)
+  {Condition preparation};
+
+\node[imageblock=condition] (xv) at (0.95,11.48)
+  {\begin{tabular}{@{}c@{}}
+     \includegraphics[width=1.00cm]{catch_architecture_voided}\\[-1pt]
+     \scriptsize Voided $x_v$
+   \end{tabular}};
+\node[operator,minimum width=1.05cm,right=0.26cm of xv] (dwtv)
+  {Haar\\DWT};
+\node[conditionblock,minimum width=1.65cm,right=0.26cm of dwtv] (cv)
+  {$c_v=\mathcal W(x_v)$\\$8\!\times\!128^3$};
+\draw[arrow] (xv) -- (dwtv);
+\draw[arrow] (dwtv) -- (cv);
+
+\node[imageblock=condition] (mask) at (0.95,9.92)
+  {\begin{tabular}{@{}c@{}}
+     \includegraphics[width=1.00cm]{catch_architecture_mask}\\[-1pt]
+     \scriptsize Mask $m$
+   \end{tabular}};
+\node[operator,minimum width=1.50cm,right=0.26cm of mask] (maskmap)
+  {nearest $\downarrow$\\$2m-1$};
+\node[conditionblock,minimum width=1.42cm,right=0.26cm of maskmap] (signed)
+  {$s$\\$1\!\times\!128^3$};
+\draw[arrow] (mask) -- (maskmap);
+\draw[arrow] (maskmap) -- (signed);
+
+\draw[linegray,line width=0.45pt] (5.35,9.15) -- (5.35,12.42);
+\node[font=\small\bfseries,text=fusion] at (10.15,12.52)
+  {Fusion alternatives (one trained per experiment)};
+
+\draw[rounded corners=2pt,draw=fusion!75,fill=fusion!5,line width=0.55pt]
+  (5.65,9.35) rectangle (9.78,11.92);
+\node[font=\small\bfseries,text=fusion] at (7.715,11.57) {Concatenation};
+\node[align=center] at (7.715,10.83)
+  {$F_{\mathrm{concat}}(z_t,c_v,s)$\\[2pt]
+   $=[z_t\,\|\,c_v\,\|\,s]$};
+\node[dimension] at (7.715,9.78)
+  {$8+8+1=17$ channels at $128^3$};
+
+\draw[rounded corners=2pt,draw=wavelet!80,fill=wavelet!4,line width=0.55pt]
+  (10.00,9.35) rectangle (14.70,11.92);
+\node[font=\small\bfseries,text=wavelet] at (12.35,11.57) {Spatial input FiLM};
+\node[align=center] at (12.35,10.92)
+  {$[\Delta\gamma\,\|\,\beta]=C_\phi([c_v\,\|\,s])$};
+\node[dimension] at (12.35,10.51)
+  {$C_\phi$: spatial 3D conv encoder};
+\node[dimension] at (12.35,10.18)
+  {16 spatial maps: $8\,\Delta\gamma+8\,\beta$};
+\node[align=center,font=\scriptsize] at (12.35,9.70)
+  {$F_{\mathrm{FiLM}}(z_t,c_v,s)$\\[-1pt]
+   $=(1+\Delta\gamma)\odot z_t+\beta\quad(8\text{ channels})$};
+
+% Training graph.
+\draw[panel=objective] (0,5.15) rectangle (15,8.55);
+\node[font=\small\bfseries,text=objective] at (7.5,8.27) {(a) Training};
+
+\node[imageblock=objective] (trainx) at (0.95,7.25)
+  {\begin{tabular}{@{}c@{}}
+     \includegraphics[width=1.00cm]{catch_architecture_complete}\\[-1pt]
+     \scriptsize Complete $x$
+   \end{tabular}};
+\node[operator,minimum width=0.76cm,right=0.26cm of trainx] (traindwt)
+  {Haar\\DWT};
+\node[waveletblock,minimum width=1.08cm,right=0.26cm of traindwt] (zclean)
+  {clean $z_0$\\$8\!\times\!128^3$};
+\node[operator,minimum width=1.08cm,right=0.26cm of zclean] (forward)
+  {noise at $t$\\$q(z_t\mid z_0)$};
+\node[waveletblock,minimum width=1.05cm,right=0.26cm of forward] (znoisy)
+  {noisy $z_t$\\$8\!\times\!128^3$};
+\node[fusionblock,minimum width=1.10cm]
+  (trainfusion) at ($(znoisy.center)+(-0.45cm,-1.13cm)$)
+  {$F(z_t,c_v,s)$};
+\node[networkblock,text width=2.35cm,font=\scriptsize,inner xsep=2pt,inner ysep=2pt,
+  right=0.26cm of trainfusion] (trainnet)
+  {\textbf{3D WavUNet} $D_\theta$\\[-1pt]
+   HF Haar skips\\[-1pt]
+   $t$-ResBlocks};
+\node[waveletblock,minimum width=1.18cm,right=0.26cm of trainnet] (zpred)
+  {predicted $\hat z_0$\\$8\!\times\!128^3$};
+\node[lossblock,text width=1.75cm,font=\scriptsize,right=0.26cm of zpred] (loss)
+  {training loss\\[-1pt]
+   $\mathcal L=\mathcal L_{\mathrm{wave}}$\\[-1pt]
+   $+\,10\mathcal L_{\mathrm{mask}}$};
+
+\draw[arrow] (trainx) -- (traindwt);
+\draw[arrow] (traindwt) -- (zclean);
+\draw[arrow] (zclean) -- (forward);
+\draw[arrow] (forward) -- (znoisy);
+\draw[arrow] (znoisy.south) -- ([xshift=0.45cm]trainfusion.north);
+\draw[arrow] (trainfusion) -- (trainnet);
+\draw[arrow] (trainnet) -- (zpred);
+\draw[arrow] (zpred) -- (loss);
+\draw[arrow] (zclean.south) -- ++(0,-1.45) -| (loss.south);
+
+% Inference graph.
+\draw[panel=fusion] (0,0) rectangle (15,4.90);
+\node[font=\small\bfseries,text=fusion] at (7.5,4.62) {(b) Inference: reverse DDPM sampling};
+\node[note] at (7.5,4.28)
+  {Reuse the selected trained fusion module and its corresponding WavUNet weights.};
+
+\node[waveletblock,minimum width=1.10cm] (noise) at (1.43,3.58)
+  {$z_T\!\sim\!\mathcal N(0,I)$};
+\node[waveletblock,minimum width=1.05cm,right=0.26cm of noise] (current)
+  {current $z_t$};
+\node[fusionblock,minimum width=1.20cm,right=0.26cm of current] (inferfusion)
+  {$F(z_t,c_v,s)$};
+\node[networkblock,text width=2.35cm,font=\scriptsize,inner xsep=2pt,inner ysep=2pt]
+  (infernet) [right=0.26cm of inferfusion]
+  {\textbf{3D WavUNet} $D_\theta$\\[-1pt]
+   HF Haar skips\\[-1pt]
+   $t$-ResBlocks};
+\node[waveletblock,minimum width=1.08cm,right=0.26cm of infernet] (inferpred)
+  {predicted\\$\hat z_0$};
+\node[operator,text width=1.95cm,right=0.26cm of inferpred] (posterior)
+  {DDPM posterior\\$p(z_{t-1}\mid z_t,\hat z_0)$};
+\node[waveletblock,minimum width=1.02cm,right=0.26cm of posterior] (next)
+  {$z_{t-1}$};
+
+\draw[arrow] (noise) -- (current);
+\draw[arrow] (current) -- (inferfusion);
+\draw[arrow] (inferfusion) -- (infernet);
+\draw[arrow] (infernet) -- (inferpred);
+\draw[arrow] (inferpred) -- (posterior);
+\draw[arrow] (posterior) -- (next);
+
+% The posterior receives the current latent independently of the clean prediction.
+\draw[softarrow] (current.south east) -- ++(0,-0.55) -|
+  node[pos=0.68,below,font=\scriptsize,text=muted] {current $z_t$}
+  (posterior.south);
+
+% Every posterior sample returns through the selected fusion module.
+\draw[softarrow] (next.south) -- ++(0,-0.88) -|
+  (current.south west);
+\node[note,fill=fusion!3,inner sep=1.2pt] at (5.15,2.48)
+  {loop through $F$ for $t=T,\ldots,2$};
+
+% Decode only the final posterior sample.
+\node[waveletblock,minimum width=1.15cm] (finalz) at (4.60,1.35)
+  {final $z_0$};
+\node[operator,minimum width=0.85cm,right=0.26cm of finalz] (idwt)
+  {Haar\\IDWT};
+\node[block,minimum width=1.18cm,right=0.26cm of idwt] (xgen)
+  {generated\\$x_{\mathrm{gen}}$};
+\node[fusionblock,text width=2.85cm,right=0.26cm of xgen] (composite)
+  {hard compositing\\
+   $\hat x=m\odot x_{\mathrm{gen}}+(1-m)\odot x_v$};
+\node[block,draw=fusion,fill=fusion!12,minimum width=1.12cm,right=0.26cm of composite]
+  (output)
+  {inpainted\\$\hat x$};
+\node[conditionblock,minimum width=0.72cm,minimum height=0.45cm,inner ysep=1pt]
+  (xvfinal) at ($(composite.south)+(-0.75cm,-0.35cm)$) {$x_v$};
+\node[conditionblock,minimum width=0.72cm,minimum height=0.45cm,inner ysep=1pt]
+  (mfinal) at ($(composite.south)+(0.75cm,-0.35cm)$) {$m$};
+
+\draw[finalarrow] (next.east) -- ++(0.15,0) -- ++(0,-1.48) -|
+  node[pos=0.76,above,fill=fusion!3,inner sep=1.2pt,font=\scriptsize,text=fusion]
+    {at $t=1$}
+  (finalz.north);
+\draw[arrow] (finalz) -- (idwt);
+\draw[arrow] (idwt) -- (xgen);
+\draw[arrow] (xgen) -- (composite);
+\draw[arrow] (xvfinal.north) -- ([xshift=-0.75cm]composite.south);
+\draw[arrow] (mfinal.north) -- ([xshift=0.75cm]composite.south);
+\draw[arrow] (composite) -- (output);
+
+\end{tikzpicture}
+\end{document}
