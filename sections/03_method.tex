@@ -17,7 +17,7 @@ training, and reverse-sampling paths.
   \centering
   \includegraphics[width=\textwidth]{catch_architecture}
   \caption{Overview of CATCH. The voided image and downsampled signed mask are
-  the only inference-time conditions. Each experiment selects either channel
+  the only inference-time conditions. The framework supports either channel
   concatenation or spatial input FiLM. During training, the WavUNet predicts
   clean Haar coefficients and is supervised by the tumor-excluded wavelet loss
   and healthy-hole-focused mask loss. During inference, the current latent
@@ -88,7 +88,7 @@ where $[\cdot\|\cdot]$ denotes channel concatenation. This produces a 17-channel
 U-Net input: eight noisy target channels, eight voided-image channels, and one signed
 mask channel.
 
-We additionally evaluate spatial input FiLM~\cite{perez2018film} as an alternative
+We additionally implement spatial input FiLM~\cite{perez2018film} as an alternative
 fusion mechanism. A conditioning network $F_\phi$ receives the nine-channel tensor
 $[c_v\|s]$ and predicts eight spatial scale residuals $\Delta\gamma$ and eight
 spatial biases $\beta$:
@@ -122,9 +122,15 @@ same eight clean target subbands.
 \subsection{Healthy-Tissue Objective}
 \label{sec:method:objective}
 
-The target and voided image are divided by the maximum intensity of the voided image,
-clipped to $[0,1]$, and mapped to $[-1,1]$. This scale is available at both training
-and inference time.
+The primary experiments derive a shared scale from the voided image:
+$a=\max(x_v)$. Both the target and condition are divided by $a$, clipped to
+$[0,1]$, and mapped to $[-1,1]$. We also train one matched sensitivity arm with
+robust bounds derived from the voided image,
+$l=\max(0,Q_{0.5}(x_v))$ and $u=Q_{99.5}(x_v)$. In that arm, both volumes are
+mapped by $(x-l)/(u-l)$ before clipping and mapping to $[-1,1]$. Degenerate
+percentile bounds fall back to the max-based rule. Both policies use only
+inference-available information, and their bounds are retained to restore native
+intensities after sampling.
 
 Let $e_{k,p}=(\hat z_0^{(k)}(p)-z_0^{(k)}(p))^2$ be the squared error in subband $k$
 at wavelet-grid position $p$, and let $\Omega$ be the set of grid positions. We set

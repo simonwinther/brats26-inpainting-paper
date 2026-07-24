@@ -22,12 +22,15 @@ healthy holes while retaining the real tumor in the excluded region. Tumor-deriv
 shapes are anatomically plausible masks, whereas blobs and ellipsoids broaden shape
 coverage at the risk of departing from the challenge distribution.
 
-Several limitations remain. Only the T1n modality is used, each reported training arm
-currently has one seed, and the local 100-case split is a development set drawn from
-the released training cohort rather than an independent test set. The augmentation
-and fixed-mask pairs also use different training budgets, so a strict augmentation
-effect requires a future matched-budget fixed-mask run. Finally, full 1000-step
-ancestral sampling is computationally expensive. Accelerated sampling, multimodal
-conditioning, repeated seeds, and external evaluation are natural next steps. Until
-the full saved evaluations are available, no ranking among the four arms should be
-inferred from the small monitoring cohort.
+Several limitations remain. Only the T1n modality is used, each training arm has one
+seed, and the local 100-case hold-out comes from the released training cohort rather
+than an independent test set. The 75-case cohort is therefore a locked internal
+confirmation set, not an external test set. The percentile experiment covers only the
+weighted mask policy, so it measures one matched normalization contrast rather than a
+normalization-by-augmentation interaction. Spatial FiLM was explored during
+development but was not carried through the final checkpoint-selection protocol.
+Finally, full 1000-step ancestral sampling is computationally expensive, especially
+for multiple reconstructions. Accelerated sampling, multimodal conditioning, more
+training seeds, and external evaluation remain future work. Until the saved
+confirmation evaluations are available, no final ranking should be inferred from the
+five-case monitoring cohort.

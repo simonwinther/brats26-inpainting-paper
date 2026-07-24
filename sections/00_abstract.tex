@@ -8,9 +8,9 @@ denoising diffusion model for this inpainting task. The diffusion process runs o
 eight-channel 3D Haar wavelet representation of the volume, which keeps
 full-resolution volumetric generation tractable on a single GPU. Our baseline
 concatenates the noisy target subbands, the voided-image subbands, and a compact signed
-mask, while a spatial FiLM ablation instead uses the voided image and mask to modulate
-the eight noisy target subbands before the U-Net. The model predicts the clean target
-directly and restores observed voxels exactly through hard-blend compositing. To match
+mask. We also investigate a spatial FiLM variant that uses the voided image and mask
+to modulate the eight noisy target subbands before the U-Net. The model predicts the
+clean target directly and restores observed voxels exactly through hard-blend compositing. To match
 the challenge setting, we exclude tumor-containing cells from reconstruction loss,
 normalize a mask-weighted term by the active healthy-mask area, and study online
 augmentation of the artificially removed healthy region. We evaluate with the

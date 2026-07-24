@@ -37,8 +37,8 @@ a reproducible challenge pipeline. Our contributions are:
     wavelet representation of the volume, represents the spatial mask as one signed
     channel, predicts the clean target directly (predict-$x_0$), and reconstructs the
     missing tissue with a hard-blend compositing step that keeps all observed voxels
-    pixel-exact. We compare 17-channel concatenation with an eight-channel spatial
-    input-FiLM formulation.
+    pixel-exact. We use 17-channel concatenation in the final experiments and study
+    an eight-channel spatial input-FiLM formulation during development.
   \item A \textbf{task-specific healthy-tissue training objective}. We supervise the
     artificially removed healthy region, where ground truth is available, exclude the
     tumor region from reconstruction, and normalize a soft mask-weighted MSE by its

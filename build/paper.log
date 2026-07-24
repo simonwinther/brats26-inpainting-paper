@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.29)  23 JUL 2026 21:04
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.29)  24 JUL 2026 23:02
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -741,7 +741,7 @@ Package hyperref Info: Link coloring OFF on input line 24.
 /enc/dvips/cm-super/cm-super-t1.enc}{/usr/share/texmf-dist/fonts/enc/dvips/cm-s
 uper/cm-super-ts1.enc}])
 (./sections/02_related_work.tex [2]) (./sections/03_method.tex
-<figures/catch_architecture.pdf, id=108, 431.49104pt x 380.41022pt>
+<figures/catch_architecture.pdf, id=107, 431.49104pt x 380.41022pt>
 File: figures/catch_architecture.pdf Graphic file (type pdf)
 <use figures/catch_architecture.pdf>
 Package pdftex.def Info: figures/catch_architecture.pdf  used on input line 18.
@@ -751,19 +751,19 @@ Package pdftex.def Info: figures/catch_architecture.pdf  used on input line 18.
 <figures/mask_augmentation.pdf, id=270, 387.06142pt x 288.22784pt>
 File: figures/mask_augmentation.pdf Graphic file (type pdf)
 <use figures/mask_augmentation.pdf>
-Package pdftex.def Info: figures/mask_augmentation.pdf  used on input line 182.
+Package pdftex.def Info: figures/mask_augmentation.pdf  used on input line 188.
 
 (pdftex.def)             Requested size: 347.12354pt x 258.50546pt.
-) (./sections/04_experiments.tex [7] [8 <./figures/mask_augmentation.pdf>] [9])
- (./sections/05_results.tex
-<figures/training_dynamics.pdf, id=362, 539.04935pt x 179.82043pt>
+) (./sections/04_experiments.tex [7] [8 <./figures/mask_augmentation.pdf>] [9] 
+[10]) (./sections/05_results.tex
+<figures/training_dynamics.pdf, id=369, 539.04935pt x 179.82043pt>
 File: figures/training_dynamics.pdf Graphic file (type pdf)
 <use figures/training_dynamics.pdf>
-Package pdftex.def Info: figures/training_dynamics.pdf  used on input line 20.
+Package pdftex.def Info: figures/training_dynamics.pdf  used on input line 21.
 (pdftex.def)             Requested size: 347.12354pt x 115.79807pt.
- [10])
-(./sections/06_discussion.tex [11 <./figures/training_dynamics.pdf>])
-(./sections/07_credits.tex) (build/paper.bbl [12]) [13] (build/paper.aux)
+ [11])
+(./sections/06_discussion.tex [12 <./figures/training_dynamics.pdf>])
+(./sections/07_credits.tex) (build/paper.bbl [13]) [14] (build/paper.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
@@ -772,13 +772,13 @@ Package rerunfilecheck Info: File `paper.out' has not changed.
 (rerunfilecheck)             Checksum: 34E0B6C24808837CB96D8C11F6877D68;563.
  ) 
 Here is how much of TeX's memory you used:
- 20930 strings out of 469515
- 388616 string characters out of 5470807
- 788858 words of memory out of 5000000
- 49149 multiletter control sequences out of 15000+600000
+ 20933 strings out of 469515
+ 388656 string characters out of 5470807
+ 788989 words of memory out of 5000000
+ 49150 multiletter control sequences out of 15000+600000
  639496 words of font info for 66 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 99i,9n,118p,1205b,732s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 99i,12n,118p,1205b,732s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-dist/fon
 ts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/publi
@@ -803,10 +803,10 @@ m-super/sfrm0800.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm090
 0.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/sha
 re/texmf-dist/fonts/type1/public/cm-super/sfti1000.pfb></usr/share/texmf-dist/f
 onts/type1/public/cm-super/sftt0900.pfb>
-Output written on build/paper.pdf (13 pages, 700509 bytes).
+Output written on build/paper.pdf (14 pages, 705967 bytes).
 PDF statistics:
- 535 PDF objects out of 1000 (max. 8388607)
- 356 compressed objects within 4 object streams
- 71 named destinations out of 1000 (max. 500000)
+ 542 PDF objects out of 1000 (max. 8388607)
+ 362 compressed objects within 4 object streams
+ 73 named destinations out of 1000 (max. 500000)
  36 words of extra memory for PDF output out of 10000 (max. 10000000)
 
