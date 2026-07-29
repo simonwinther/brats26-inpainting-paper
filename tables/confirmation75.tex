@@ -1,0 +1,16 @@
+\begin{table}[t]
+  \centering
+  \caption{Held-out 75-case confirmation results. Values are mean $\pm$ sample SD. Joint rank averages each pipeline's per-case SSIM, PSNR, and MSE ranks; lower is better. Bold and underlining mark the best and second-best value in each numeric column. Fixed, Random, and Weighted denote the fixed-mask, random-augmentation, and weighted-mixture pipelines. Fixed uses $N=1$, so its contrasts with the mean-$N=5$ pipelines are not compute matched.}
+  \label{tab:confirmation-results}
+  \small
+  \setlength{\tabcolsep}{2.0pt}
+  \begin{tabular}{@{}lrrrr@{}}
+    \toprule
+    Pipeline & SSIM $\uparrow$ & PSNR (dB) $\uparrow$ & MSE $\downarrow$ ($\times10^{-2}$) & Rank $\downarrow$ \\
+    \midrule
+    Fixed ($N=1$) & 0.7561 $\pm$ 0.1615 & 17.84 $\pm$ 1.75 & 1.3645 $\pm$ 0.8066 & 2.551 \\
+    Random (mean $N=5$) & \underline{0.7784 $\pm$ 0.1398} & \underline{18.24 $\pm$ 2.19} & \underline{1.2515 $\pm$ 0.7176} & \underline{2.076} \\
+    Weighted (mean $N=5$) & \textbf{0.7972 $\pm$ 0.1308} & \textbf{19.18 $\pm$ 1.80} & \textbf{0.9874 $\pm$ 0.5359} & \textbf{1.373} \\
+    \bottomrule
+  \end{tabular}
+\end{table}

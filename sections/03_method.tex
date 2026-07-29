@@ -1,231 +1,114 @@
-% sections/03_method.tex
-
 \section{Method}
 \label{sec:method}
 
-We cast healthy-tissue inpainting as conditional 3D generation with a denoising
-diffusion model~\cite{ho2020ddpm} operating in a fixed Haar-wavelet representation,
-following WDM and cWDM~\cite{friedrich2024wdm,friedrich2024cwdm}. The denoiser sees
-only information available at challenge inference time: the voided T1n image and the
-full inpainting mask. Training additionally uses the provided healthy and unhealthy
-sub-masks to determine where the complete T1n image is a valid healthy target.
-
-Figure~\ref{fig:catch-architecture} summarizes the shared conditioning,
-training, and reverse-sampling paths.
+Let $x_v$ be the voided T1n volume and
+$m\in\{0,1\}^{H\times W\times D}$ the full region to inpaint. During training, the
+provided mask is partitioned into an artificially removed healthy region $m_h$ and a
+real tumor region $m_u$. The complete T1n volume $x$ supplies a target in $m_h$ but
+still contains pathology in $m_u$, so the latter is excluded from supervision. Only
+$x_v$ and $m$ are available to the model at inference.
 
 \begin{figure}[!t]
   \centering
-  \includegraphics[width=\textwidth]{catch_architecture}
-  \caption{Overview of CATCH. The voided image and downsampled signed mask are
-  the only inference-time conditions. The framework supports either channel
-  concatenation or spatial input FiLM. During training, the WavUNet predicts
-  clean Haar coefficients and is supervised by the tumor-excluded wavelet loss
-  and healthy-hole-focused mask loss. During inference, the current latent
-  $z_t$ and clean prediction $\hat z_0$ enter the DDPM posterior separately,
-  and $z_{t-1}$ returns through the selected fusion module. The final sampled
-  $z_0$ is decoded into the output volume, after which hard compositing
-  preserves $x_v$ outside $m$ exactly. The thumbnails show a geometry-selected
-  training case on its maximum-mask-area axial slice; they are illustrative and
-  were not selected using reconstruction performance.}
+  \includegraphics[width=0.98\textwidth]{catch_architecture}
+  \caption{CATCH training and one-trajectory inference. A Haar transform maps the
+  voided image to eight subbands, concatenated with noisy target subbands and a
+  signed mask. WavUNet predicts clean coefficients; inverse transformation and hard
+  compositing restore the observed region. Selected random and weighted-mixture
+  pipelines repeat this path five times and aggregate voxel-wise; fixed mask uses
+  $N=1$. Thumbnails were selected without reconstruction metrics.}
   \label{fig:catch-architecture}
 \end{figure}
 
-\subsection{Problem Formulation}
-\label{sec:method:problem}
-
-Let $x_v$ denote a voided T1n volume and $m\in\{0,1\}^{H\times W\times D}$ the
-region to synthesize. The desired prediction $\hat{x}$ must contain plausible
-tumor-free tissue inside $m$ and must equal the observation outside it:
-\begin{equation}
-  \hat{x}\odot(1-m)=x_v\odot(1-m),
-\end{equation}
-where $\odot$ is elementwise multiplication. During training, $m$ is partitioned
-into an artificially removed healthy region $m_h$ and a real tumor region $m_u$.
-The complete training image $x$ provides a target in $m_h$, but still contains
-pathology in $m_u$; consequently, $m_u$ must not be treated as healthy supervision.
-Only $x_v$ and $m$ are used as model inputs, matching the challenge setting.
-
-\subsection{Wavelet-Domain Diffusion}
+\subsection{Conditional Wavelet Diffusion}
 \label{sec:method:wavelet}
 
-BraTS volumes have native size $240\times240\times155$. We reorient them to
-canonical RAS orientation and center-pad them to $256^3$ without resampling. A
-single-level 3D Haar discrete wavelet transform (DWT), denoted $\mathcal{W}$,
-decomposes each volume into the eight subbands
-$\{\mathrm{LLL},\mathrm{LLH},\mathrm{LHL},\mathrm{LHH},\mathrm{HLL},
-\mathrm{HLH},\mathrm{HHL},\mathrm{HHH}\}$, each of size $128^3$. We stack the
-subbands as channels and divide the LLL channel by three to reduce its dynamic-range
-imbalance; inversion multiplies that channel by three before the inverse DWT. Thus a
-$256^3$ volume is represented by an $8\times128^3$ tensor without a learned
-autoencoder.
+Volumes are reoriented to RAS and center-padded from
+$240\times240\times155$ to $256^3$ without resampling. A one-level 3D Haar transform
+$\mathcal W$ produces eight $128^3$ subbands; the LLL subband is divided by three
+during modeling and restored before inversion, following WDM
+\cite{friedrich2024wdm}. Thus the transform is fixed and invertible rather than a
+learned autoencoder.
 
-Let $z_0=\mathcal{W}(x)$ be the scaled wavelet representation of a complete training
-image. The $T=1000$ step forward process is
+With $z_0=\mathcal W(x)$, the $T=1000$ forward process is
 \begin{equation}
-  q(z_t\mid z_0)=\mathcal{N}\!\left(
-    z_t;\sqrt{\bar\alpha_t}\,z_0,(1-\bar\alpha_t)\mathbf{I}
-  \right),
+q(z_t\mid z_0)=\mathcal N\!\left(
+z_t;\sqrt{\bar\alpha_t}z_0,(1-\bar\alpha_t)\mathbf I\right),
 \end{equation}
-with a variance-preserving SDE schedule~\cite{song2021scoresde} using
-$\beta_{\min}=0.1$ and $\beta_{\max}=20$. The network directly predicts the clean
-coefficients $\hat z_0$ (predict-$x_0$) and uses a fixed-large reverse variance.
+using the variance-preserving SDE schedule~\cite{song2021scoresde} with
+$\beta_{\min}=0.1$ and $\beta_{\max}=20$. The network predicts the clean
+coefficients $\hat z_0$ directly and uses fixed-large reverse variance.
 
-\subsection{Spatial Conditioning}
-\label{sec:method:conditioning}
-
-The voided image is transformed into eight scaled subbands
-$c_v=\mathcal{W}(x_v)$. We downsample the binary mask once by nearest-neighbor
-interpolation to the $128^3$ wavelet grid and encode it as
-$s=2\,\mathrm{NN}(m)-1\in\{-1,1\}^{128^3}$. The full-resolution binary mask remains
-separate and is used for the loss and final compositing; the signed tensor $s$ is a
-model input only.
-
-Our concatenation baseline receives
+The voided image becomes $c_v=\mathcal W(x_v)$. We nearest-neighbor downsample $m$
+to the wavelet grid and encode it as
+$s=2\,\mathrm{NN}(m)-1\in\{-1,1\}^{128^3}$. The denoiser receives
 \begin{equation}
-  \hat z_0=D_\theta\!\left([z_t\,\|\,c_v\,\|\,s],t\right),
+\hat z_0=D_\theta([z_t\|c_v\|s],t),
 \end{equation}
-where $[\cdot\|\cdot]$ denotes channel concatenation. This produces a 17-channel
-U-Net input: eight noisy target channels, eight voided-image channels, and one signed
-mask channel.
-
-We additionally implement spatial input FiLM~\cite{perez2018film} as an alternative
-fusion mechanism. A conditioning network $F_\phi$ receives the nine-channel tensor
-$[c_v\|s]$ and predicts eight spatial scale residuals $\Delta\gamma$ and eight
-spatial biases $\beta$:
-\begin{align}
-  [\Delta\gamma\,\|\,\beta] &= F_\phi([c_v\,\|\,s]),\\
-  \tilde z_t &= (1+\Delta\gamma)\odot z_t+\beta,\\
-  \hat z_0 &= D_\theta(\tilde z_t,t).
-\end{align}
-$F_\phi$ consists of a $3\times3\times3$ convolution from 9 to 32 channels,
-GroupNorm and SiLU, a second $3\times3\times3$ convolution from 32 to 32 channels
-with GroupNorm and SiLU, and a $1\times1\times1$ convolution from 32 to 16 channels.
-The final convolution is zero-initialized, so FiLM begins as the identity mapping.
-This variant passes only the eight modulated target subbands to the U-Net. At
-inference, $F_\phi$ is evaluated once per case and its spatial maps are reused for the
-entire reverse trajectory. This input modulation is independent of the existing
-timestep-derived scale-and-shift modulation inside the residual blocks.
-
-\subsection{Wavelet U-Net}
-\label{sec:method:network}
-
-$D_\theta$ is a fully 3D wavelet U-Net~\cite{ronneberger2015unet,friedrich2024wdm}
-with base width 64, channel multipliers $(1,2,2,4,4,4)$, and two residual blocks per
-level. It uses GroupNorm with 32 groups and SiLU activations. A sinusoidal timestep
-embedding followed by a two-layer MLP supplies scale and shift to every residual
-block. Haar-wavelet down- and up-sampling and frequency-aware skip connections carry
-high-frequency information across resolutions; a progressive input pyramid injects
-downsampled copies of the conditioned input. The model has no self-attention layers.
-Its input width is 17 for concatenation and 8 for FiLM, and both variants predict the
-same eight clean target subbands.
+a 17-channel input. We call $D_\theta$ \emph{WavUNet}, a fully 3D wavelet U-Net
+\cite{ronneberger2015unet,friedrich2024wdm} with base width 64, channel multipliers
+$(1,2,2,4,4,4)$, two residual blocks per level, GroupNorm, SiLU, timestep
+scale-and-shift modulation, wavelet skip connections, and no self-attention.
 
 \subsection{Healthy-Tissue Objective}
 \label{sec:method:objective}
 
-The primary experiments derive a shared scale from the voided image:
-$a=\max(x_v)$. Both the target and condition are divided by $a$, clipped to
-$[0,1]$, and mapped to $[-1,1]$. We also train one matched sensitivity arm with
-robust bounds derived from the voided image,
-$l=\max(0,Q_{0.5}(x_v))$ and $u=Q_{99.5}(x_v)$. In that arm, both volumes are
-mapped by $(x-l)/(u-l)$ before clipping and mapping to $[-1,1]$. Degenerate
-percentile bounds fall back to the max-based rule. Both policies use only
-inference-available information, and their bounds are retained to restore native
-intensities after sampling.
-
-Let $e_{k,p}=(\hat z_0^{(k)}(p)-z_0^{(k)}(p))^2$ be the squared error in subband $k$
-at wavelet-grid position $p$, and let $\Omega$ be the set of grid positions. We set
-$u_p=0$ whenever the corresponding $2\times2\times2$ voxel cell intersects the real
-tumor mask $m_u$, and $u_p=1$ otherwise. The base loss is
+The target and condition share the inference-available scale
+$a=\max(x_v)$, are clipped to $[0,1]$, and mapped to $[-1,1]$. Let
+$e_{k,p}=(\hat z_0^{(k)}(p)-z_0^{(k)}(p))^2$. A wavelet cell is assigned
+$u_p=0$ if its corresponding $2^3$ voxel cell intersects $m_u$, and $u_p=1$
+otherwise. The base loss is
 \begin{equation}
-  \mathcal{L}_{\mathrm{wav}}=
-  \frac{1}{8|\Omega|}\sum_{k=1}^{8}\sum_{p\in\Omega}u_p e_{k,p}.
+\mathcal L_{\mathrm{wav}}=
+\frac{1}{8|\Omega|}\sum_{k=1}^{8}\sum_{p\in\Omega}u_p e_{k,p}.
 \end{equation}
-For the region-focused term, a cell is active when it intersects $m_h$; this binary
-coverage map is Gaussian-smoothed with $\sigma=2$ on the wavelet grid and multiplied
-by $u$ to obtain nonnegative weights $w_p$. We normalize by active mask mass:
+For the hole-focused term, cells intersecting $m_h$ form a binary coverage map that
+is Gaussian-smoothed ($\sigma=2$ on the wavelet grid) and multiplied by $u$ to
+produce $w_p\ge0$. We use
 \begin{equation}
-  \mathcal{L}_{\mathrm{mask}}=
-  \frac{\sum_{k=1}^{8}\sum_{p\in\Omega}w_p e_{k,p}}
-       {8\sum_{p\in\Omega}w_p},
-  \qquad
-  \mathcal{L}=\mathcal{L}_{\mathrm{wav}}+10\mathcal{L}_{\mathrm{mask}}.
+\mathcal L_{\mathrm{mask}}=
+\frac{\sum_{k,p}w_p e_{k,p}}{8\sum_p w_p},
+\qquad
+\mathcal L=\mathcal L_{\mathrm{wav}}+10\mathcal L_{\mathrm{mask}}.
 \end{equation}
-The losses are averaged over the batch. Applying $w$ once to squared error and
-normalizing by its mass makes the coefficient 10 independent of hole volume and
-avoids squaring the soft mask weights. Both terms are clamped to zero in cells that
-touch $m_u$, so the model is never trained to reproduce tumor as healthy tissue.
+Normalizing by active mask mass keeps the regional coefficient comparable across
+hole sizes. Both terms exclude cells touching the real tumor.
 
-\subsection{Online Healthy-Mask Augmentation}
+\subsection{Healthy-Mask Training Variants}
 \label{sec:method:augmentation}
 
-The fixed-mask setting uses the healthy hole $m_h$ supplied with each training case.
-For online augmentation, we instead generate a healthy mask $m_h'$ that does not
-overlap the case's real tumor $m_u$, void the complete T1n image over
-$m_h'\cup m_u$, and supervise $m_h'$ while still excluding $m_u$. A training-only
-bank of connected tumor components supplies realistic shapes without allowing masks
-from held-out cases to enter training.
+The \emph{fixed-mask} variant uses the supplied healthy mask. Online variants
+sample $m_h'$, void $m_h'\cup m_u$, and supervise $m_h'$ while excluding $m_u$.
+Their tumor-component bank contains only the 1,151 optimization cases, and each
+variant has five repeat slots per case.
 
-We compare two augmentation policies, each producing five samples per training case.
-\emph{Random augmentation} uses transformed tumor components with challenge-like
-inverse size-bin sampling and fixed deterministic samples. \emph{Weighted
-augmentation} draws 80\% tumor-derived components, 15\% irregular blobs, and 5\%
-ellipsoids with empirical size sampling, and varies samples across epochs. Both
-policies enforce a single connected component, at least 800 voxels, at most 25\%
-background overlap, and no overlap with the real tumor. If weighted augmentation
-exhausts its placement attempts, it falls back to the provided fixed healthy mask; the
-random arm fails rather than silently changing its distribution.
+\emph{Random augmentation} is a strict reference-style policy: tumor components
+only; current-case components allowed; inverse tumor-to-brain-ratio rank sampling
+within a conditioned 10\% window; reference flips and rotations; five slots fixed
+across epochs; and an error after exhausted placement.
 
-Figure~\ref{fig:mask-augmentation} visualizes the resulting policies using the
-production sampler. The displayed training case and masks are selected
-deterministically from mask geometry alone; no reconstruction metric enters the
-selection. Exact case IDs, seeds, mask hashes, configurations, and the sampled
-distribution are stored with the figure manifest. Each overlay uses its mask's
-maximum-area axial slice. Weighted family exemplars are located deterministically
-across epochs, whereas the distribution audit is fixed at epoch 0.
+\emph{Weighted-mixture augmentation} configures 80\% tumor components, 15\%
+irregular blobs, and 5\% ellipsoids. It excludes current-case components, samples
+empirical volumes, applies bounded 3D rotations and optional anisotropic scaling,
+and refreshes slots by epoch. Generated masks are connected, contain
+800--225,070 voxels, remain at least five voxels from $m_u$, and overlap background by at
+most 25\%. Exhausted generation falls back to a supplied mask verified only as
+nonempty and nonoverlapping with $m_u$.
 
-\begin{figure}[p]
-  \centering
-  \includegraphics[width=\textwidth]{mask_augmentation}
-  \caption{Healthy-mask policies used for training. (a)--(e) The provided fixed
-  healthy mask, challenge-like random augmentation, and the three families in the
-  weighted policy are overlaid on one audited training case selected nearest the
-  audit median fixed mask-to-brain ratio. Each mask is shown on its own maximum-area axial slice.
-  Cyan denotes healthy supervision; dashed orange denotes the real tumor region
-  excluded from supervision. Examples are mask-geometry representatives from
-  deterministic production samples. (f) Configured and
-  realized family composition. (g) Empirical distributions of final healthy-mask
-  volume relative to brain volume. (h) Final-mask geometry; crosses mark category
-  medians. The descriptive audit uses a deterministic sample of 100 of the 1,151
-  optimization cases, all five samples per online policy, seed 0, and epoch 0; the
-  component bank excludes the 100-case hold-out. Random masks are epoch-invariant,
-  whereas weighted masks vary by epoch. This figure characterizes sampling and does
-  not by itself establish a reconstruction benefit.}
-  \label{fig:mask-augmentation}
-\end{figure}
-
-\subsection{Inference and Compositing}
+\subsection{Sampling and Compositing}
 \label{sec:method:inference}
 
-At inference, the condition is computed once, Gaussian noise is drawn on the
-$8\times128^3$ wavelet grid, and the full 1000-step ancestral sampler is run with EMA
-weights. Predicted clean coefficients are constrained by inverse-transforming,
-clamping the voxel-space estimate to $[-1,1]$, and transforming back. The final
-coefficients are inverted to $256^3$, rescaled by the stored per-case intensity
-factor, cropped to the native shape, and returned to the original voxel orientation.
-We then hard-blend the generated image $\hat{x}_{\mathrm{gen}}$ with the observation:
+We use exponential-moving-average (EMA) weights and the complete 1000-step
+ancestral reverse process. At each step, \texttt{clip\_denoised=True}
+inverse-transforms the predicted clean state, clips it in normalized voxel space,
+and transforms it back. The final reconstruction is restored to native intensity,
+shape, and orientation, then hard-composited:
 \begin{equation}
-  \hat{x}=x_v\odot(1-m)+\hat{x}_{\mathrm{gen}}\odot m.
+\hat x=x_v\odot(1-m)+\hat x_{\mathrm{gen}}\odot m,
 \end{equation}
-Consequently, every voxel outside the requested inpainting region is preserved
-exactly.
-
-We additionally evaluate a single-sample reference ($N=1$) and test-time
-stochastic reconstruction ensembles with $N\in\{3,5\}$ trajectories from the
-same checkpoint and conditioning inputs, using distinct deterministic seeds for
-each case. Every trajectory is independently decoded, restored to native image
-space, and hard-composited as above. We aggregate the first $N$ reconstructions
-voxel-wise by either the arithmetic mean or median and then reapply hard
-compositing to guarantee exact preservation outside $m$. The ensemble sizes share
-a nested sample prefix, so all variants are compared using the same underlying
-reconstructions. This procedure ensembles samples from one model; it does not
-combine separately trained networks.
+Global seed 0 and the case- and member-stable
+\texttt{brats-validation-noise-v1} schema make trajectories shard-independent;
+larger candidate sizes share the first $N$ seeds. Multi-trajectory policies decode
+and composite each reconstruction, aggregate them voxel-wise by mean or median,
+then composite again. This aggregates trajectories from one checkpoint, not
+separately trained models.

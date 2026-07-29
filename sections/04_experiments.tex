@@ -1,136 +1,62 @@
-% sections/04_experiments.tex
-
 \section{Experiments}
 \label{sec:experiments}
 
-\subsection{Dataset and Held-Out Split}
+\subsection{Data and Split Protocol}
 \label{sec:exp:data}
 
-We use the ASNR-MICCAI BraTS Local Synthesis of Healthy Brain Tissue via Inpainting
-dataset~\cite{kofler2023inpainting,menze2015brats,bakas2017advancing,baid2021rsna},
-which underlies the BraTS 2026 inpainting task. The public release contains 1,251
-training cases and 219 validation cases. A training case provides the complete T1n
-image, the voided T1n image, the full inpainting mask, an artificially removed healthy
-sub-mask, and an enlarged tumor sub-mask. The complete T1n image still contains the
-tumor; it is a valid healthy target only outside the tumor sub-mask. Public validation
-cases omit the complete image and sub-masks, so their ground truth cannot be scored
-locally.
+The ASNR-MICCAI BraTS Local Synthesis release
+\cite{kofler2023inpainting,menze2015brats,bakas2017advancing,baid2021rsna,bakas2017tcgagbm,bakas2017tcgalgg}
+contains 1,251 training cases with complete and voided T1n, a full mask, and healthy
+and unhealthy sub-masks. Organizer-validation ground truth is hidden.
 
-We draw a deterministic 100-case hold-out from the training cases with seed 2026,
-leaving 1,151 cases for optimization. The checked-in case manifest is shared by every
-arm, and its case IDs are excluded both from the training loader and from the mask
-component bank. Within this hold-out, we fix a 25-case development subset for
-inference-policy selection. It contains the five cases used for periodic
-training diagnostics and 20 additional cases chosen by the same deterministic hash
-ordering. The complementary 75 cases form a locked confirmation cohort. We use the
-25-case subset for all model-selection decisions, then evaluate the frozen
-configuration on the 75-case cohort. These cohorts come from the released training
-data and are not independent challenge test sets.
+A deterministic 100-case hold-out (seed 2026) leaves 1,151 optimization cases;
+hold-out IDs are excluded from both the loader and component bank. Its checked-in
+25-case development subset selects inference policy; the complementary 75-case
+manifest is used by all confirmation pipelines. Development and confirmation
+patients are disjoint, but the split is case-keyed: 3/25 development and 11/75
+confirmation cases have an optimization-pool sibling timepoint. The five diagnostic
+cases have none. We add a post-hoc sensitivity analysis on the 64 confirmation
+cases patient-disjoint from optimization.
 
-\subsection{Preprocessing}
-\label{sec:exp:preproc}
+\subsection{Training and Checkpoint Selection}
+\label{sec:exp:training}
 
-Volumes are reoriented to canonical RAS orientation and center-padded from
-$240\times240\times155$ to $256^3$ without resampling. The inverse crop and original
-orientation are restored for saved predictions. The three primary concat models use
-the voided-image maximum for input scaling. A matched weighted-augmentation
-sensitivity arm instead uses the 0.5th and 99.5th percentiles of the voided image, as
-defined in Section~\ref{sec:method:objective}. The model then operates on the
-single-level 3D Haar representation described in
-Section~\ref{sec:method:wavelet}. Training-time normalization is distinct from metric
-normalization: the official evaluator applies its percentile rule to every model
-output.
+We compare three max-normalized, 17-channel concatenation training variants with
+fixed-mask, random-augmentation, or weighted-mixture healthy-mask policies. Each
+uses training seed 0, batch size one per GPU,
+AdamW~\cite{loshchilov2019adamw} with learning rate $10^{-5}$ and zero weight decay,
+a 300,000-step linear-decay horizon, and EMA decay 0.9999. Training is FP32 on
+NVIDIA A100 40\,GB GPUs; checkpoints are saved every 5,000 steps.
 
-\subsection{Experimental Design}
-\label{sec:exp:ablations}
+Every 10,000 steps, EMA diagnostics use one deterministic full 1000-step DDPM
+trajectory on five development cases (fixed-mask 200,000 is absent). Within each
+variant, recorded checkpoints are ranked by aggregate structural similarity index
+measure (SSIM, descending), peak signal-to-noise ratio (PSNR, descending), and mean
+squared error (MSE, ascending), then by their mean rank. Fixed-mask 170,000 and
+180,000 tie; we retain 180,000 because it leads PSNR and MSE. Random 290,000 and
+weighted-mixture 200,000 uniquely minimize joint rank. These diagnostics select
+checkpoints, not final performance.
 
-Table~\ref{tab:ablation-design} lists the four final seed-0 concat runs. The three
-primary arms compare the provided fixed masks with random and weighted online mask
-augmentation under the original max-based normalization. The fourth arm changes only
-the normalization of the weighted model and is treated as a sensitivity analysis, not
-as a full factorial normalization experiment. All four runs use 17-channel
-concatenation, the same signed mask representation, objective, held-out split,
-optimizer, and diffusion configuration. Spatial input FiLM remains an exploratory
-conditioning branch from development; final evaluation is restricted to the concat
-runs.
-
-\begin{table}[t]
-  \centering
-  \caption{Final seed-0 concat experiments. ``Fixed'' denotes the healthy mask
-  supplied with each case. Percentile normalization is evaluated only as a matched
-  sensitivity arm for the weighted policy.}
-  \label{tab:ablation-design}
-  \small
-  \setlength{\tabcolsep}{4pt}
-  \renewcommand{\arraystretch}{1.08}
-  \begin{tabular}{@{}llll@{}}
-    \toprule
-    Run & \shortstack[l]{Healthy-mask\\policy}
-        & \shortstack[l]{Input\\normalization} & Role \\
-    \midrule
-    Concat-fixed               & Fixed    & Voided maximum & Primary \\
-    Concat-random              & Random   & Voided maximum & Primary \\
-    Concat-weighted            & Weighted & Voided maximum & Primary \\
-    Concat-weighted-percentile & Weighted & 0.5--99.5 percentile & Sensitivity \\
-    \bottomrule
-  \end{tabular}
-\end{table}
-
-\subsection{Implementation Details}
-\label{sec:exp:impl}
-
-The U-Net has base width 64, channel multipliers $(1,2,2,4,4,4)$, two residual
-blocks per level, 32-group normalization, SiLU activations, and no attention. We train
-in FP32 with batch size one per GPU and uniform timestep sampling. AdamW
-\cite{loshchilov2019adamw} uses initial learning rate $10^{-5}$, zero weight decay,
-and a 300,000-step linear-decay horizon for every final concat run. Training may be
-resumed across multiple scheduler jobs without changing that horizon. The mask
-coefficient is 10.
-An exponential moving average (EMA) with decay 0.9999 is updated after every optimizer
-step and used for evaluation. Each ablation trains on one NVIDIA A100 40GB GPU using
-PyTorch 2.2. Checkpoints are saved every 5,000 steps.
-
-During training, the fixed-mask arm samples the same deterministic five held-out cases
-every 5,000 steps, while the augmentation arms do so every 10,000 steps. These
-small-cohort curves are used only to monitor training and are not used as final
-ablation results.
-
-\subsection{Terminal Checkpoints and Ensemble Selection}
+\subsection{Inference Selection and Evaluation}
 \label{sec:exp:selection}
 
-We use the terminal EMA checkpoint at step 299,999 from each of the three primary
-max-normalized arms. An intermediate-checkpoint screen was planned but not used for
-model selection because it could not be completed together with the locked
-confirmation and organizer-validation inference before the submission deadline.
-Consequently, no arm is selected from partially screened intermediate checkpoints.
+At each terminal EMA checkpoint (step 299,999), the 25 development cases compare
+nested $N\in\{1,3,5\}$ trajectories with voxel-wise mean or median aggregation.
+Global seed 0 and \texttt{brats-validation-noise-v1} give stable case and member seeds
+and shared first members across $N$. Mean $N=5$ is selected for random and weighted
+mixture. For fixed mask, mean $N=3$ lowers joint rank from 2.9200 to 2.7867 at
+three times the trajectories, while mean $N=5$ is worse (3.2400); we retain $N=1$.
+Policies transfer unchanged to selected checkpoints and are frozen before
+confirmation.
 
-Ensemble selection uses the same terminal checkpoints on the 25-case development
-subset. We compare $N\in\{1,3,5\}$ seeded reconstructions with voxel-wise mean and
-median aggregation; the identical mean and median $N=1$ outputs are treated as one
-candidate. For each case, candidates are ranked separately by SSIM (descending),
-PSNR (descending), and MSE (ascending), and the three ranks are averaged.
-
-The fixed-mask arm showed no material aggregate improvement from ensembling; although
-mean $N=3$ had a slightly lower joint rank than $N=1$, mean $N=5$ was worse and the
-metric differences were negligible. We therefore freeze $N=1$ for this arm. Random
-and weighted augmentation showed a clear rank improvement with mean $N=5$, which we
-freeze for those two arms. This arm-specific policy is fixed before evaluating the
-75-case confirmation cohort. Because producing five trajectories also retains the
-first trajectory, the random and weighted evaluations save both $N=1$ and mean
-$N=5$ outputs. This permits an equal-sampling comparison across all three arms in
-addition to the arm-specific selected results. Full local evaluation uses EMA weights
-and the 1000-step ancestral sampler. Predictions are saved as compressed NIfTI
-volumes with their source geometry, while per-case metrics and aggregate summaries
-are stored as CSV and JSON.
-
-\subsection{Evaluation Metrics}
-\label{sec:exp:metrics}
-
-We use the organizers' BraTS local-synthesis implementation
-\cite{kofler2023inpainting}. Prediction and target are normalized to $[0,1]$ using
-the 0.5th and 99.5th percentiles of the voided image, and metrics are restricted to the
-provided healthy mask. We report the three ranking metrics: structural similarity
-(SSIM; higher is better), peak signal-to-noise ratio (PSNR; higher is better), and mean
-squared error (MSE; lower is better). For the 100-case hold-out we report the per-case
-mean and sample standard deviation. RMSE, MAE, and MSLE are retained in the
-machine-readable evaluation output as secondary diagnostics.
+The official evaluator normalizes prediction and target to $[0,1]$ from the
+voided-image 0.5th and 99.5th percentiles and scores only the provided healthy mask.
+We report SSIM and PSNR (higher is better), MSE (lower is better), and their mean
+within-case rank among selected pipelines. Means and sample SDs describe 75-case
+heterogeneity, not training-seed variability. Per metric, a Friedman test precedes
+two-sided paired Wilcoxon tests, Holm-adjusted over three contrasts. Mean paired
+improvements use deterministic 100,000-resample case-bootstrap 95\% intervals
+(seed 2026). Compressed NIfTI predictions, per-case metrics, split audits, hashes,
+and metadata are retained as CSV/JSON. Code, paper artifacts, and analysis scripts
+will be released at
+\url{https://github.com/simonwinther/brats26-inpainting}.

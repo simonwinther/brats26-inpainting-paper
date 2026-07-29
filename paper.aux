@@ -3,108 +3,95 @@
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
 \citation{kofler2023inpainting}
-\@writefile{toc}{\contentsline {title}{CATCH: Counterfactual Anatomical Tissue Inpainting with a Conditional Haar-Wavelet Diffusion Model}{1}{chapter.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {title}{CATCH: Counterfactual Anatomical Tissue Inpainting with Conditional Haar-Wavelet Diffusion}{1}{chapter.1}\protected@file@percent }
 \@writefile{toc}{\authcount {4}}
 \@writefile{toc}{\contentsline {author}{ Simon Winther Albertsen \and Hjalte Bjoernstrup \and Said Djafar Said \and Mostafa Mehdipour Ghazi }{1}{chapter.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
 \newlabel{sec:introduction}{{1}{1}{Introduction}{section.1}{}}
 \citation{ho2020ddpm}
 \citation{lugmayr2022repaint,saharia2022palette}
-\citation{friedrich2024wdm,friedrich2024cwdm}
-\citation{friedrich2024wdm,friedrich2024cwdm}
+\citation{friedrich2024wdm}
+\citation{friedrich2024cwdm}
 \citation{ho2020ddpm}
-\citation{dhariwal2021diffusion}
 \citation{song2021scoresde}
-\citation{nichol2021improved}
-\citation{song2021ddim}
-\citation{rombach2022ldm}
-\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{2}{section.2}\protected@file@percent }
-\newlabel{sec:related-work}{{2}{2}{Related Work}{section.2}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Diffusion models.}{2}{section*.2}\protected@file@percent }
 \citation{lugmayr2022repaint}
 \citation{saharia2022palette}
-\citation{perez2018film}
+\citation{rombach2022ldm}
 \citation{friedrich2024wdm}
 \citation{friedrich2024cwdm}
 \citation{durrer2024inpainting}
 \citation{kofler2023inpainting}
 \citation{menze2015brats,bakas2017advancing,baid2021rsna}
-\citation{ho2020ddpm}
-\citation{friedrich2024wdm,friedrich2024cwdm}
-\@writefile{toc}{\contentsline {subsubsection}{Diffusion-based inpainting.}{3}{section*.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{3D medical image synthesis and healthy-tissue inpainting.}{3}{section*.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3}Method}{3}{section.3}\protected@file@percent }
-\newlabel{sec:method}{{3}{3}{Method}{section.3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Overview of CATCH. The voided image and downsampled signed mask are the only inference-time conditions. The framework supports either channel concatenation or spatial input FiLM. During training, the WavUNet predicts clean Haar coefficients and is supervised by the tumor-excluded wavelet loss and healthy-hole-focused mask loss. During inference, the current latent $z_t$ and clean prediction $\hat  z_0$ enter the DDPM posterior separately, and $z_{t-1}$ returns through the selected fusion module. The final sampled $z_0$ is decoded into the output volume, after which hard compositing preserves $x_v$ outside $m$ exactly. The thumbnails show a geometry-selected training case on its maximum-mask-area axial slice; they are illustrative and were not selected using reconstruction performance.}}{4}{figure.1}\protected@file@percent }
-\newlabel{fig:catch-architecture}{{1}{4}{Overview of CATCH. The voided image and downsampled signed mask are the only inference-time conditions. The framework supports either channel concatenation or spatial input FiLM. During training, the WavUNet predicts clean Haar coefficients and is supervised by the tumor-excluded wavelet loss and healthy-hole-focused mask loss. During inference, the current latent $z_t$ and clean prediction $\hat z_0$ enter the DDPM posterior separately, and $z_{t-1}$ returns through the selected fusion module. The final sampled $z_0$ is decoded into the output volume, after which hard compositing preserves $x_v$ outside $m$ exactly. The thumbnails show a geometry-selected training case on its maximum-mask-area axial slice; they are illustrative and were not selected using reconstruction performance}{figure.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Problem Formulation}{4}{subsection.3.1}\protected@file@percent }
-\newlabel{sec:method:problem}{{3.1}{4}{Problem Formulation}{subsection.3.1}{}}
+\citation{durrer2026fastwdm3d}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{2}{section.2}\protected@file@percent }
+\newlabel{sec:related-work}{{2}{2}{Related Work}{section.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{Diffusion and inpainting.}{2}{section*.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Volumetric medical synthesis.}{2}{section*.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Method}{2}{section.3}\protected@file@percent }
+\newlabel{sec:method}{{3}{2}{Method}{section.3}{}}
+\citation{friedrich2024wdm}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces CATCH training and one-trajectory inference. A Haar transform maps the voided image to eight subbands, concatenated with noisy target subbands and a signed mask. WavUNet predicts clean coefficients; inverse transformation and hard compositing restore the observed region. Selected random and weighted-mixture pipelines repeat this path five times and aggregate voxel-wise; fixed mask uses $N=1$. Thumbnails were selected without reconstruction metrics.}}{3}{figure.1}\protected@file@percent }
+\newlabel{fig:catch-architecture}{{1}{3}{CATCH training and one-trajectory inference. A Haar transform maps the voided image to eight subbands, concatenated with noisy target subbands and a signed mask. WavUNet predicts clean coefficients; inverse transformation and hard compositing restore the observed region. Selected random and weighted-mixture pipelines repeat this path five times and aggregate voxel-wise; fixed mask uses $N=1$. Thumbnails were selected without reconstruction metrics}{figure.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Conditional Wavelet Diffusion}{3}{subsection.3.1}\protected@file@percent }
+\newlabel{sec:method:wavelet}{{3.1}{3}{Conditional Wavelet Diffusion}{subsection.3.1}{}}
 \citation{song2021scoresde}
-\citation{perez2018film}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Wavelet-Domain Diffusion}{5}{subsection.3.2}\protected@file@percent }
-\newlabel{sec:method:wavelet}{{3.2}{5}{Wavelet-Domain Diffusion}{subsection.3.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Spatial Conditioning}{5}{subsection.3.3}\protected@file@percent }
-\newlabel{sec:method:conditioning}{{3.3}{5}{Spatial Conditioning}{subsection.3.3}{}}
 \citation{ronneberger2015unet,friedrich2024wdm}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Wavelet U-Net}{6}{subsection.3.4}\protected@file@percent }
-\newlabel{sec:method:network}{{3.4}{6}{Wavelet U-Net}{subsection.3.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Healthy-Tissue Objective}{6}{subsection.3.5}\protected@file@percent }
-\newlabel{sec:method:objective}{{3.5}{6}{Healthy-Tissue Objective}{subsection.3.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Online Healthy-Mask Augmentation}{7}{subsection.3.6}\protected@file@percent }
-\newlabel{sec:method:augmentation}{{3.6}{7}{Online Healthy-Mask Augmentation}{subsection.3.6}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.7}Inference and Compositing}{7}{subsection.3.7}\protected@file@percent }
-\newlabel{sec:method:inference}{{3.7}{7}{Inference and Compositing}{subsection.3.7}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Healthy-mask policies used for training. (a)--(e) The provided fixed healthy mask, challenge-like random augmentation, and the three families in the weighted policy are overlaid on one audited training case selected nearest the audit median fixed mask-to-brain ratio. Each mask is shown on its own maximum-area axial slice. Cyan denotes healthy supervision; dashed orange denotes the real tumor region excluded from supervision. Examples are mask-geometry representatives from deterministic production samples. (f) Configured and realized family composition. (g) Empirical distributions of final healthy-mask volume relative to brain volume. (h) Final-mask geometry; crosses mark category medians. The descriptive audit uses a deterministic sample of 100 of the 1,151 optimization cases, all five samples per online policy, seed 0, and epoch 0; the component bank excludes the 100-case hold-out. Random masks are epoch-invariant, whereas weighted masks vary by epoch. This figure characterizes sampling and does not by itself establish a reconstruction benefit.}}{8}{figure.2}\protected@file@percent }
-\newlabel{fig:mask-augmentation}{{2}{8}{Healthy-mask policies used for training. (a)--(e) The provided fixed healthy mask, challenge-like random augmentation, and the three families in the weighted policy are overlaid on one audited training case selected nearest the audit median fixed mask-to-brain ratio. Each mask is shown on its own maximum-area axial slice. Cyan denotes healthy supervision; dashed orange denotes the real tumor region excluded from supervision. Examples are mask-geometry representatives from deterministic production samples. (f) Configured and realized family composition. (g) Empirical distributions of final healthy-mask volume relative to brain volume. (h) Final-mask geometry; crosses mark category medians. The descriptive audit uses a deterministic sample of 100 of the 1,151 optimization cases, all five samples per online policy, seed 0, and epoch 0; the component bank excludes the 100-case hold-out. Random masks are epoch-invariant, whereas weighted masks vary by epoch. This figure characterizes sampling and does not by itself establish a reconstruction benefit}{figure.2}{}}
-\citation{kofler2023inpainting,menze2015brats,bakas2017advancing,baid2021rsna}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Experiments}{9}{section.4}\protected@file@percent }
-\newlabel{sec:experiments}{{4}{9}{Experiments}{section.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Dataset and Held-Out Split}{9}{subsection.4.1}\protected@file@percent }
-\newlabel{sec:exp:data}{{4.1}{9}{Dataset and Held-Out Split}{subsection.4.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Preprocessing}{9}{subsection.4.2}\protected@file@percent }
-\newlabel{sec:exp:preproc}{{4.2}{9}{Preprocessing}{subsection.4.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Experimental Design}{9}{subsection.4.3}\protected@file@percent }
-\newlabel{sec:exp:ablations}{{4.3}{9}{Experimental Design}{subsection.4.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Healthy-Tissue Objective}{4}{subsection.3.2}\protected@file@percent }
+\newlabel{sec:method:objective}{{3.2}{4}{Healthy-Tissue Objective}{subsection.3.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Healthy-Mask Training Variants}{4}{subsection.3.3}\protected@file@percent }
+\newlabel{sec:method:augmentation}{{3.3}{4}{Healthy-Mask Training Variants}{subsection.3.3}{}}
+\citation{kofler2023inpainting,menze2015brats,bakas2017advancing,baid2021rsna,bakas2017tcgagbm,bakas2017tcgalgg}
 \citation{loshchilov2019adamw}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Final seed-0 concat experiments. ``Fixed'' denotes the healthy mask supplied with each case. Percentile normalization is evaluated only as a matched sensitivity arm for the weighted policy.}}{10}{table.1}\protected@file@percent }
-\newlabel{tab:ablation-design}{{1}{10}{Final seed-0 concat experiments. ``Fixed'' denotes the healthy mask supplied with each case. Percentile normalization is evaluated only as a matched sensitivity arm for the weighted policy}{table.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Implementation Details}{10}{subsection.4.4}\protected@file@percent }
-\newlabel{sec:exp:impl}{{4.4}{10}{Implementation Details}{subsection.4.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Terminal Checkpoints and Ensemble Selection}{10}{subsection.4.5}\protected@file@percent }
-\newlabel{sec:exp:selection}{{4.5}{10}{Terminal Checkpoints and Ensemble Selection}{subsection.4.5}{}}
-\citation{kofler2023inpainting}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Evaluation Metrics}{11}{subsection.4.6}\protected@file@percent }
-\newlabel{sec:exp:metrics}{{4.6}{11}{Evaluation Metrics}{subsection.4.6}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Results}{11}{section.5}\protected@file@percent }
-\newlabel{sec:results}{{5}{11}{Results}{section.5}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Interim EMA diagnostics for four seed-0 development runs on the same deterministic five-case monitoring cohort. The snapshot contains concat fixed, concat random, concat weighted, and exploratory FiLM weighted runs. Fixed-mask monitoring occurs every 5,000 steps and augmented-run monitoring every 10,000 steps. Curves end at the latest available event and are not used for checkpoint or method selection. Final claims use the predeclared development and confirmation cohorts.}}{12}{figure.3}\protected@file@percent }
-\newlabel{fig:training-dynamics}{{3}{12}{Interim EMA diagnostics for four seed-0 development runs on the same deterministic five-case monitoring cohort. The snapshot contains concat fixed, concat random, concat weighted, and exploratory FiLM weighted runs. Fixed-mask monitoring occurs every 5,000 steps and augmented-run monitoring every 10,000 steps. Curves end at the latest available event and are not used for checkpoint or method selection. Final claims use the predeclared development and confirmation cohorts}{figure.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Development-Set Ensemble Selection}{12}{subsection.5.1}\protected@file@percent }
-\newlabel{sec:results:ensemble-selection}{{5.1}{12}{Development-Set Ensemble Selection}{subsection.5.1}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{13}{section.6}\protected@file@percent }
-\newlabel{sec:discussion}{{6}{13}{Discussion}{section.6}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Challenge-style mean rank on the 25-case development subset for the terminal EMA checkpoints. Ranks are averaged over SSIM, PSNR, and MSE; lower is better. The $N=1$ mean/median duplicate is shown once. Bold values mark the best configuration within each column.}}{13}{table.2}\protected@file@percent }
-\newlabel{tab:ensemble-selection}{{2}{13}{Challenge-style mean rank on the 25-case development subset for the terminal EMA checkpoints. Ranks are averaged over SSIM, PSNR, and MSE; lower is better. The $N=1$ mean/median duplicate is shown once. Bold values mark the best configuration within each column}{table.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Sampling and Compositing}{5}{subsection.3.4}\protected@file@percent }
+\newlabel{sec:method:inference}{{3.4}{5}{Sampling and Compositing}{subsection.3.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Experiments}{5}{section.4}\protected@file@percent }
+\newlabel{sec:experiments}{{4}{5}{Experiments}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Data and Split Protocol}{5}{subsection.4.1}\protected@file@percent }
+\newlabel{sec:exp:data}{{4.1}{5}{Data and Split Protocol}{subsection.4.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Training and Checkpoint Selection}{5}{subsection.4.2}\protected@file@percent }
+\newlabel{sec:exp:training}{{4.2}{5}{Training and Checkpoint Selection}{subsection.4.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Inference Selection and Evaluation}{6}{subsection.4.3}\protected@file@percent }
+\newlabel{sec:exp:selection}{{4.3}{6}{Inference Selection and Evaluation}{subsection.4.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Results}{6}{section.5}\protected@file@percent }
+\newlabel{sec:results}{{5}{6}{Results}{section.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Development Selection}{6}{subsection.5.1}\protected@file@percent }
+\newlabel{sec:results:selection}{{5.1}{6}{Development Selection}{subsection.5.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Raw five-case EMA checkpoint diagnostics without dashboard smoothing. Stars mark the retained checkpoint after ranking aggregate SSIM, PSNR, and MSE; fixed-mask 170k and 180k tie in average rank, with 180k retained because it leads PSNR and MSE. Each point uses one deterministic 1000-step trajectory. Curves are selection diagnostics, not confirmation results.}}{7}{figure.2}\protected@file@percent }
+\newlabel{fig:checkpoint-selection}{{2}{7}{Raw five-case EMA checkpoint diagnostics without dashboard smoothing. Stars mark the retained checkpoint after ranking aggregate SSIM, PSNR, and MSE; fixed-mask 170k and 180k tie in average rank, with 180k retained because it leads PSNR and MSE. Each point uses one deterministic 1000-step trajectory. Curves are selection diagnostics, not confirmation results}{figure.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Development-set joint rank at terminal EMA checkpoints (lower is better). Bold and underlining mark the lowest and second-lowest value in each numeric column; fixed-mask $N=1$ was retained as explained in the text.}}{7}{table.1}\protected@file@percent }
+\newlabel{tab:ensemble-selection}{{1}{7}{Development-set joint rank at terminal EMA checkpoints (lower is better). Bold and underlining mark the lowest and second-lowest value in each numeric column; fixed-mask $N=1$ was retained as explained in the text}{table.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Held-out 75-Case Confirmation}{7}{subsection.5.2}\protected@file@percent }
+\newlabel{sec:results:confirmation}{{5.2}{7}{Held-out 75-Case Confirmation}{subsection.5.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Held-out 75-case confirmation results. Values are mean $\pm $ sample SD. Joint rank averages each pipeline's per-case SSIM, PSNR, and MSE ranks; lower is better. Bold and underlining mark the best and second-best value in each numeric column. Fixed, Random, and Weighted denote the fixed-mask, random-augmentation, and weighted-mixture pipelines. Fixed uses $N=1$, so its contrasts with the mean-$N=5$ pipelines are not compute matched.}}{8}{table.2}\protected@file@percent }
+\newlabel{tab:confirmation-results}{{2}{8}{Held-out 75-case confirmation results. Values are mean $\pm $ sample SD. Joint rank averages each pipeline's per-case SSIM, PSNR, and MSE ranks; lower is better. Bold and underlining mark the best and second-best value in each numeric column. Fixed, Random, and Weighted denote the fixed-mask, random-augmentation, and weighted-mixture pipelines. Fixed uses $N=1$, so its contrasts with the mean-$N=5$ pipelines are not compute matched}{table.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Compute-matched paired effects of weighted-mixture versus random augmentation on all 75 confirmation cases. Positive values favor weighted mixture; each point is one case, and diamonds show the mean with the deterministic 100,000-resample case-bootstrap 95\% interval. W/L gives weighted wins/losses (no ties). MSE is plotted as a reduction, so positive is better. Both pipelines use the same five case-stable trajectories and voxel-wise mean aggregation.}}{8}{figure.3}\protected@file@percent }
+\newlabel{fig:confirmation-effects}{{3}{8}{Compute-matched paired effects of weighted-mixture versus random augmentation on all 75 confirmation cases. Positive values favor weighted mixture; each point is one case, and diamonds show the mean with the deterministic 100,000-resample case-bootstrap 95\% interval. W/L gives weighted wins/losses (no ties). MSE is plotted as a reduction, so positive is better. Both pipelines use the same five case-stable trajectories and voxel-wise mean aggregation}{figure.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Weighted-mixture mean-$N=5$ cases selected deterministically: nearest cohort SSIM percentiles 10 and 50, plus the upper-quintile case with the largest maximum-slice scored region. Zero-padded square panels (no resampling) show voided input, reconstruction, observed T1n, and normalized absolute error. Cyan marks the full hole; dashed yellow marks healthy voxels scored by the official metrics; reference outside yellow may contain pathology. Error is restricted to yellow on one pooled 99th-percentile-clipped scale. Bottom pairs zoom reconstruction/reference with matched row-specific windows; each row uses its maximum-area axial slice.}}{9}{figure.4}\protected@file@percent }
+\newlabel{fig:qualitative-reconstructions}{{4}{9}{Weighted-mixture mean-$N=5$ cases selected deterministically: nearest cohort SSIM percentiles 10 and 50, plus the upper-quintile case with the largest maximum-slice scored region. Zero-padded square panels (no resampling) show voided input, reconstruction, observed T1n, and normalized absolute error. Cyan marks the full hole; dashed yellow marks healthy voxels scored by the official metrics; reference outside yellow may contain pathology. Error is restricted to yellow on one pooled 99th-percentile-clipped scale. Bottom pairs zoom reconstruction/reference with matched row-specific windows; each row uses its maximum-area axial slice}{figure.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{9}{section.6}\protected@file@percent }
+\newlabel{sec:discussion}{{6}{9}{Discussion}{section.6}{}}
+\citation{durrer2026fastwdm3d}
 \bibstyle{splncs04}
 \bibdata{references}
 \bibcite{baid2021rsna}{1}
-\bibcite{bakas2017advancing}{2}
-\bibcite{dhariwal2021diffusion}{3}
-\bibcite{durrer2024inpainting}{4}
-\bibcite{friedrich2024cwdm}{5}
-\bibcite{friedrich2024wdm}{6}
-\bibcite{ho2020ddpm}{7}
-\bibcite{kofler2023inpainting}{8}
-\@writefile{toc}{\contentsline {subsubsection}{Acknowledgments.}{14}{section*.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Disclosure of Interests.}{14}{section*.6}\protected@file@percent }
-\bibcite{loshchilov2019adamw}{9}
-\bibcite{lugmayr2022repaint}{10}
-\bibcite{menze2015brats}{11}
-\bibcite{nichol2021improved}{12}
-\bibcite{perez2018film}{13}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion}{10}{section.7}\protected@file@percent }
+\newlabel{sec:conclusion}{{7}{10}{Conclusion}{section.7}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Acknowledgments.}{10}{section*.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Disclosure of Interests.}{10}{section*.5}\protected@file@percent }
+\bibcite{bakas2017tcgagbm}{2}
+\bibcite{bakas2017tcgalgg}{3}
+\bibcite{bakas2017advancing}{4}
+\bibcite{durrer2026fastwdm3d}{5}
+\bibcite{durrer2024inpainting}{6}
+\bibcite{friedrich2024cwdm}{7}
+\bibcite{friedrich2024wdm}{8}
+\bibcite{ho2020ddpm}{9}
+\bibcite{kofler2023inpainting}{10}
+\bibcite{loshchilov2019adamw}{11}
+\bibcite{lugmayr2022repaint}{12}
+\bibcite{menze2015brats}{13}
 \bibcite{rombach2022ldm}{14}
 \bibcite{ronneberger2015unet}{15}
 \bibcite{saharia2022palette}{16}
-\bibcite{song2021ddim}{17}
-\bibcite{song2021scoresde}{18}
-\gdef \@abspage@last{15}
+\bibcite{song2021scoresde}{17}
+\gdef \@abspage@last{12}

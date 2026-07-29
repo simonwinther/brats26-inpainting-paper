@@ -1,0 +1,306 @@
+{
+  "confirmation_case_file": "../brats_inpainting/splits/checkpoint_confirmation_from_holdout_seed2026_n75.txt",
+  "confirmation_case_file_sha256": "9c86a971b9098a5c9cb53891ca4ec32cb662f93e3ed3a2e14cbd79e18ac58026",
+  "display_window_rule": "Per-case 0.5th and 99.5th percentiles of positive voided voxels.",
+  "error_color_limit": [
+    0.0,
+    0.30648165941238403
+  ],
+  "error_rule": "Absolute prediction-reference error after official voided-image 0.5th/99.5th percentile normalization, displayed only within the provided healthy scoring mask.",
+  "generator": {
+    "path": "scripts/plot_qualitative_reconstructions.py",
+    "sha256": "d6496c45f099d78798a8383577f12a96733ea323bedfb80b7e46c8fe462aadc9"
+  },
+  "main_panel_layout_rule": "After the case-specific brain crop and orientation, all main panels are centered without resampling on one shared square canvas whose side is the largest selected crop dimension; added pixels are zero.",
+  "metric_annotation_rule": "Place the in-panel metric block in the first of four corners with minimum overlap against the plotted full-hole mask dilated by two image pixels; ties prefer lower left, lower right, upper left, then upper right.",
+  "metrics_csv": "../brats_inpainting/results/paper300k-concat-weighted-s0-maxnorm-confirm75-ckpt200000-mean-n5/ensemble_metrics/mean_n5/metrics.csv",
+  "metrics_csv_sha256": "b83e7a06a09003cca80b4ec3188c97e16c3440d697e86caaef0f1dc254f7ed7b",
+  "outputs": [
+    {
+      "path": "figures/qualitative_reconstructions.pdf",
+      "sha256": "ac68da2dc0a6d45206751046c02123392c33d8ddb4ed3dc518631f2c2f3aa9b2"
+    },
+    {
+      "path": "figures/qualitative_reconstructions.png",
+      "sha256": "6fc6eced610ffe73612526a92394560ebb291cf1a448a0c817c69f2f6713d6d4"
+    }
+  ],
+  "pipeline": "Weighted mixture mean ($N=5$)",
+  "schema_version": 5,
+  "selected_cases": [
+    {
+      "case_id": "BraTS-GLI-00340-000",
+      "display_window": [
+        92.0,
+        521.0
+      ],
+      "healthy_mask_slice_voxels": 4364,
+      "inputs": {
+        "full_mask": {
+          "path": "../brats_inpainting/data/ASNR-MICCAI-BraTS2023-Local-Synthesis-Challenge-Training/BraTS-GLI-00340-000/BraTS-GLI-00340-000-mask.nii.gz",
+          "sha256": "e2b165613ed7b668f890e22ce95a2f3ee4aa5312c14e19253da68185329b10bf"
+        },
+        "healthy_mask": {
+          "path": "../brats_inpainting/data/ASNR-MICCAI-BraTS2023-Local-Synthesis-Challenge-Training/BraTS-GLI-00340-000/BraTS-GLI-00340-000-mask-healthy.nii.gz",
+          "sha256": "67fac4dc13f403c8f24d7c7319f0c1222c6e3b51c284d1a673fdb9b6261d1e33"
+        },
+        "prediction": {
+          "path": "../brats_inpainting/results/paper300k-concat-weighted-s0-maxnorm-confirm75-ckpt200000-mean-n5/brats_inpainting/mean_n5/BraTS-GLI-00340-000-t1n-inpainting.nii.gz",
+          "sha256": "4e38a72473f828d7d3e1d1c684d98c544fc324ef0c392e830c16c26325a33d76"
+        },
+        "reference_t1n": {
+          "path": "../brats_inpainting/data/ASNR-MICCAI-BraTS2023-Local-Synthesis-Challenge-Training/BraTS-GLI-00340-000/BraTS-GLI-00340-000-t1n.nii.gz",
+          "sha256": "ee4e64a23aed67b98b1abbd028bf6816e6ccc0e1ee89a7fd409f0e9aad9674cd"
+        },
+        "voided": {
+          "path": "../brats_inpainting/data/ASNR-MICCAI-BraTS2023-Local-Synthesis-Challenge-Training/BraTS-GLI-00340-000/BraTS-GLI-00340-000-t1n-voided.nii.gz",
+          "sha256": "7cecb9fed8de9154aac625705199be6d2fa8f5462533a7c3b1bfa9ffd76be7af"
+        }
+      },
+      "main_panel_layout": {
+        "canvas_size_pixels": 178,
+        "oriented_crop_shape_pixels": [
+          152,
+          157
+        ],
+        "zero_padding_pixels": {
+          "bottom": 13,
+          "left": 10,
+          "right": 11,
+          "top": 13
+        }
+      },
+      "metric_annotation": {
+        "axes_bounds": [
+          0.035,
+          0.6720922492892775,
+          0.6465656333520581,
+          0.965
+        ],
+        "candidate_overlap_pixels": {
+          "lower left": 387,
+          "lower right": 1029,
+          "upper left": 0,
+          "upper right": 0
+        },
+        "corner": "upper left",
+        "full_mask_overlap_pixels": 0
+      },
+      "official_metric_normalization_bounds": [
+        0.0,
+        486.0
+      ],
+      "quantile": 0.1,
+      "quantile_label": "10th percentile",
+      "rank_index_zero_based": 7,
+      "rank_one_based": 8,
+      "selection_basis": "nearest cohort SSIM percentile",
+      "slice_index_canonical_ras": 41,
+      "zoom_panels": [
+        {
+          "oriented_pixel_crop": [
+            17,
+            152,
+            22,
+            157
+          ],
+          "panel": "prediction"
+        },
+        {
+          "oriented_pixel_crop": [
+            17,
+            152,
+            22,
+            157
+          ],
+          "panel": "reference_t1n"
+        }
+      ]
+    },
+    {
+      "case_id": "BraTS-GLI-00650-000",
+      "display_window": [
+        358.0,
+        1514.0
+      ],
+      "healthy_mask_slice_voxels": 474,
+      "inputs": {
+        "full_mask": {
+          "path": "../brats_inpainting/data/ASNR-MICCAI-BraTS2023-Local-Synthesis-Challenge-Training/BraTS-GLI-00650-000/BraTS-GLI-00650-000-mask.nii.gz",
+          "sha256": "487763aef7fad62defc0feab7fd002ac07009ed236824001e79b0b0a6d6c8b7f"
+        },
+        "healthy_mask": {
+          "path": "../brats_inpainting/data/ASNR-MICCAI-BraTS2023-Local-Synthesis-Challenge-Training/BraTS-GLI-00650-000/BraTS-GLI-00650-000-mask-healthy.nii.gz",
+          "sha256": "459f8155cd0be08a147ba201c5ebfc51e18af8a8140ad000a570b3b28dcb2152"
+        },
+        "prediction": {
+          "path": "../brats_inpainting/results/paper300k-concat-weighted-s0-maxnorm-confirm75-ckpt200000-mean-n5/brats_inpainting/mean_n5/BraTS-GLI-00650-000-t1n-inpainting.nii.gz",
+          "sha256": "ab1fd50d8c0a49ff9194c26893194c7595cc6b8098ff2b3b69201d27f2b1cb82"
+        },
+        "reference_t1n": {
+          "path": "../brats_inpainting/data/ASNR-MICCAI-BraTS2023-Local-Synthesis-Challenge-Training/BraTS-GLI-00650-000/BraTS-GLI-00650-000-t1n.nii.gz",
+          "sha256": "9d441cba4979eece185d62254bb17a3cd526639142f211ad278ce8d62ad78165"
+        },
+        "voided": {
+          "path": "../brats_inpainting/data/ASNR-MICCAI-BraTS2023-Local-Synthesis-Challenge-Training/BraTS-GLI-00650-000/BraTS-GLI-00650-000-t1n-voided.nii.gz",
+          "sha256": "c1b1d140f65cb01b60231d9bf89e8c4b74954b45b7129ba0408d63587acaf6f8"
+        }
+      },
+      "main_panel_layout": {
+        "canvas_size_pixels": 178,
+        "oriented_crop_shape_pixels": [
+          105,
+          113
+        ],
+        "zero_padding_pixels": {
+          "bottom": 37,
+          "left": 32,
+          "right": 33,
+          "top": 36
+        }
+      },
+      "metric_annotation": {
+        "axes_bounds": [
+          0.3534343666479419,
+          0.035,
+          0.965,
+          0.32790775071072253
+        ],
+        "candidate_overlap_pixels": {
+          "lower left": 5,
+          "lower right": 0,
+          "upper left": 0,
+          "upper right": 0
+        },
+        "corner": "lower right",
+        "full_mask_overlap_pixels": 0
+      },
+      "official_metric_normalization_bounds": [
+        0.0,
+        1182.0
+      ],
+      "quantile": 0.5,
+      "quantile_label": "Median",
+      "rank_index_zero_based": 37,
+      "rank_one_based": 38,
+      "selection_basis": "nearest cohort SSIM percentile",
+      "slice_index_canonical_ras": 30,
+      "zoom_panels": [
+        {
+          "oriented_pixel_crop": [
+            45,
+            93,
+            0,
+            48
+          ],
+          "panel": "prediction"
+        },
+        {
+          "oriented_pixel_crop": [
+            45,
+            93,
+            0,
+            48
+          ],
+          "panel": "reference_t1n"
+        }
+      ]
+    },
+    {
+      "case_id": "BraTS-GLI-01190-000",
+      "display_window": [
+        193.0,
+        1448.0
+      ],
+      "healthy_mask_slice_voxels": 330,
+      "inputs": {
+        "full_mask": {
+          "path": "../brats_inpainting/data/ASNR-MICCAI-BraTS2023-Local-Synthesis-Challenge-Training/BraTS-GLI-01190-000/BraTS-GLI-01190-000-mask.nii.gz",
+          "sha256": "40b84fafb4805f73c90e36bc0a2488def5ae822ad861e403b416c3a70517cfe0"
+        },
+        "healthy_mask": {
+          "path": "../brats_inpainting/data/ASNR-MICCAI-BraTS2023-Local-Synthesis-Challenge-Training/BraTS-GLI-01190-000/BraTS-GLI-01190-000-mask-healthy.nii.gz",
+          "sha256": "12f320703b1ac090922960ad09e898442d8fb1554427398d001ac752c0189cbd"
+        },
+        "prediction": {
+          "path": "../brats_inpainting/results/paper300k-concat-weighted-s0-maxnorm-confirm75-ckpt200000-mean-n5/brats_inpainting/mean_n5/BraTS-GLI-01190-000-t1n-inpainting.nii.gz",
+          "sha256": "b5aca3f929635565a63945dff8e64781c3ad5b0d9a4470cb543527fd2812a93e"
+        },
+        "reference_t1n": {
+          "path": "../brats_inpainting/data/ASNR-MICCAI-BraTS2023-Local-Synthesis-Challenge-Training/BraTS-GLI-01190-000/BraTS-GLI-01190-000-t1n.nii.gz",
+          "sha256": "de269ae60ba91599662b7a7d5692725473a26364146981a273a9846d75d8d47d"
+        },
+        "voided": {
+          "path": "../brats_inpainting/data/ASNR-MICCAI-BraTS2023-Local-Synthesis-Challenge-Training/BraTS-GLI-01190-000/BraTS-GLI-01190-000-t1n-voided.nii.gz",
+          "sha256": "224c584fd6d05cc164ce2aef7a8d7a6f888ca64717d6d8b9b45fbdb7ac395357"
+        }
+      },
+      "main_panel_layout": {
+        "canvas_size_pixels": 178,
+        "oriented_crop_shape_pixels": [
+          178,
+          138
+        ],
+        "zero_padding_pixels": {
+          "bottom": 0,
+          "left": 20,
+          "right": 20,
+          "top": 0
+        }
+      },
+      "metric_annotation": {
+        "axes_bounds": [
+          0.035,
+          0.672092249289277,
+          0.6465656333520581,
+          0.965
+        ],
+        "candidate_overlap_pixels": {
+          "lower left": 508,
+          "lower right": 1218,
+          "upper left": 0,
+          "upper right": 0
+        },
+        "corner": "upper left",
+        "full_mask_overlap_pixels": 0
+      },
+      "official_metric_normalization_bounds": [
+        0.0,
+        1358.0
+      ],
+      "quantile": 0.8513513513513513,
+      "quantile_label": "High SSIM (upper quintile)",
+      "rank_index_zero_based": 63,
+      "rank_one_based": 64,
+      "selection_basis": "largest maximum-slice healthy-mask area within upper SSIM quintile",
+      "selection_healthy_mask_slice_voxels": 330,
+      "slice_index_canonical_ras": 104,
+      "upper_ssim_pool_size": 15,
+      "zoom_panels": [
+        {
+          "oriented_pixel_crop": [
+            96,
+            144,
+            33,
+            81
+          ],
+          "panel": "prediction"
+        },
+        {
+          "oriented_pixel_crop": [
+            96,
+            144,
+            33,
+            81
+          ],
+          "panel": "reference_t1n"
+        }
+      ]
+    }
+  ],
+  "selection_csv": "figures/qualitative_reconstructions.csv",
+  "selection_csv_sha256": "491d72805188ec96c0cdf7ba827fe4e3cd8f29c1b69329b283df5f357403a9fe",
+  "selection_rule": "Nearest observed cases to the 10th and 50th percentiles of weighted-mixture mean-N=5 SSIM, plus the upper-SSIM-quintile case with the largest maximum-slice healthy scoring region, in the locked confirmation cohort.",
+  "slice_rule": "Maximum healthy-mask area in canonical RAS axial space.",
+  "zoom_strip_rule": "The bottom strip shows paired weighted-reconstruction and reference crops using the same case-specific intensity window. Each square crop is centered on the selected-slice healthy scoring mask with 35 percent padding and a minimum side length of 48 oriented pixels."
+}

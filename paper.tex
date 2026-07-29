@@ -5,12 +5,22 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{booktabs}
+\usepackage{placeins}
 \usepackage{url}
 \usepackage{orcidlink}
 
-% Our custom helper functions we can define here, don't clutter pls. KISS (keep it simple stupid)
+% ORCID helper
 \renewcommand{\orcidID}[1]{%
   \nobreak\hspace{0.15em}\orcidlink{#1}%
+}
+
+\newcommand{\papertitle}{CATCH: Counterfactual Anatomical Tissue Inpainting with Conditional Haar-Wavelet Diffusion}
+\hypersetup{
+  hidelinks,
+  pdftitle={CATCH: Counterfactual Anatomical Tissue Inpainting with Conditional Haar-Wavelet Diffusion},
+  pdfauthor={Simon Winther Albertsen; Hjalte Bjoernstrup; Said Djafar Said; Mostafa Mehdipour Ghazi},
+  pdfsubject={Conditional 3D diffusion for brain MRI inpainting},
+  pdfkeywords={BraTS, brain MRI, inpainting, diffusion, Haar wavelets, trajectory aggregation}
 }
 
 % Figures path
@@ -23,8 +33,8 @@
 
 \begin{document}
 
-\title{CATCH: Counterfactual Anatomical Tissue Inpainting with a Conditional Haar-Wavelet Diffusion Model}
-\titlerunning{CATCH: Conditional Haar-Wavelet Diffusion for Inpainting}
+\title{\papertitle}
+\titlerunning{CATCH: Conditional Haar-Wavelet Diffusion}
 
 % Authors 
 \author{

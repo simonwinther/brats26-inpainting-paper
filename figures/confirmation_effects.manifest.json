@@ -1,0 +1,28 @@
+{
+  "all_metric_outcome_counts": {
+    "mixed": 9,
+    "random_wins_all": 15,
+    "weighted_wins_all": 51
+  },
+  "analysis": "Paired weighted-mixture versus random-augmentation confirmation effects under matched mean-N=5 inference compute.",
+  "case_count": 75,
+  "generator": "scripts/plot_confirmation_effects.py",
+  "generator_sha256": "3256317c6fa82cb013630ff9491cd26276e75d10c3a48eb1a2509b2cb223a750",
+  "inputs": {
+    "data/confirmation75/pairwise.csv": "d26204f8cb77fa55ed50bb0f0cf96650fdcf7d79063bf41866007d12a0efe389",
+    "data/confirmation75/random_metrics.csv": "67b142ca54524071bd79970a453c83b0df4566da2cc9c68ec011a9a3965bb192",
+    "data/confirmation75/weighted_metrics.csv": "b83e7a06a09003cca80b4ec3188c97e16c3440d697e86caaef0f1dc254f7ed7b"
+  },
+  "jitter_seed": 2026,
+  "outputs": {
+    "figures/confirmation_effects.csv": "1b5ecca1c6f8c47b9450ac2f794b152460f7455d2c09e556223acf63267c3b6b",
+    "figures/confirmation_effects.pdf": "5949ca8b5b4e7400a281c108eda0517f7d1cef2940904059558402691e854c33",
+    "figures/confirmation_effects.png": "d9f05991cadaa99b8140adf86f90df6f34e26f4be54744e9ef3085c65409a6b3"
+  },
+  "positive_direction": {
+    "mse": "random minus weighted (MSE reduction)",
+    "psnr": "weighted minus random in dB",
+    "ssim": "weighted minus random"
+  },
+  "schema_version": 1
+}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.27)  28 JUL 2026 13:04
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.27)  29 JUL 2026 15:01
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -269,6 +269,9 @@ Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 \@thisruleclass=\count328
 \@lastruleclass=\count329
 \@thisrulewidth=\dimen194
+)
+(/usr/share/texmf-dist/tex/latex/placeins/placeins.sty
+Package: placeins 2005/04/18  v 2.2
 )
 (/usr/share/texmf-dist/tex/latex/url/url.sty
 \Urlmuskip=\muskip18
@@ -688,24 +691,24 @@ File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 (build/paper.aux)
 \openout1 = `paper.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 25.
+LaTeX Font Info:    ... okay on input line 25.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 25.
+LaTeX Font Info:    ... okay on input line 25.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 25.
+LaTeX Font Info:    ... okay on input line 25.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 25.
+LaTeX Font Info:    ... okay on input line 25.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 25.
+LaTeX Font Info:    ... okay on input line 25.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 25.
+LaTeX Font Info:    ... okay on input line 25.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 25.
+LaTeX Font Info:    ... okay on input line 25.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 25.
+LaTeX Font Info:    ... okay on input line 25.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 25.
+LaTeX Font Info:    ... okay on input line 25.
  (/usr/share/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count367
@@ -728,7 +731,7 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-Package hyperref Info: Link coloring OFF on input line 24.
+Package hyperref Info: Link coloring OFF on input line 25.
 
 (build/paper.out) (build/paper.out)
 \@outlinefile=\write4
@@ -740,30 +743,32 @@ Package hyperref Info: Link coloring OFF on input line 24.
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texmf-dist/fonts
 /enc/dvips/cm-super/cm-super-t1.enc}{/usr/share/texmf-dist/fonts/enc/dvips/cm-s
 uper/cm-super-ts1.enc}])
-(./sections/02_related_work.tex [2]) (./sections/03_method.tex
-<figures/catch_architecture.pdf, id=107, 431.49104pt x 380.41022pt>
+(./sections/02_related_work.tex) (./sections/03_method.tex [2]
+<figures/catch_architecture.pdf, id=96, 431.49104pt x 380.41022pt>
 File: figures/catch_architecture.pdf Graphic file (type pdf)
 <use figures/catch_architecture.pdf>
-Package pdftex.def Info: figures/catch_architecture.pdf  used on input line 18.
+Package pdftex.def Info: figures/catch_architecture.pdf  used on input line 13.
 
-(pdftex.def)             Requested size: 347.12354pt x 306.04094pt.
- [3] [4 <./figures/catch_architecture.pdf>] [5] [6]
-<figures/mask_augmentation.pdf, id=270, 387.06142pt x 288.22784pt>
-File: figures/mask_augmentation.pdf Graphic file (type pdf)
-<use figures/mask_augmentation.pdf>
-Package pdftex.def Info: figures/mask_augmentation.pdf  used on input line 188.
-
-(pdftex.def)             Requested size: 347.12354pt x 258.50546pt.
-) (./sections/04_experiments.tex [7] [8 <./figures/mask_augmentation.pdf>] [9] 
-[10]) (./sections/05_results.tex
-<figures/training_dynamics.pdf, id=369, 539.04935pt x 179.82043pt>
-File: figures/training_dynamics.pdf Graphic file (type pdf)
-<use figures/training_dynamics.pdf>
-Package pdftex.def Info: figures/training_dynamics.pdf  used on input line 21.
-(pdftex.def)             Requested size: 347.12354pt x 115.79807pt.
- [11]
-[12 <./figures/training_dynamics.pdf>]) (./sections/06_discussion.tex)
-(./sections/07_credits.tex [13]) (build/paper.bbl [14]) [15] (build/paper.aux)
+(pdftex.def)             Requested size: 340.17958pt x 299.9229pt.
+ [3 <./figures/catch_architecture.pdf>] [4]) (./sections/04_experiments.tex [5]
+)
+(./sections/05_results.tex
+<figures/checkpoint_selection.pdf, id=255, 537.35257pt x 180.18605pt>
+File: figures/checkpoint_selection.pdf Graphic file (type pdf)
+<use figures/checkpoint_selection.pdf>
+Package pdftex.def Info: figures/checkpoint_selection.pdf  used on input line 1
+5.
+(pdftex.def)             Requested size: 347.12354pt x 116.39919pt.
+ [6] (./tables/confirmation75.tex) [7 <./figures/checkpoint_selection.pdf>]
+<figures/qualitative_reconstructions.pdf, id=314, 489.82857pt x 302.55475pt>
+File: figures/qualitative_reconstructions.pdf Graphic file (type pdf)
+<use figures/qualitative_reconstructions.pdf>
+Package pdftex.def Info: figures/qualitative_reconstructions.pdf  used on input
+ line 77.
+(pdftex.def)             Requested size: 347.12354pt x 214.41373pt.
+) (./sections/06_discussion.tex [8 <./figures/qualitative_reconstructions.pdf>]
+) (./sections/07_credits.tex) (build/paper.bbl [9]
+[10]) [11] (build/paper.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
@@ -772,13 +777,13 @@ Package rerunfilecheck Info: File `paper.out' has not changed.
 (rerunfilecheck)             Checksum: 34E0B6C24808837CB96D8C11F6877D68;563.
  ) 
 Here is how much of TeX's memory you used:
- 20938 strings out of 469515
- 388740 string characters out of 5470807
- 789337 words of memory out of 5000000
- 49152 multiletter control sequences out of 15000+600000
- 639496 words of font info for 66 fonts, out of 8000000 for 9000
+ 20955 strings out of 469515
+ 389489 string characters out of 5470807
+ 788051 words of memory out of 5000000
+ 49175 multiletter control sequences out of 15000+600000
+ 639809 words of font info for 67 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 99i,12n,118p,1205b,732s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 99i,11n,118p,666b,732s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-dist/fon
 ts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/publi
@@ -794,19 +799,21 @@ ublic/amsfonts/cm/cmr9.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></
 usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texmf
 -dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texmf-dist/fonts/typ
-e1/public/cm-super/sfbx0700.pfb></usr/share/texmf-dist/fonts/type1/public/cm-su
-per/sfbx0900.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1000.pf
-b></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/share/t
-exmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/texmf-dist/fonts
-/type1/public/cm-super/sfrm0700.pfb></usr/share/texmf-dist/fonts/type1/public/c
-m-super/sfrm0800.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm090
-0.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/sha
-re/texmf-dist/fonts/type1/public/cm-super/sfti1000.pfb></usr/share/texmf-dist/f
-onts/type1/public/cm-super/sftt0900.pfb>
-Output written on build/paper.pdf (15 pages, 711791 bytes).
+e1/public/amsfonts/cm/cmsy9.pfb></usr/share/texmf-dist/fonts/type1/public/cm-su
+per/sfbx0700.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx0900.pf
+b></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1000.pfb></usr/share/t
+exmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/share/texmf-dist/fonts
+/type1/public/cm-super/sfbx1440.pfb></usr/share/texmf-dist/fonts/type1/public/c
+m-super/sfrm0700.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm080
+0.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm0900.pfb></usr/sha
+re/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/share/texmf-dist/f
+onts/type1/public/cm-super/sfti1000.pfb></usr/share/texmf-dist/fonts/type1/publ
+ic/cm-super/sftt0900.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sft
+t1000.pfb>
+Output written on build/paper.pdf (11 pages, 903983 bytes).
 PDF statistics:
- 549 PDF objects out of 1000 (max. 8388607)
- 368 compressed objects within 4 object streams
- 76 named destinations out of 1000 (max. 500000)
+ 534 PDF objects out of 1000 (max. 8388607)
+ 358 compressed objects within 4 object streams
+ 61 named destinations out of 1000 (max. 500000)
  36 words of extra memory for PDF output out of 10000 (max. 10000000)
 

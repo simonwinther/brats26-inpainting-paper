@@ -3,44 +3,44 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: paper.aux
 The style file: splncs04.bst
 Database file #1: references.bib
-You've used 18 entries,
+You've used 17 entries,
             2850 wiz_defined-function locations,
-            688 strings with 8507 characters,
-and the built_in function-call counts, 11852 in all, are:
-= -- 950
-> -- 501
-< -- 14
-+ -- 207
-- -- 186
-* -- 764
-:= -- 1550
-add.period$ -- 30
-call.type$ -- 18
-change.case$ -- 173
+            694 strings with 8669 characters,
+and the built_in function-call counts, 11642 in all, are:
+= -- 932
+> -- 509
+< -- 16
++ -- 210
+- -- 190
+* -- 779
+:= -- 1523
+add.period$ -- 33
+call.type$ -- 17
+change.case$ -- 159
 chr.to.int$ -- 0
-cite$ -- 18
-duplicate$ -- 1003
-empty$ -- 1000
-format.name$ -- 204
-if$ -- 2551
+cite$ -- 17
+duplicate$ -- 962
+empty$ -- 945
+format.name$ -- 207
+if$ -- 2494
 int.to.chr$ -- 0
-int.to.str$ -- 18
-missing$ -- 219
-newline$ -- 60
-num.names$ -- 36
-pop$ -- 459
+int.to.str$ -- 17
+missing$ -- 214
+newline$ -- 57
+num.names$ -- 34
+pop$ -- 428
 preamble$ -- 1
-purify$ -- 126
+purify$ -- 124
 quote$ -- 0
-skip$ -- 292
+skip$ -- 291
 stack$ -- 0
-substring$ -- 565
-swap$ -- 536
-text.length$ -- 14
+substring$ -- 561
+swap$ -- 551
+text.length$ -- 16
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 72
+type$ -- 68
 warning$ -- 0
-while$ -- 81
-width$ -- 20
-write$ -- 184
+while$ -- 80
+width$ -- 19
+write$ -- 188

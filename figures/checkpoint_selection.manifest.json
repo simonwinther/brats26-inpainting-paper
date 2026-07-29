@@ -1,0 +1,50 @@
+{
+  "dashboard_smoothing": false,
+  "generator": "scripts/plot_training_dynamics.py",
+  "generator_sha256": "baa61fb25835b3d745d7c09ed631b71c205246c6e220600f3c4ae5c7badfd092",
+  "include_exploratory": false,
+  "input": "data/wandb_final_checkpoint_selection.csv",
+  "input_sha256": "dba2b070cd6ec6e78deb11c0bf220450bc79dca55d4b3824860a54de4a2fcef5",
+  "metrics": [
+    "val_ema_ssim",
+    "val_ema_psnr",
+    "val_ema_mse"
+  ],
+  "outputs": [
+    {
+      "path": "figures/checkpoint_selection.pdf",
+      "sha256": "2a1d25cceaf4fa1bf7e7556db594ec6b808705be2b30f79ed74821164008ec6c"
+    },
+    {
+      "path": "figures/checkpoint_selection.png",
+      "sha256": "738d7f43e1b7d6c534f568e7e245c92fbc739294c5d55a760d27ea79b8fdb1f6"
+    }
+  ],
+  "runs": [
+    {
+      "display_label": "Fixed mask",
+      "label": "Concat-fixed",
+      "latest_validation_step": 290000,
+      "points": 28,
+      "run_id": "k2ggacgo",
+      "selected_step": 180000
+    },
+    {
+      "display_label": "Random augmentation",
+      "label": "Concat-random",
+      "latest_validation_step": 290000,
+      "points": 29,
+      "run_id": "07pbr0dp",
+      "selected_step": 290000
+    },
+    {
+      "display_label": "Weighted mixture",
+      "label": "Concat-weighted",
+      "latest_validation_step": 290000,
+      "points": 29,
+      "run_id": "3f0kbnp7",
+      "selected_step": 200000
+    }
+  ],
+  "schema_version": 1
+}

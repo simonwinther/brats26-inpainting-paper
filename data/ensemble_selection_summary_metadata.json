@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "cohort": {
+    "name": "checkpoint_dev_from_holdout_seed2026_n25",
+    "case_count": 25,
+    "role": "development-only inference-policy selection"
+  },
+  "candidate_rule": "The identical mean and median N=1 output is represented once. For each arm and case, candidates were ranked by SSIM descending, PSNR descending, and MSE ascending; the reported joint rank averages the three per-case metric ranks.",
+  "canonical_sources": {
+    "fixed": "results/paper300k-concat-fixed-s0-maxnorm-dev25-ensemble-screen-n5/ensemble_metrics/",
+    "random": "results/paper300k-concat-random-s0-maxnorm-dev25-ensemble-screen-n5/ensemble_metrics/",
+    "weighted": "results/paper300k-concat-weighted-s0-maxnorm-dev25-ensemble-screen-n5/ensemble_metrics/"
+  },
+  "checkpoint_provenance": {
+    "weights": "EMA 0.9999",
+    "checkpoint_step": 299999,
+    "scope": "The inference-policy screen used each arm's terminal checkpoint. The selected policy was subsequently transferred unchanged to that arm's development-selected checkpoint for the held-out 75-case confirmation evaluation.",
+    "checkpoint_hashes": "Not available in this compact local snapshot; the canonical source directories above are the source of truth."
+  },
+  "selection": {
+    "fixed": {
+      "chosen": "n1",
+      "reason": "Mean N=3 improved joint rank only marginally (2.9200 to 2.7867), while mean N=5 was worse (3.2400); N=1 was retained for efficiency."
+    },
+    "random": {
+      "chosen": "mean_n5",
+      "reason": "Lowest within-arm joint rank."
+    },
+    "weighted": {
+      "chosen": "mean_n5",
+      "reason": "Lowest within-arm joint rank."
+    }
+  },
+  "pooled_definition": "For each configuration, Pooled is the arithmetic mean of the Fixed, Random, and Weighted joint-rank columns; it is not a separately ranked population.",
+  "provenance_note": "This file is a compact rank-only snapshot of the previously computed development summary used by the manuscript. The canonical per-case metric directories are recorded above and remain the source of truth; aggregate SSIM, PSNR, and MSE from the screen are not reproduced in this compact snapshot."
+}

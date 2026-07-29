@@ -1,0 +1,4 @@
+quantile,quantile_label,rank_index_zero_based,rank_one_based,case,slice_index_canonical_ras,ssim,psnr,mse,healthy_mask_slice_voxels,selection_basis
+0.1,10th percentile,7,8,BraTS-GLI-00340-000,41,0.6337496042251587,20.20208168029785,0.009545346722006798,4364,nearest cohort SSIM percentile
+0.5,Median,37,38,BraTS-GLI-00650-000,30,0.7947859168052673,20.822790145874023,0.00794150959700346,474,nearest cohort SSIM percentile
+0.8513513513513513,High SSIM (upper quintile),63,64,BraTS-GLI-01190-000,104,0.961737871170044,22.8113956451416,0.0024548599030822515,330,largest maximum-slice healthy-mask area within upper SSIM quintile

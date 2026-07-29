@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "source": {
+    "provider": "Weights & Biases MCP",
+    "entity": "ucph-simonwin",
+    "project": "brats-inpainting",
+    "history_tool": "get_run_history_tool",
+    "retrieved_at_utc": "2026-07-29"
+  },
+  "metrics": [
+    "val_ema/ssim",
+    "val_ema/psnr",
+    "val_ema/mse"
+  ],
+  "protocol": {
+    "weights": "EMA 0.9999",
+    "dashboard_smoothing": false,
+    "sampling": "full 1000-step ancestral DDPM",
+    "validation_cohort_size": 5,
+    "validation_case_ids": [
+      "BraTS-GLI-00071-000",
+      "BraTS-GLI-00085-000",
+      "BraTS-GLI-00186-000",
+      "BraTS-GLI-01266-000",
+      "BraTS-GLI-01302-000"
+    ],
+    "split_hash": "94ed63705a033c98"
+  },
+  "selection_rule": "Within each arm, rank every recorded checkpoint by aggregate five-case SSIM descending, PSNR descending, and MSE ascending, then minimize the average of those three ranks. Ties use average ranks and are reported explicitly. Fixed steps 170000 and 180000 tied; step 180000 was retained because it ranked first on two of the three metrics (PSNR and MSE).",
+  "runs": [
+    {
+      "run_id": "k2ggacgo",
+      "run_name": "paper300k-concat-fixed-s0",
+      "label": "Concat-fixed",
+      "training_horizon": 300000,
+      "selected_step": 180000,
+      "note": "Tied step 170000 for the lowest average metric rank; selected because it had the best aggregate PSNR and MSE. Its SSIM was third-best behind steps 170000 and 150000."
+    },
+    {
+      "run_id": "07pbr0dp",
+      "run_name": "paper300k-concat-random-s0",
+      "label": "Concat-random",
+      "training_horizon": 300000,
+      "selected_step": 290000,
+      "note": "Best recorded aggregate SSIM, PSNR, and MSE."
+    },
+    {
+      "run_id": "3f0kbnp7",
+      "run_name": "paper300k-concat-weighted-s0",
+      "label": "Concat-weighted",
+      "training_horizon": 300000,
+      "selected_step": 200000,
+      "note": "Best recorded aggregate SSIM, PSNR, and MSE."
+    }
+  ],
+  "caveat": "These periodic five-case diagnostics were used for development-only checkpoint selection. They are not final confirmation results and do not estimate performance uncertainty."
+}

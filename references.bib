@@ -1,7 +1,4 @@
 % references.bib -- BraTS 2026 Task 4 (inpainting) submission.
-% NOTE: entries below are curated from well-established works; please verify
-% exact page numbers / DOIs / author lists against the publisher of record
-% before camera-ready submission.
 
 % ---------------------------------------------------------------------------
 % Diffusion models
@@ -15,35 +12,10 @@
   year      = {2020}
 }
 
-@inproceedings{song2021ddim,
-  title     = {Denoising Diffusion Implicit Models},
-  author    = {Song, Jiaming and Meng, Chenlin and Ermon, Stefano},
-  booktitle = {International Conference on Learning Representations (ICLR)},
-  year      = {2021}
-}
-
 @inproceedings{song2021scoresde,
   title     = {Score-Based Generative Modeling through Stochastic Differential Equations},
   author    = {Song, Yang and Sohl-Dickstein, Jascha and Kingma, Diederik P. and Kumar, Abhishek and Ermon, Stefano and Poole, Ben},
   booktitle = {International Conference on Learning Representations (ICLR)},
-  year      = {2021}
-}
-
-@inproceedings{nichol2021improved,
-  title     = {Improved Denoising Diffusion Probabilistic Models},
-  author    = {Nichol, Alexander Quinn and Dhariwal, Prafulla},
-  booktitle = {International Conference on Machine Learning (ICML)},
-  pages     = {8162--8171},
-  year      = {2021},
-  organization = {PMLR}
-}
-
-@inproceedings{dhariwal2021diffusion,
-  title     = {Diffusion Models Beat {GANs} on Image Synthesis},
-  author    = {Dhariwal, Prafulla and Nichol, Alexander Quinn},
-  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
-  volume    = {34},
-  pages     = {8780--8794},
   year      = {2021}
 }
 
@@ -68,7 +40,7 @@
 
 @inproceedings{saharia2022palette,
   title     = {{Palette}: Image-to-Image Diffusion Models},
-  author    = {Saharia, Chitwan and Chan, William and Chang, Huiwen and Lee, Chris and Ho, Jonathan and Salimans, Tim and Fleet, David and Norouzi, Mohammad},
+  author    = {Saharia, Chitwan and Chan, William and Chang, Huiwen and Lee, Chris A. and Ho, Jonathan and Salimans, Tim and Fleet, David and Norouzi, Mohammad},
   booktitle = {ACM SIGGRAPH 2022 Conference Proceedings},
   pages     = {1--10},
   year      = {2022}
@@ -93,39 +65,50 @@
   year      = {2019}
 }
 
-@inproceedings{perez2018film,
-  title     = {{FiLM}: Visual Reasoning with a General Conditioning Layer},
-  author    = {Perez, Ethan and Strub, Florian and de Vries, Harm and Dumoulin, Vincent and Courville, Aaron},
-  booktitle = {AAAI Conference on Artificial Intelligence},
-  volume    = {32},
-  year      = {2018}
-}
-
 % ---------------------------------------------------------------------------
 % Wavelet / 3D medical diffusion and healthy-tissue inpainting
 % ---------------------------------------------------------------------------
 @inproceedings{friedrich2024wdm,
-  title     = {{WDM}: 3D Wavelet Diffusion Models for High-Resolution Medical Image Synthesis},
+  title     = {{WDM}: {3D} Wavelet Diffusion Models for High-Resolution Medical Image Synthesis},
   author    = {Friedrich, Paul and Wolleb, Julia and Bieder, Florentin and Durrer, Alicia and Cattin, Philippe C.},
-  booktitle = {MICCAI Workshop on Deep Generative Models},
-  year      = {2024},
-  organization = {Springer}
+  booktitle = {Deep Generative Models},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {15224},
+  pages     = {11--21},
+  year      = {2025},
+  publisher = {Springer},
+  doi       = {10.1007/978-3-031-72744-3_2}
 }
 
-@inproceedings{friedrich2024cwdm,
-  title     = {{cWDM}: Conditional Wavelet Diffusion Models for Cross-Modality 3D Medical Image Synthesis},
+@article{friedrich2024cwdm,
+  title     = {{cWDM}: Conditional Wavelet Diffusion Models for Cross-Modality {3D} Medical Image Synthesis},
   author    = {Friedrich, Paul and Durrer, Alicia and Wolleb, Julia and Cattin, Philippe C.},
-  booktitle = {MICCAI Brain Tumor Segmentation (BraTS) Challenge},
-  year      = {2024},
-  note      = {arXiv:2411.17203}
+  journal   = {arXiv preprint arXiv:2411.17203},
+  year      = {2024}
 }
 
 @inproceedings{durrer2024inpainting,
-  title     = {Denoising Diffusion Models for 3D Healthy Brain Tissue Inpainting},
-  author    = {Durrer, Alicia and Wolleb, Julia and Bieder, Florentin and Friedrich, Paul and Cattin, Philippe C.},
-  booktitle = {MICCAI Workshop on Deep Generative Models},
-  year      = {2024},
-  organization = {Springer}
+  title     = {Denoising Diffusion Models for {3D} Healthy Brain Tissue Inpainting},
+  author    = {Durrer, Alicia and Wolleb, Julia and Bieder, Florentin and Friedrich, Paul and Melie-Garcia, Lester and Ocampo Pineda, Mario Alberto and Bercea, Cosmin I. and Hamamci, Ibrahim Ethem and Wiestler, Benedikt and Piraud, Marie and Yaldizli, Oezguer and Granziera, Cristina and Menze, Bjoern and Cattin, Philippe C. and Kofler, Florian},
+  booktitle = {Deep Generative Models},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {15224},
+  pages     = {87--97},
+  year      = {2025},
+  publisher = {Springer},
+  doi       = {10.1007/978-3-031-72744-3_9}
+}
+
+@inproceedings{durrer2026fastwdm3d,
+  title     = {{fastWDM3D}: Fast and Accurate {3D} Healthy Tissue Inpainting},
+  author    = {Durrer, Alicia and Bieder, Florentin and Friedrich, Paul and Menze, Bjoern and Cattin, Philippe C. and Kofler, Florian},
+  booktitle = {Deep Generative Models},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {16128},
+  pages     = {171--181},
+  year      = {2026},
+  publisher = {Springer},
+  doi       = {10.1007/978-3-032-05472-2_17}
 }
 
 % ---------------------------------------------------------------------------
@@ -148,9 +131,10 @@
   journal   = {Scientific Data},
   volume    = {4},
   number    = {1},
-  pages     = {1--13},
+  pages     = {170117},
   year      = {2017},
-  publisher = {Nature Publishing Group}
+  publisher = {Nature Publishing Group},
+  doi       = {10.1038/sdata.2017.117}
 }
 
 @article{baid2021rsna,
@@ -161,8 +145,24 @@
 }
 
 @article{kofler2023inpainting,
-  title     = {The Brain Tumor Segmentation ({BraTS}) Challenge 2023: Local Synthesis of Healthy Brain Tissue via Inpainting},
-  author    = {Kofler, Florian and Meissen, Felix and Steinbauer, Felix and Graf, Robert and Oswald, Eva and de la Rosa, Ezequiel and others},
+  title     = {The Brain Tumor Segmentation ({BraTS}) Challenge: Local Synthesis of Healthy Brain Tissue via Inpainting},
+  author    = {Kofler, Florian and others},
   journal   = {arXiv preprint arXiv:2305.08992},
   year      = {2023}
+}
+
+@misc{bakas2017tcgagbm,
+  author       = {Bakas, Spyridon and Akbari, Hamed and Sotiras, Aristeidis and Bilello, Michel and Rozycki, Martin and Kirby, Justin and Freymann, John and Farahani, Keyvan and Davatzikos, Christos},
+  title        = {Segmentation Labels and Radiomic Features for the Pre-operative Scans of the {TCGA-GBM} Collection},
+  howpublished = {The Cancer Imaging Archive},
+  year         = {2017},
+  doi          = {10.7937/K9/TCIA.2017.KLXWJJ1Q}
+}
+
+@misc{bakas2017tcgalgg,
+  author       = {Bakas, Spyridon and Akbari, Hamed and Sotiras, Aristeidis and Bilello, Michel and Rozycki, Martin and Kirby, Justin and Freymann, John and Farahani, Keyvan and Davatzikos, Christos},
+  title        = {Segmentation Labels and Radiomic Features for the Pre-operative Scans of the {TCGA-LGG} Collection},
+  howpublished = {The Cancer Imaging Archive},
+  year         = {2017},
+  doi          = {10.7937/K9/TCIA.2017.GJQ7R0EF}
 }

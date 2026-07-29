@@ -1,51 +1,32 @@
-% sections/01_introduction.tex
-
 \section{Introduction}
 \label{sec:introduction}
 
-Brain tumors distort the surrounding anatomy and violate the tissue-appearance
-assumptions of many automated neuroimaging pipelines. Tools for registration,
-brain-region parcellation, and atlas-based analysis are typically developed and
-validated on healthy anatomy, and their behavior on scans containing large lesions
-can be unreliable. A practical way to reconcile pathological scans with such tools is
-to replace the tumor region with a plausible, tumor-free (counterfactual) completion
-of the underlying healthy tissue, so that downstream analysis can proceed as if the
-pathology were absent. The BraTS local synthesis task~\cite{kofler2023inpainting}
-formalizes this as an inpainting problem: given a brain MRI with a masked-out region
-and the corresponding mask, synthesize anatomically plausible healthy tissue inside
-the mask while leaving the observed anatomy unchanged.
+Brain tumors alter local anatomy and violate the healthy-tissue assumptions of many
+registration, parcellation, and atlas-based neuroimaging pipelines. Counterfactual
+inpainting replaces a pathological region with plausible tumor-free tissue so that
+such tools can operate on a completed image. The BraTS local-synthesis
+task~\cite{kofler2023inpainting} formalizes this problem: given a voided T1n
+(\emph{T1-weighted native}) volume and its inpainting mask, synthesize the missing
+anatomy while leaving all observed voxels unchanged.
 
-Denoising diffusion probabilistic models~\cite{ho2020ddpm} have become the leading
-approach for high-fidelity image synthesis and
-inpainting~\cite{lugmayr2022repaint,saharia2022palette}, and are increasingly used
-for 3D medical image generation.
-Applying them directly to full-resolution brain volumes is memory intensive, however,
-which has motivated diffusion in a compressed representation such as the wavelet
-domain~\cite{friedrich2024wdm,friedrich2024cwdm}. Building on this line of work, we
-develop a 3D wavelet-domain conditional diffusion model for the BraTS healthy-tissue
-inpainting task and adapt both its conditioning and its training objective to the
-specific structure of the challenge.
+Diffusion models~\cite{ho2020ddpm} provide effective conditional
+generators~\cite{lugmayr2022repaint,saharia2022palette}. Direct full-resolution 3D
+diffusion is memory intensive, however. Wavelet diffusion models
+(WDM)~\cite{friedrich2024wdm} reduce this cost through a fixed, invertible spatial
+transform, and conditional WDM~\cite{friedrich2024cwdm} extends the formulation to
+image-to-image tasks. We adapt it as CATCH (\textbf{C}ounterfactual
+\textbf{A}natomical \textbf{T}issue Inpainting with \textbf{C}onditional
+\textbf{H}aar-wavelet diffusion) and ask how healthy training holes should be
+sampled.
 
-We do not claim to introduce wavelet-domain diffusion; rather, we present a careful
-adaptation and extension of cWDM/WDM-style 3D wavelet diffusion
-\cite{friedrich2024wdm,friedrich2024cwdm} to healthy-tissue inpainting, together with
-a reproducible challenge pipeline. Our contributions are:
-
+Our contributions are:
 \begin{itemize}
-  \item A \textbf{3D wavelet-domain conditional DDPM} for BraTS healthy-tissue
-    inpainting. The model runs the diffusion process on the eight-channel 3D Haar
-    wavelet representation of the volume, represents the spatial mask as one signed
-    channel, predicts the clean target directly (predict-$x_0$), and reconstructs the
-    missing tissue with a hard-blend compositing step that keeps all observed voxels
-    pixel-exact. We use 17-channel concatenation in the final experiments and study
-    an eight-channel spatial input-FiLM formulation during development.
-  \item A \textbf{task-specific healthy-tissue training objective}. We supervise the
-    artificially removed healthy region, where ground truth is available, exclude the
-    tumor region from reconstruction, and normalize a soft mask-weighted MSE by its
-    active mass so its coefficient has consistent meaning across mask sizes.
-  \item \textbf{Online healthy-mask augmentation and reproducible evaluation}. We
-    compare fixed masks with augmented tumor shapes and a mixture of irregular mask
-    families. We enforce split isolation and no overlap with the real tumor. All
-    variants use a deterministic held-out split and the official healthy-mask
-    SSIM/PSNR/MSE implementation.
+  \item conditional 3D Haar-wavelet diffusion with tumor-excluded supervision and
+  voxel-exact preservation outside the requested hole;
+  \item a within-CATCH comparison of fixed-mask, strict random, and
+  weighted-mixture healthy-mask training variants, with compute-matched random
+  versus weighted inference;
+  \item development-only checkpoint and trajectory-policy selection followed by a
+  frozen 75-case confirmation with paired uncertainty, patient-disjoint
+  sensitivity, and audited examples.
 \end{itemize}

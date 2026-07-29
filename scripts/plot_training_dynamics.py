@@ -9,7 +9,6 @@ import hashlib
 import json
 import math
 from collections import defaultdict
-from datetime import datetime, timezone
 from pathlib import Path
 
 import matplotlib
@@ -37,6 +36,14 @@ RUN_STYLES = {
     "Concat-random": {"color": "#54A24B", "linestyle": "-.", "marker": "^"},
     "Concat-weighted": {"color": "#E45756", "linestyle": "-", "marker": "D"},
     "FiLM-weighted": {"color": "#B279A2", "linestyle": ":", "marker": "X"},
+}
+
+DISPLAY_LABELS = {
+    "Concat-fixed": "Fixed mask",
+    "FiLM-fixed": "Fixed mask (FiLM)",
+    "Concat-random": "Random augmentation",
+    "Concat-weighted": "Weighted mixture",
+    "FiLM-weighted": "Weighted mixture (FiLM)",
 }
 
 PANELS = (
@@ -68,6 +75,7 @@ def load_series(path: Path, include_exploratory: bool) -> dict[str, list[dict]]:
                 {
                     "run_id": row["run_id"],
                     "step": int(row["step"]),
+                    "selected_step": int(row.get("selected_step") or 0),
                     "val_ema_ssim": float(row["val_ema_ssim"]),
                     "val_ema_psnr": float(row["val_ema_psnr"]),
                     "val_ema_mse": float(row["val_ema_mse"]),
@@ -113,7 +121,7 @@ def plot_series(series: dict[str, list[dict]], output_stem: Path) -> list[Path]:
             axis.plot(
                 x,
                 y,
-                label=label,
+                label=DISPLAY_LABELS[label],
                 color=style["color"],
                 linestyle=style["linestyle"],
                 linewidth=1.25,
@@ -121,6 +129,26 @@ def plot_series(series: dict[str, list[dict]], output_stem: Path) -> list[Path]:
                 markersize=2.4,
                 markeredgewidth=0,
             )
+            selected_step = rows[0]["selected_step"]
+            selected_rows = [
+                row for row in rows if row["step"] == selected_step
+            ]
+            if selected_step and len(selected_rows) != 1:
+                raise ValueError(
+                    f"{label}: selected step {selected_step} is not unique"
+                )
+            if selected_rows:
+                selected = selected_rows[0]
+                axis.scatter(
+                    [selected["step"] / 1000],
+                    [selected[metric]],
+                    marker="*",
+                    s=56,
+                    facecolor="#FFD166",
+                    edgecolor="#202020",
+                    linewidth=0.55,
+                    zorder=5,
+                )
         axis.set_title(title, fontweight="bold", pad=3)
         axis.set_xlabel("Training step (thousands)")
         axis.set_ylabel(ylabel)
@@ -150,7 +178,11 @@ def plot_series(series: dict[str, list[dict]], output_stem: Path) -> list[Path]:
 
     output_stem.parent.mkdir(parents=True, exist_ok=True)
     outputs = [output_stem.with_suffix(".pdf"), output_stem.with_suffix(".png")]
-    figure.savefig(outputs[0], bbox_inches="tight")
+    figure.savefig(
+        outputs[0],
+        bbox_inches="tight",
+        metadata={"CreationDate": None, "ModDate": None},
+    )
     figure.savefig(outputs[1], dpi=180, bbox_inches="tight")
     plt.close(figure)
     return outputs
@@ -163,28 +195,40 @@ def write_manifest(
     series: dict[str, list[dict]],
     include_exploratory: bool,
 ) -> Path:
+    generator_path = Path(__file__).resolve()
     manifest = {
         "schema_version": 1,
-        "generated_at": datetime.now(timezone.utc).isoformat(),
         "input": str(input_path),
         "input_sha256": hashlib.sha256(input_path.read_bytes()).hexdigest(),
-        "outputs": [str(path) for path in outputs],
+        "generator": str(generator_path.relative_to(PAPER_ROOT)),
+        "generator_sha256": hashlib.sha256(
+            generator_path.read_bytes()
+        ).hexdigest(),
+        "outputs": [
+            {
+                "path": str(path),
+                "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            }
+            for path in outputs
+        ],
         "include_exploratory": include_exploratory,
         "dashboard_smoothing": False,
         "metrics": [metric for metric, _, _ in PANELS],
         "runs": [
             {
                 "label": label,
+                "display_label": DISPLAY_LABELS[label],
                 "run_id": series[label][0]["run_id"],
                 "points": len(series[label]),
                 "latest_validation_step": series[label][-1]["step"],
+                "selected_step": series[label][0]["selected_step"] or None,
             }
             for label in RUN_ORDER
             if label in series
         ],
     }
     path = output_stem.with_suffix(".manifest.json")
-    path.write_text(json.dumps(manifest, indent=2) + "\n")
+    path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
     return path
 
 

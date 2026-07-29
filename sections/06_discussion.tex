@@ -1,48 +1,60 @@
-% sections/06_discussion.tex
-
+\FloatBarrier
 \section{Discussion}
 \label{sec:discussion}
 
-The design separates three questions that are otherwise easy to conflate: how the
-mask is represented, how the condition enters the denoiser, and how healthy holes are
-sampled during training. The one-channel signed mask preserves explicit inside/outside
-semantics without expanding the mask into eight Haar subbands. Concatenation exposes
-all 17 channels directly to the U-Net. Input FiLM reduces the main U-Net input to eight
-channels and begins as an identity transform, but it is not free: its conditioning
-network applies two 32-channel 3D convolutions at the full $128^3$ wavelet resolution.
-The ablation must therefore be judged on reconstruction quality and measured runtime,
-not on U-Net input width alone.
+Weighted mixture gives the strongest selected pipeline on held-out data. Random and
+weighted use the same architecture, training horizon, mean-$N=5$ inference, split,
+seeds, and evaluator; their contrast therefore matches inference compute. Their
+training policies differ jointly in source families, size sampling, transforms,
+whether current-case sources are eligible, epoch refresh, and fallback. Evidence
+supports the full policy, not its configured 80/15/5 proportions alone. Gains in
+most paired cases argue against an outlier-only effect, but 15 all-metric losses show
+it is not uniformly superior. One training seed and arm-specific checkpoints
+prevent component-level causal attribution.
 
-The corrected region-focused loss has a stable interpretation across hole sizes:
-its coefficient multiplies an average in-mask squared error. Excluding every wavelet
-cell that touches the real tumor prevents direct regression toward pathological
-appearance, although this conservative rule also removes some healthy boundary voxels
-from supervision. Online mask augmentation increases the diversity of supervised
-healthy holes while retaining the real tumor in the excluded region. Tumor-derived
-shapes are anatomically plausible masks, whereas blobs and ellipsoids broaden shape
-coverage at the risk of departing from the challenge distribution.
+The fixed-mask pipeline uses $N=1$ by design. On development data, mean $N=3$
+improved joint rank by only 0.1333 at three times the trajectory count, while mean
+$N=5$ was worse. Thus fixed versus augmented compares unequal trajectory counts;
+weighted versus random is the equal-trajectory contrast.
 
-The development-set ensemble response also differed by mask policy. Multiple
-trajectories changed the scored region for every fixed-arm case, yet averaging did
-not materially change its aggregate metrics. A plausible interpretation is that the
-fixed model's remaining error is predominantly systematic across trajectories, which
-an ensemble cannot remove. Random and weighted mask augmentation may instead retain
-more seed-dependent reconstruction error, allowing a mean ensemble to cancel part of
-that variation. This is a development-set observation rather than a causal result;
-the arm-specific rules---$N=1$ for fixed and mean $N=5$ for random and
-weighted---are evaluated without retuning on the confirmation cohort. Retaining the
-$N=1$ outputs from the augmented-arm runs also permits an equal-sampling comparison,
-since the selected policies otherwise use different inference-time compute.
+The invertible wavelet representation enables full-volume 3D sampling, while hard
+compositing preserves observed tissue. Sampling remains costly: mean $N=5$ runs
+five 1000-step ancestral trajectories. Recent work on faster wavelet
+inpainting~\cite{durrer2026fastwdm3d} motivates sampler validation under the same
+frozen cohort and scoring protocol.
 
-Several limitations remain. Only the T1n modality is used, each training arm has one
-seed, and the local 100-case hold-out comes from the released training cohort rather
-than an independent test set. The 75-case cohort is therefore a locked internal
-confirmation set, not an external test set. The percentile experiment covers only the
-weighted mask policy, so it measures one matched normalization contrast rather than a
-normalization-by-augmentation interaction. Spatial FiLM was explored during
-development but was not carried through the final checkpoint-selection protocol.
-Finally, full 1000-step ancestral sampling is computationally expensive, especially
-for multiple reconstructions. Accelerated sampling, multimodal conditioning, more
-training seeds, and external evaluation remain future work. Until the saved
-confirmation evaluations are available, no final ranking should be inferred from the
-five-case monitoring cohort.
+Metrics cover artificially removed healthy voxels. Because observed T1n remains
+pathological in $m_u$, neither the metrics nor the qualitative reference establish
+patient-specific counterfactual correctness there; such ground truth does not
+exist. Plausible reconstructions may hallucinate incorrect anatomy and are not
+clinically validated. Hidden organizer-validation ground truth prevents local
+external scoring.
+
+The case-keyed split is not fully patient-independent: optimization includes sibling
+timepoints for 3/25 development and 11/75 confirmation cases; development and
+confirmation patients are mutually disjoint. In a post-hoc 64-case patient-disjoint
+analysis, weighted mixture obtains SSIM 0.8101, PSNR 19.27\,dB, and MSE 0.009220;
+random obtains 0.7911, 18.33\,dB, and 0.011664; and fixed obtains 0.7703,
+17.93\,dB, and 0.012764. The ordering is unchanged. This removes confirmation
+overlap only, not possible influence on development-stage selection.
+
+Other limitations are one training seed per variant; checkpoint diagnostics on five
+cases with one trajectory; transfer of inference policies from terminal to
+separately selected arm checkpoints; and no completed external baseline. Across-case
+standard deviations and bootstrap intervals do not measure training-seed
+variability, so superiority over prior methods is not established. The development
+artifact retains aggregate ranks but not its original per-case predictions. For one
+random-augmentation evaluation, the dirty-worktree diff was not preserved; its
+checkpoint, configuration, metrics, sampling metadata, and prediction hashes are
+archived. Future work should add seeds and baselines, retain complete development
+outputs, validate accelerated sampling, and test multimodal conditioning under
+patient-level splits.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+CATCH combines conditional 3D Haar-wavelet diffusion, tumor-excluded supervision,
+hard preservation of observed tissue, and development-selected trajectory
+aggregation. In this single-seed internal study, weighted-mixture augmentation is
+strongest under matched compute on artificially removed healthy tissue; clinical
+and cross-method superiority remain unestablished.

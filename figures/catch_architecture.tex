@@ -71,10 +71,10 @@
 \begin{document}
 \begin{tikzpicture}[x=1cm,y=1cm,font=\footnotesize,text=ink]
 
-% Shared conditioning and fusion definition.
+% Shared conditioning and final concatenation definition.
 \draw[panel=condition] (0,8.85) rectangle (15,13.20);
 \node[font=\small\bfseries] at (7.5,12.96)
-  {Shared inference-available conditioning and selected fusion $F$};
+  {Inference-available conditioning and 17-channel concatenation};
 
 \node[font=\small\bfseries,text=condition] at (2.55,12.52)
   {Condition preparation};
@@ -105,29 +105,16 @@
 
 \draw[linegray,line width=0.45pt] (5.35,9.15) -- (5.35,12.42);
 \node[font=\small\bfseries,text=fusion] at (10.15,12.52)
-  {Fusion alternatives (one trained per experiment)};
+  {Final conditioning fusion};
 
 \draw[rounded corners=2pt,draw=fusion!75,fill=fusion!5,line width=0.55pt]
-  (5.65,9.35) rectangle (9.78,11.92);
-\node[font=\small\bfseries,text=fusion] at (7.715,11.57) {Concatenation};
-\node[align=center] at (7.715,10.83)
+  (5.65,9.35) rectangle (14.70,11.92);
+\node[font=\small\bfseries,text=fusion] at (10.175,11.57) {Concatenation};
+\node[align=center] at (10.175,10.83)
   {$F_{\mathrm{concat}}(z_t,c_v,s)$\\[2pt]
    $=[z_t\,\|\,c_v\,\|\,s]$};
-\node[dimension] at (7.715,9.78)
+\node[dimension] at (10.175,9.78)
   {$8+8+1=17$ channels at $128^3$};
-
-\draw[rounded corners=2pt,draw=wavelet!80,fill=wavelet!4,line width=0.55pt]
-  (10.00,9.35) rectangle (14.70,11.92);
-\node[font=\small\bfseries,text=wavelet] at (12.35,11.57) {Spatial input FiLM};
-\node[align=center] at (12.35,10.92)
-  {$[\Delta\gamma\,\|\,\beta]=C_\phi([c_v\,\|\,s])$};
-\node[dimension] at (12.35,10.51)
-  {$C_\phi$: spatial 3D conv encoder};
-\node[dimension] at (12.35,10.18)
-  {16 spatial maps: $8\,\Delta\gamma+8\,\beta$};
-\node[align=center,font=\scriptsize] at (12.35,9.70)
-  {$F_{\mathrm{FiLM}}(z_t,c_v,s)$\\[-1pt]
-   $=(1+\Delta\gamma)\odot z_t+\beta\quad(8\text{ channels})$};
 
 % Training graph.
 \draw[panel=objective] (0,5.15) rectangle (15,8.55);
@@ -138,27 +125,27 @@
      \includegraphics[width=1.00cm]{catch_architecture_complete}\\[-1pt]
      \scriptsize Complete $x$
    \end{tabular}};
-\node[operator,minimum width=0.76cm,right=0.26cm of trainx] (traindwt)
+\node[operator,minimum width=0.76cm,right=0.20cm of trainx] (traindwt)
   {Haar\\DWT};
-\node[waveletblock,minimum width=1.08cm,right=0.26cm of traindwt] (zclean)
+\node[waveletblock,minimum width=1.08cm,right=0.20cm of traindwt] (zclean)
   {clean $z_0$\\$8\!\times\!128^3$};
-\node[operator,minimum width=1.08cm,right=0.26cm of zclean] (forward)
+\node[operator,minimum width=1.08cm,right=0.20cm of zclean] (forward)
   {noise at $t$\\$q(z_t\mid z_0)$};
-\node[waveletblock,minimum width=1.05cm,right=0.26cm of forward] (znoisy)
+\node[waveletblock,minimum width=1.05cm,right=0.20cm of forward] (znoisy)
   {noisy $z_t$\\$8\!\times\!128^3$};
 \node[fusionblock,minimum width=1.10cm]
   (trainfusion) at ($(znoisy.center)+(-0.45cm,-1.13cm)$)
-  {$F(z_t,c_v,s)$};
+  {$F_{\mathrm{concat}}(z_t,c_v,s)$};
 \node[networkblock,text width=2.35cm,font=\scriptsize,inner xsep=2pt,inner ysep=2pt,
-  right=0.26cm of trainfusion] (trainnet)
+  right=0.20cm of trainfusion] (trainnet)
   {\textbf{3D WavUNet} $D_\theta$\\[-1pt]
    HF Haar skips\\[-1pt]
    $t$-ResBlocks};
-\node[waveletblock,minimum width=1.18cm,right=0.26cm of trainnet] (zpred)
+\node[waveletblock,minimum width=1.18cm,right=0.20cm of trainnet] (zpred)
   {predicted $\hat z_0$\\$8\!\times\!128^3$};
-\node[lossblock,text width=1.75cm,font=\scriptsize,right=0.26cm of zpred] (loss)
+\node[lossblock,text width=1.75cm,font=\scriptsize,right=0.20cm of zpred] (loss)
   {training loss\\[-1pt]
-   $\mathcal L=\mathcal L_{\mathrm{wave}}$\\[-1pt]
+   $\mathcal L=\mathcal L_{\mathrm{wav}}$\\[-1pt]
    $+\,10\mathcal L_{\mathrm{mask}}$};
 
 \draw[arrow] (trainx) -- (traindwt);
@@ -175,24 +162,24 @@
 \draw[panel=fusion] (0,0) rectangle (15,4.90);
 \node[font=\small\bfseries,text=fusion] at (7.5,4.62) {(b) Inference: reverse DDPM sampling};
 \node[note] at (7.5,4.28)
-  {Reuse the selected trained fusion module and its corresponding WavUNet weights.};
+  {Reuse the trained concatenation conditioning and corresponding WavUNet weights.};
 
 \node[waveletblock,minimum width=1.10cm] (noise) at (1.43,3.58)
   {$z_T\!\sim\!\mathcal N(0,I)$};
-\node[waveletblock,minimum width=1.05cm,right=0.26cm of noise] (current)
+\node[waveletblock,minimum width=1.05cm,right=0.20cm of noise] (current)
   {current $z_t$};
-\node[fusionblock,minimum width=1.20cm,right=0.26cm of current] (inferfusion)
-  {$F(z_t,c_v,s)$};
+\node[fusionblock,minimum width=1.20cm,right=0.20cm of current] (inferfusion)
+  {$F_{\mathrm{concat}}(z_t,c_v,s)$};
 \node[networkblock,text width=2.35cm,font=\scriptsize,inner xsep=2pt,inner ysep=2pt]
-  (infernet) [right=0.26cm of inferfusion]
+  (infernet) [right=0.20cm of inferfusion]
   {\textbf{3D WavUNet} $D_\theta$\\[-1pt]
    HF Haar skips\\[-1pt]
    $t$-ResBlocks};
-\node[waveletblock,minimum width=1.08cm,right=0.26cm of infernet] (inferpred)
+\node[waveletblock,minimum width=1.08cm,right=0.20cm of infernet] (inferpred)
   {predicted\\$\hat z_0$};
-\node[operator,text width=1.95cm,right=0.26cm of inferpred] (posterior)
+\node[operator,text width=1.95cm,right=0.20cm of inferpred] (posterior)
   {DDPM posterior\\$p(z_{t-1}\mid z_t,\hat z_0)$};
-\node[waveletblock,minimum width=1.02cm,right=0.26cm of posterior] (next)
+\node[waveletblock,minimum width=1.02cm,right=0.20cm of posterior] (next)
   {$z_{t-1}$};
 
 \draw[arrow] (noise) -- (current);
@@ -211,7 +198,7 @@
 \draw[softarrow] (next.south) -- ++(0,-0.88) -|
   (current.south west);
 \node[note,fill=fusion!3,inner sep=1.2pt] at (5.15,2.48)
-  {loop through $F$ for $t=T,\ldots,2$};
+  {loop through $F_{\mathrm{concat}}$ for $t=T,\ldots,2$};
 
 % Decode only the final posterior sample.
 \node[waveletblock,minimum width=1.15cm] (finalz) at (4.60,1.35)
@@ -231,7 +218,7 @@
 \node[conditionblock,minimum width=0.72cm,minimum height=0.45cm,inner ysep=1pt]
   (mfinal) at ($(composite.south)+(0.75cm,-0.35cm)$) {$m$};
 
-\draw[finalarrow] (next.east) -- ++(0.15,0) -- ++(0,-1.48) -|
+\draw[finalarrow] (next.east) -- ++(0.08,0) -- ++(0,-1.48) -|
   node[pos=0.76,above,fill=fusion!3,inner sep=1.2pt,font=\scriptsize,text=fusion]
     {at $t=1$}
   (finalz.north);
