@@ -187,7 +187,7 @@ At each terminal EMA state, all 25 development cases compare nested $N\in\{1,3,5
 
 \subsection{Evaluation and Statistical Analysis} \label{sec:exp:evaluation}
 
-The official evaluator normalizes prediction and target to $[0,1]$ using the voided-image $[0.5,99.5]$ percentiles and scores only the supplied healthy submask. We report SSIM and PSNR (higher is better) and MSE (lower is better). Means and sample standard deviations describe case heterogeneity, not training-seed variability.
+The official evaluator normalizes prediction and target to $[0,1]$ using the voided-image 0.5th and 99.5th percentiles and scores only the supplied healthy submask. We report SSIM, PSNR, and MSE (lower is better). Means and sample standard deviations describe case heterogeneity, not training-seed variability.
 
 
 For case $i$ and pipeline $j$, let $r_{ij}^{\mathrm{SSIM}}$, $r_{ij}^{\mathrm{PSNR}}$, and $r_{ij}^{\mathrm{MSE}}$ denote the ranks among the selected pipelines, with rank one indicating the best value. The reported mean joint rank is
