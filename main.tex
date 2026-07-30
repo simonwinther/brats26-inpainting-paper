@@ -74,7 +74,7 @@ CATCH adapts Tooth-Diffusion \cite{said2025toothdiffusion} from dental CBCT synt
 
 \begin{figure}[!t]
   \centering
-  \includegraphics[width=0.98\textwidth]{catch_architecture}
+  \includegraphics[width=0.95\textwidth]{catch_architecture}
   \caption{CATCH training and inference. A one-level 3D Haar transform produces eight subbands. Noisy target coefficients, voided-image coefficients, and the signed mask form the 17-channel WavUNet input. Predictions are inverse-transformed and hard-composited with the observed image. Random and weighted-mixture pipelines average five case-stable noise trajectories from one exponential-moving-average (EMA) checkpoint; fixed mask uses $N=1$.}
   \label{fig:catch-architecture}
 \end{figure}
@@ -193,7 +193,7 @@ r_{ij}^{\mathrm{SSIM}}+r_{ij}^{\mathrm{PSNR}}+r_{ij}^{\mathrm{MSE}}
 \end{equation}
 with $n=75$ for confirmation; development configurations are ranked analogously within each training arm.
 
-For each metric, a Friedman test assesses the omnibus difference and two-sided paired Wilcoxon tests assess the three pairwise contrasts, with Holm correction applied within metric. The SciPy calls set \texttt{zero\_method} to \texttt{wilcox}, force the asymptotic approximation, and apply no continuity correction; none of the reported paired differences is zero. Mean paired differences use deterministic 100,000-resample case-bootstrap 95\% CIs (seed 2026). Predictions, per-case metrics, split audits, hashes, and run metadata are retained in CSV/JSON format. Code and analysis scripts are available at \url{https://github.com/simonwinther/brats2026}.
+For each metric, a Friedman test assesses the omnibus difference and two-sided paired Wilcoxon tests assess the three pairwise contrasts, with Holm correction applied within metric. The SciPy calls set \texttt{zero\_method} to \texttt{wilcox}, force the asymptotic approximation, and apply no continuity correction; none of the reported paired differences is zero. Mean paired differences use deterministic 100,000-resample bootstrap 95\% CIs (seed 2026). Predictions, per-case metrics, split audits, hashes, and run metadata are retained in CSV/JSON format. Code and scripts are available at \url{https://github.com/simonwinther/brats2026}.
 
 
 \section{Results} \label{sec:results}
@@ -205,7 +205,7 @@ Figure \ref{fig:checkpoint-selection} shows the 5-case diagnostics and selected 
 
 \begin{figure}[!t]
   \centering
-  \includegraphics[width=\textwidth]{checkpoint_selection}
+  \includegraphics[width=0.95\textwidth]{checkpoint_selection}
   \caption{Five-case EMA checkpoint diagnostics. Stars mark retained checkpoints after ranking aggregate SSIM, PSNR, and MSE. Fixed-mask steps 170k and 180k tie in mean rank; step 180k is retained because it leads in PSNR and MSE. Each point uses one deterministic 1000-step trajectory; curves are selection diagnostics, not confirmation results.}
   \label{fig:checkpoint-selection}
 \end{figure}
@@ -261,7 +261,7 @@ Figure \ref{fig:confirmation-effects} shows that the compute-matched gain occurs
 
 \begin{figure}[!t]
   \centering
-  \includegraphics[width=\textwidth]{confirmation_effects}
+  \includegraphics[width=0.95\textwidth]{confirmation_effects}
   \caption{Compute-matched paired effects of weighted mixture versus random augmentation across 75 cases. Positive values favor weighted mixture. Points represent cases; diamonds show mean paired effects with 100,000-resample case-bootstrap 95\% CIs. W/L denotes wins/losses.}
   \label{fig:confirmation-effects}
 \end{figure}
@@ -270,7 +270,7 @@ Figure \ref{fig:qualitative-reconstructions} shows variation in case difficulty.
 
 \begin{figure}[!t]
   \centering
-  \includegraphics[width=\textwidth]{qualitative_reconstructions_column}
+  \includegraphics[width=0.95\textwidth]{qualitative_reconstructions_column}
   \caption{Weighted-mixture mean-$N=5$ reconstructions at the empirical 10th, 50th, and 90th SSIM percentiles. Cyan denotes the complete inpainting region and dashed yellow the scored healthy region. Error is shown only within the scored region on a shared clipped scale.}
   \label{fig:qualitative-reconstructions}
 \end{figure}
@@ -288,7 +288,7 @@ Evaluation covers only artificially removed healthy voxels. Since the observed T
 
 The split is case-keyed rather than fully patient independent: the optimization pool contains sibling timepoints for 3/25 development and 11/75 confirmation cases. In the 64 confirmation cases patient-disjoint from optimization, weighted mixture obtains SSIM 0.810, PSNR 19.27\,dB, and MSE 0.0092; random obtains 0.791, 18.33\,dB, and 0.0117; and fixed mask obtains 0.770, 17.93\,dB, and 0.0128. The ordering is unchanged, although development-stage selection may still be influenced by optimization-pool siblings.
 
-Other limitations are one seed per arm, five-case single-trajectory checkpoint selection, transfer of terminally selected inference policies to arm-specific checkpoints, and no completed external baseline. Across-case SDs and bootstrap CIs do not measure training-seed variability, so superiority to prior methods is unestablished. Development predictions and one random-arm worktree difference were not fully preserved, although configurations, metrics, metadata, prediction hashes, and final confirmation outputs remain archived. Future work should add seeds and baselines, preserve all outputs, evaluate faster samplers, adopt patient-level splits, and investigate multimodal conditioning and anatomy-aware plausibility.
+Other limitations are one seed per arm, five-case single-trajectory checkpoint selection, transfer of terminally selected inference policies to arm-specific checkpoints, and no external baseline. Across-case SDs and bootstrap CIs do not measure training-seed variability, so superiority to prior methods is unestablished. Development predictions and one random-arm worktree difference were not fully preserved, although configurations, metrics, metadata, prediction hashes, and final confirmation outputs remain archived. Future work should add seeds and baselines, evaluate faster samplers, adopt patient-level splits, and investigate multimodal conditioning and anatomy-aware plausibility.
 
 
 \section{Conclusion} \label{sec:conclusion}
