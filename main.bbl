@@ -122,8 +122,8 @@ Karargyris, A., Umeton, R., Sheller, M.J., Aristizabal, A., George, J., Wuest,
 \bibitem{akbari2017segmentation}
 Bakas, S., Akbari, H., Sotiras, A., Bilello, M., Rozycki, M., Kirby, J.,
   Freymann, J., Farahani, K., Davatzikos, C.:
-\newblock Segmentation labels for the pre-operative scans of the {TCGA-GBM}
-  collection.
+\newblock {Segmentation Labels and Radiomic Features for the Pre-operative
+  Scans of the TCGA-GBM collection}.
 \newblock The Cancer Imaging Archive (2017) Data set. DOI:
   \url{https://doi.org/10.7937/K9/TCIA.2017.KLXWJJ1Q}.
 
