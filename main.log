@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.27)  30 JUL 2026 22:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.27)  30 JUL 2026 23:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -902,7 +902,7 @@ File: figures/mask_augmentation_audit.pdf Graphic file (type pdf)
 <use figures/mask_augmentation_audit.pdf>
 Package pdftex.def Info: figures/mask_augmentation_audit.pdf  used on input lin
 e 136.
-(pdftex.def)             Requested size: 347.12354pt x 128.79382pt.
+(pdftex.def)             Requested size: 329.7663pt x 122.353pt.
 [4]
 Overfull \hbox (0.42026pt too wide) in paragraph at lines 151--152
 []\T1/cmr/m/n/10 Global seed 0 and the case- and member-stable \T1/cmtt/m/n/10 
