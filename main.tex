@@ -280,7 +280,7 @@ Figure \ref{fig:qualitative-reconstructions} shows variation in case difficulty.
 
 Weighted mixture is the strongest pipeline on the confirmation set. Random and weighted mixture use the same architecture, training horizon, mean-$N=5$ inference, split, noise trajectories, and evaluator, so their comparison is compute-matched. Their training policies nevertheless differ jointly in mask families, volume sampling, transforms, current-case eligibility, epoch refresh, and fallback. The evidence therefore supports the complete policy rather than its 80/15/5 proportions or any single component. Improvements in most cases argue against an outlier-only effect, but 15 all-metric losses show that the method is not uniformly superior. One training seed and arm-specific checkpoints limit attribution.
 
-The fixed-mask pipeline uses one trajectory. Only the random-versus-weighted comparison is trajectory matched. Fixed mask uses $N=1$ because mean $N=3$ provided only a small development-rank gain at triple cost and mean $N=5$ was worse. Comparisons with fixed mask therefore combine training-policy and inference-compute differences.
+The fixed-mask pipeline uses one trajectory. Fixed mask uses $N=1$ because mean $N=3$ provided only a small development-rank gain at triple cost and mean $N=5$ was worse. Comparisons with fixed mask therefore combine training-policy and inference-compute differences.
 
 Wavelets enable full-volume 3D sampling, while hard compositing preserves the observed input outside the hole. However, mean-$N=5$ inference requires five 1000-step trajectories per case. Faster wavelet inpainting \cite{durrer2026fastwdm3d} should therefore be evaluated under the same cohort and protocol.
 
