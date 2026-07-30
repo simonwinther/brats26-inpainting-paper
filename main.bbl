@@ -112,6 +112,13 @@ Winther~Albertsen, S., Svaneborg~Bj{\o}rnstrup, H., Mehdipour~Ghazi, M.:
 \newblock In: Efficient Medical Artificial Intelligence. Volume 16318 of
   Lecture Notes in Computer Science., Springer (2026)  268--277
 
+\bibitem{karargyris2023medperf}
+Karargyris, A., Umeton, R., Sheller, M.J., Aristizabal, A., George, J., Wuest,
+  A., Pati, S.,  et~al.:
+\newblock Federated benchmarking of medical artificial intelligence with
+  {MedPerf}.
+\newblock Nature Machine Intelligence \textbf{5} (2023)  799--810
+
 \bibitem{akbari2017segmentation}
 Bakas, S., Akbari, H., Sotiras, A., Bilello, M., Rozycki, M., Kirby, J.,
   Freymann, J., Farahani, K., Davatzikos, C.:
@@ -119,6 +126,13 @@ Bakas, S., Akbari, H., Sotiras, A., Bilello, M., Rozycki, M., Kirby, J.,
   collection.
 \newblock The Cancer Imaging Archive (2017) Data set. DOI:
   \url{https://doi.org/10.7937/K9/TCIA.2017.KLXWJJ1Q}.
+
+\bibitem{bakas2017tcgalgg}
+Bakas, S., Akbari, H., Sotiras, A., Bilello, M., Rozycki, M., Kirby, J.,
+  Freymann, J., Farahani, K., Davatzikos, C.:
+\newblock Segmentation labels and radiomic features for the pre-operative scans
+  of the {TCGA-LGG} collection.
+\newblock The Cancer Imaging Archive (2017)
 
 \bibitem{loshchilov2019adamw}
 Loshchilov, I., Hutter, F.:

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.27)  30 JUL 2026 21:31
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.27)  30 JUL 2026 22:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -910,7 +910,7 @@ brats-validation-noise-v1
  []
 
 [5 <./figures/mask_augmentation_audit.pdf>] [6]
-<figures/checkpoint_selection.pdf, id=333, 537.35257pt x 180.18605pt>
+<figures/checkpoint_selection.pdf, id=339, 537.35257pt x 180.18605pt>
 File: figures/checkpoint_selection.pdf Graphic file (type pdf)
 <use figures/checkpoint_selection.pdf>
 Package pdftex.def Info: figures/checkpoint_selection.pdf  used on input line 2
@@ -922,13 +922,13 @@ Overfull \hbox (1.37836pt too wide) in paragraph at lines 260--261
 n most cases. Weighted
  []
 
-<figures/confirmation_effects.pdf, id=379, 520.34402pt x 177.0615pt>
+<figures/confirmation_effects.pdf, id=385, 520.34402pt x 177.0615pt>
 File: figures/confirmation_effects.pdf Graphic file (type pdf)
 <use figures/confirmation_effects.pdf>
 Package pdftex.def Info: figures/confirmation_effects.pdf  used on input line 2
 64.
 (pdftex.def)             Requested size: 329.7663pt x 112.21664pt.
-<figures/qualitative_reconstructions_column.pdf, id=381, 483.45331pt x 253.2124
+<figures/qualitative_reconstructions_column.pdf, id=387, 483.45331pt x 253.2124
 pt>
 File: figures/qualitative_reconstructions_column.pdf Graphic file (type pdf)
 <use figures/qualitative_reconstructions_column.pdf>
@@ -954,6 +954,12 @@ Overfull \hbox (6.068pt too wide) in paragraph at lines 296--297
  com-plete weighted-mixture
  []
 
+
+Overfull \hbox (4.42407pt too wide) in paragraph at lines 301--303
+\T1/cmr/m/n/9 ca-tion were ob-tained as part of the Chal-lenge project through 
+Synapse ID (syn74274097). 
+ []
+
 (./main.bbl [10] [11]) [12] (./main.aux)
  ***********
 LaTeX2e <2025-11-01>
@@ -963,10 +969,10 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 9F718306B0AA4BC47EB6909CD8743BB3;477.
  ) 
 Here is how much of TeX's memory you used:
- 23946 strings out of 469515
- 440717 string characters out of 5470807
- 836726 words of memory out of 5000000
- 52125 multiletter control sequences out of 15000+600000
+ 23950 strings out of 469515
+ 440805 string characters out of 5470807
+ 836809 words of memory out of 5000000
+ 52127 multiletter control sequences out of 15000+600000
  642582 words of font info for 78 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  99i,12n,108p,1514b,764s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -998,10 +1004,10 @@ ist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/share/texmf-dist/fonts/type1
 r/sfrm1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfti1000.pfb>
 </usr/share/texmf-dist/fonts/type1/public/cm-super/sftt0900.pfb></usr/share/tex
 mf-dist/fonts/type1/public/cm-super/sftt1000.pfb>
-Output written on main.pdf (12 pages, 1044981 bytes).
+Output written on main.pdf (12 pages, 1045627 bytes).
 PDF statistics:
- 621 PDF objects out of 1000 (max. 8388607)
- 407 compressed objects within 5 object streams
- 73 named destinations out of 1000 (max. 500000)
+ 627 PDF objects out of 1000 (max. 8388607)
+ 411 compressed objects within 5 object streams
+ 75 named destinations out of 1000 (max. 500000)
  46 words of extra memory for PDF output out of 10000 (max. 10000000)
 

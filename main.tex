@@ -156,7 +156,7 @@ Global seed 0 and the case- and member-stable \texttt{brats-validation-noise-v1}
 
 \subsection{Data and Split Protocol} \label{sec:exp:data}
 
-The ASNR-MICCAI BraTS Local Synthesis release \cite{kofler2023inpainting,menze2015brats,bakas2017advancing,baid2021rsna,akbari2017segmentation} contains 1,251 training cases with complete and voided T1n volumes, a complete inpainting mask, and healthy and unhealthy submasks. However, the organizer-validation ground truth is hidden.
+The ASNR-MICCAI BraTS Local Synthesis release \cite{kofler2023inpainting,menze2015brats,bakas2017advancing,baid2021rsna,karargyris2023medperf,akbari2017segmentation,bakas2017tcgalgg} contains 1,251 training cases with complete and voided T1n volumes, a complete inpainting mask, and healthy and unhealthy submasks. However, the organizer-validation ground truth is hidden.
 
 A deterministic 100-case hold-out (seed 2026) leaves 1,151 optimization cases, excluded from the hold-out loader and component bank. The hold-out is split into 25 development and 75 confirmation cases. Development and confirmation patients are disjoint, but the split is case-keyed: 3/25 development and 11/75 confirmation cases have sibling timepoints in the pool. None of the five checkpoint-diagnostic cases has such a sibling. We therefore also report a post-hoc analysis on the 64 confirmation cases that are patient-disjoint from optimization.
 
@@ -299,6 +299,7 @@ We presented CATCH, a conditional 3D Haar-wavelet diffusion framework for health
 \begin{credits}
 \subsubsection{\ackname}
 This project is supported by the Pioneer Centre for AI, funded by the Danish National Research Foundation (grant number P1).
+Data used in this publication were obtained as part of the Challenge project through Synapse ID (syn74274097).
 
 \subsubsection{\discintname}
 The authors declare no competing interests.
