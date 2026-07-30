@@ -187,8 +187,19 @@ At each terminal EMA state, all 25 development cases compare nested $N\in\{1,3,5
 
 \subsection{Evaluation and Statistical Analysis} \label{sec:exp:evaluation}
 
-The official evaluator normalizes prediction and target to $[0,1]$ using the voided-image 0.5th and 99.5th percentiles and scores only the supplied healthy submask. We report SSIM, PSNR, and MSE (lower is better). Means and sample standard deviations describe case heterogeneity, not training-seed variability.
+The official evaluator normalizes prediction and target to $[0,1]$ using the voided-image 0.5th and 99.5th percentiles and scores only the supplied healthy submask. We report SSIM, PSNR, and MSE. Means and sample standard deviations describe case heterogeneity, not training-seed variability.
 
+For case $i$ and pipeline $j$, let $r_{ij}^{\mathrm{SSIM}}$, $r_{ij}^{\mathrm{PSNR}}$, and $r_{ij}^{\mathrm{MSE}}$ denote ranks among the selected pipelines. Mean joint rank is
+\begin{equation}
+R_j=
+\frac{1}{3n}
+\sum_{i=1}^{n}
+\left(
+r_{ij}^{\mathrm{SSIM}}+r_{ij}^{\mathrm{PSNR}}+r_{ij}^{\mathrm{MSE}}
+\right),
+\label{eq:joint-rank}
+\end{equation}
+with $n=75$ for confirmation; development configurations are ranked analogously within each arm.
 
 For case $i$ and pipeline $j$, let $r_{ij}^{\mathrm{SSIM}}$, $r_{ij}^{\mathrm{PSNR}}$, and $r_{ij}^{\mathrm{MSE}}$ denote the ranks among the selected pipelines, with rank one indicating the best value. The reported mean joint rank is
 \begin{equation}
