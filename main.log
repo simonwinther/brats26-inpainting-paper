@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.27)  30 JUL 2026 17:55
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.27)  30 JUL 2026 19:56
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -922,7 +922,7 @@ Package pdftex.def Info: figures/checkpoint_selection.pdf  used on input line 2
 08.
 (pdftex.def)             Requested size: 347.12354pt x 116.39919pt.
 [7 <./figures/checkpoint_selection.pdf>]
-Overfull \hbox (1.37836pt too wide) in paragraph at lines 259--260
+Overfull \hbox (1.37836pt too wide) in paragraph at lines 260--261
 []\T1/cmr/m/n/10 Figure [][]4[][] shows that the compute-matched gain oc-curs i
 n most cases. Weighted
  []
@@ -931,30 +931,30 @@ n most cases. Weighted
 File: figures/confirmation_effects.pdf Graphic file (type pdf)
 <use figures/confirmation_effects.pdf>
 Package pdftex.def Info: figures/confirmation_effects.pdf  used on input line 2
-63.
+64.
 (pdftex.def)             Requested size: 347.12354pt x 118.12263pt.
 <figures/qualitative_reconstructions_column.pdf, id=380, 483.45331pt x 253.2124
 pt>
 File: figures/qualitative_reconstructions_column.pdf Graphic file (type pdf)
 <use figures/qualitative_reconstructions_column.pdf>
 Package pdftex.def Info: figures/qualitative_reconstructions_column.pdf  used o
-n input line 272.
+n input line 273.
 (pdftex.def)             Requested size: 347.12354pt x 181.81049pt.
 [8]
-Overfull \hbox (2.35034pt too wide) in paragraph at lines 282--283
+Overfull \hbox (2.35034pt too wide) in paragraph at lines 283--284
 []\T1/cmr/m/n/10 The fixed-mask pipeline uses one tra-jec-tory. Only the random
 -versus-weighted
  []
 
 [9 <./figures/confirmation_effects.pdf> <./figures/qualitative_reconstructions_
 column.pdf>]
-Overfull \hbox (4.65167pt too wide) in paragraph at lines 295--296
+Overfull \hbox (4.65167pt too wide) in paragraph at lines 296--297
 \T1/cmr/m/n/10 healthy brain-tissue in-paint-ing. The method com-bines full-vol
 ume wavelet-domain
  []
 
 
-Overfull \hbox (6.068pt too wide) in paragraph at lines 295--296
+Overfull \hbox (6.068pt too wide) in paragraph at lines 296--297
 \T1/cmr/m/n/10 disjoint sen-si-tiv-ity anal-y-sis. These find-ings sup-port the
  com-plete weighted-mixture
  []
