@@ -69,7 +69,7 @@ Durrer, A., Wolleb, J., Bieder, F., Friedrich, P., Melie-Garcia, L.,
 Menze, B., Jakab, A., Bauer, S., Kalpathy-Cramer, J., Farahani, K., Kirby, J.,
   Burren, Y., Porz, N., Slotboom, J., Wiest, R.,  et~al.:
 \newblock The multimodal brain tumor image segmentation benchmark {(BRATS)}.
-\newblock IEEE Transactions on Medical Imaging \textbf{34}(10) (2014)
+\newblock IEEE Transactions on Medical Imaging \textbf{34}(10) (2015)
   1993--2024
 
 \bibitem{bakas2017advancing}
@@ -94,10 +94,10 @@ Durrer, A., Bieder, F., Friedrich, P., Menze, B., Cattin, P.C., Kofler, F.:
 
 \bibitem{said2025toothdiffusion}
 Said, S.D., Gholamalizadeh, T., Mehdipour~Ghazi, M.:
-\newblock Tooth-diffusion: Guided {3D} {CBCT} synthesis with fine-grained tooth
-  conditioning.
-\newblock In: International Workshop on Oral and Dental Image Analysis,
-  Springer (2025)  89--98
+\newblock {Tooth-Diffusion}: Guided {3D} {CBCT} synthesis with fine-grained
+  tooth conditioning.
+\newblock In: Oral and Dental Image Analysis. Volume 16473 of Lecture Notes in
+  Computer Science., Springer (2026)  89--98
 
 \bibitem{ronneberger2015unet}
 Ronneberger, O., Fischer, P., Brox, T.:
@@ -109,15 +109,16 @@ Ronneberger, O., Fischer, P., Brox, T.:
 Winther~Albertsen, S., Svaneborg~Bj{\o}rnstrup, H., Mehdipour~Ghazi, M.:
 \newblock {RARE-UNet}: Resolution-aligned routing entry for adaptive medical
   image segmentation.
-\newblock In: International Workshop on Efficient Medical Artificial
-  Intelligence, Springer (2025)  268--277
+\newblock In: Efficient Medical Artificial Intelligence. Volume 16318 of
+  Lecture Notes in Computer Science., Springer (2026)  268--277
 
 \bibitem{akbari2017segmentation}
-Akbari, H., Sotiras, A., Bilello, M., Rozycki, M., Kirby, J., Freymann, J.,
-  Farahani, K., Davatzikos, C.:
-\newblock Segmentation labels and radiomic features for the pre-operative scans
-  of the {TCGA-GBM} collection.
-\newblock The Cancer Imaging Archive \textbf{7} (2017)
+Bakas, S., Akbari, H., Sotiras, A., Bilello, M., Rozycki, M., Kirby, J.,
+  Freymann, J., Farahani, K., Davatzikos, C.:
+\newblock Segmentation labels for the pre-operative scans of the {TCGA-GBM}
+  collection.
+\newblock The Cancer Imaging Archive (2017) Data set. DOI:
+  \url{https://doi.org/10.7937/K9/TCIA.2017.KLXWJJ1Q}.
 
 \bibitem{loshchilov2019adamw}
 Loshchilov, I., Hutter, F.:
