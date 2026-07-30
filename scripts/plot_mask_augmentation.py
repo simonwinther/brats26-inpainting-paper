@@ -877,6 +877,7 @@ def plot_audit_figure(
     examples: list[dict],
     example_figure: Path,
     output_stem: Path,
+    weighted_configured_fractions: dict[str, float],
 ) -> list[Path]:
     configure_style()
     source = plt.imread(example_figure)
@@ -898,22 +899,24 @@ def plot_audit_figure(
             f"Expected {len(panel_images)} exemplar records, got {len(examples)}"
         )
 
-    figure = plt.figure(figsize=(7.2, 2.55))
+    # Render close to the manuscript's final width so labels remain legible after
+    # \includegraphics scales the figure to one LNCS text column.
+    figure = plt.figure(figsize=(5.9, 2.09))
     outer = figure.add_gridspec(
         1,
-        2,
-        width_ratios=(1.08, 1.0),
+        3,
+        width_ratios=(1.28, 0.94, 0.74),
         left=0.015,
-        right=0.99,
+        right=0.995,
         bottom=0.18,
         top=0.86,
-        wspace=0.24,
+        wspace=0.30,
     )
-    example_grid = outer[0].subgridspec(2, 3, wspace=0.045, hspace=0.34)
+    example_grid = outer[0].subgridspec(2, 3, wspace=0.10, hspace=0.34)
     example_positions = ((0, 0), (0, 1), (0, 2), (1, 0), (1, 1))
     example_titles = (
-        "Provided (fixed)",
-        "Tumor-only (random)",
+        "Provided",
+        "Tumor-only",
         "Mixture: tumor",
         "Mixture: blob",
         "Mixture: ellipsoid",
@@ -945,7 +948,7 @@ def plot_audit_figure(
             Patch(
                 facecolor=(0.0, 0.78, 0.83, 0.48),
                 edgecolor="#00C7D2",
-                label="Artificial hole\n+ supervised target",
+                label="Training hole\n(supervised)",
             ),
             Line2D(
                 [0],
@@ -958,7 +961,7 @@ def plot_audit_figure(
         ],
         loc="center",
         frameon=False,
-        fontsize=5.7,
+        fontsize=5.3,
         handlelength=1.4,
         borderaxespad=0,
     )
@@ -966,7 +969,7 @@ def plot_audit_figure(
     figure.text(
         (left_bounds.x0 + left_bounds.x1) / 2,
         0.965,
-        "(a) Artificial training-hole examples",
+        "(a) Training-hole examples",
         ha="center",
         va="top",
         fontsize=7.2,
@@ -1028,7 +1031,7 @@ def plot_audit_figure(
         [policy_labels[policy] for policy in POLICY_ORDER],
     )
     volume_axis.set_title(
-        "(b) Artificial-hole size",
+        "(b) Training-hole volume by policy",
         fontsize=7.2,
         fontweight="normal",
         pad=13,
@@ -1036,11 +1039,11 @@ def plot_audit_figure(
     volume_axis.text(
         0.5,
         1.025,
-        "thin: 10--90%   thick: middle 50%   circle: median",
+        "thin: P10--P90   thick: IQR   dot: median",
         transform=volume_axis.transAxes,
         ha="center",
         va="bottom",
-        fontsize=5.5,
+        fontsize=5.8,
     )
     volume_axis.set_xlabel("Hole volume / brain volume (%)")
     volume_axis.grid(True, axis="x", color="#E5E7EB", linewidth=0.4)
@@ -1048,7 +1051,105 @@ def plot_audit_figure(
     volume_axis.spines["right"].set_visible(False)
     volume_axis.spines["left"].set_visible(False)
     volume_axis.tick_params(axis="y", length=0, pad=4)
+    volume_axis.tick_params(axis="y", labelsize=5.7)
     volume_axis.tick_params(axis="x", length=2, width=0.5)
+
+    composition_axis = figure.add_subplot(outer[2])
+    family_order = ("tumor", "blob", "ellipsoid")
+    configured = np.asarray(
+        [float(weighted_configured_fractions.get(family, 0.0)) for family in family_order],
+        dtype=np.float64,
+    )
+    if not np.isclose(configured.sum(), 1.0):
+        raise ValueError(
+            "Configured weighted-family fractions must sum to one; "
+            f"got {configured.sum():.6f}."
+        )
+    weighted_rows = [row for row in records if row["policy"] == "weighted"]
+    realized_counts = Counter(
+        "fallback" if row["fallback_used"] else row["mask_family"]
+        for row in weighted_rows
+    )
+    if realized_counts["fallback"]:
+        raise ValueError(
+            "Compact mixture-composition panel expects the audited no-fallback run."
+        )
+    realized = np.asarray(
+        [realized_counts[family] / len(weighted_rows) for family in family_order],
+        dtype=np.float64,
+    )
+    x_positions = np.arange(2)
+    bottoms = np.zeros(2, dtype=np.float64)
+    family_labels = {"tumor": "Tumor", "blob": "Blob", "ellipsoid": "Ellipsoid"}
+    for family, configured_value, realized_value in zip(
+        family_order, configured, realized
+    ):
+        heights = np.asarray([configured_value, realized_value])
+        composition_axis.bar(
+            x_positions,
+            heights,
+            bottom=bottoms,
+            width=0.66,
+            color=FAMILY_COLORS[family],
+            edgecolor="white",
+            linewidth=0.35,
+            label=family_labels[family],
+        )
+        for x, bottom, height in zip(x_positions, bottoms, heights):
+            if height >= 0.10:
+                composition_axis.text(
+                    x,
+                    bottom + height / 2,
+                    f"{100.0 * height:.0f}",
+                    ha="center",
+                    va="center",
+                    fontsize=5.0,
+                    color="white",
+                )
+        bottoms += heights
+
+    composition_axis.set_title(
+        "(c) Weighted-family proportions",
+        fontsize=7.2,
+        fontweight="normal",
+        pad=13,
+    )
+    composition_axis.text(
+        0.5,
+        1.025,
+        "target vs. observed ($n=500$)",
+        transform=composition_axis.transAxes,
+        ha="center",
+        va="bottom",
+        fontsize=5.8,
+    )
+    composition_axis.set_ylim(0, 1.0)
+    composition_axis.set_yticks([0, 0.5, 1.0], ["0", "50", "100"])
+    composition_axis.set_ylabel(
+        "Share of weighted samples (%)",
+        fontsize=5.5,
+        labelpad=2,
+    )
+    composition_axis.set_xticks(
+        x_positions,
+        ["Target", "Observed"],
+        fontsize=5.3,
+    )
+    composition_axis.grid(True, axis="y", color="#E5E7EB", linewidth=0.4)
+    composition_axis.set_axisbelow(True)
+    composition_axis.spines["top"].set_visible(False)
+    composition_axis.spines["right"].set_visible(False)
+    composition_axis.tick_params(length=2, width=0.5)
+    composition_axis.legend(
+        loc="upper center",
+        bbox_to_anchor=(0.5, -0.18),
+        ncol=3,
+        frameon=False,
+        fontsize=4.8,
+        handlelength=0.8,
+        columnspacing=0.45,
+        handletextpad=0.25,
+    )
 
     output_stem.parent.mkdir(parents=True, exist_ok=True)
     outputs = [output_stem.with_suffix(".pdf"), output_stem.with_suffix(".png")]
@@ -1072,6 +1173,10 @@ def panel_descriptions(layout: str) -> dict[str, str]:
             "b": (
                 "Tenth-to-90th percentile, interquartile range, and median of "
                 "artificial-hole/brain volume ratio by training policy."
+            ),
+            "c": (
+                "Configured and realized tumor/blob/ellipsoid composition of "
+                "the weighted-mixture policy."
             ),
         }
     return {
@@ -1260,6 +1365,7 @@ def main() -> None:
             examples,
             args.example_figure,
             args.figure_stem,
+            metadata["weighted_configured_family_probabilities"],
         )
         manifest = {
             "schema_version": 1,
@@ -1345,6 +1451,7 @@ def main() -> None:
                 examples,
                 args.example_figure,
                 args.figure_stem,
+                metadata["weighted_configured_family_probabilities"],
             )
         )
         manifest = {
@@ -1397,6 +1504,7 @@ def main() -> None:
             examples,
             args.example_figure,
             args.figure_stem,
+            weighted_config["families"]["weights"],
         )
     )
     write_csv(args.samples_csv, records)

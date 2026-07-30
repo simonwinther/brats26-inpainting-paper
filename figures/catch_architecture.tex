@@ -44,7 +44,7 @@
     rounded corners=2pt,
     line width=0.65pt,
     align=center,
-    inner sep=1.2pt,
+    inner sep=2pt,
   },
   operator/.style={
     draw=ink!65,
@@ -57,10 +57,11 @@
     minimum height=0.58cm,
   },
   arrow/.style={
-    -{Latex[length=1.6mm,width=1.05mm]},
+    -{Latex[length=0.9mm,width=0.68mm]},
     draw=ink,
     line width=0.65pt,
-    shorten >=0.8pt,
+    shorten <=0.35pt,
+    shorten >=0.35pt,
   },
   softarrow/.style={arrow,draw=muted},
   finalarrow/.style={arrow,dashed,draw=fusion},
@@ -71,79 +72,86 @@
 \begin{document}
 \begin{tikzpicture}[x=1cm,y=1cm,font=\footnotesize,text=ink]
 
-% Shared conditioning and final concatenation definition.
-\draw[panel=condition] (0,8.85) rectangle (15,13.20);
-\node[font=\small\bfseries] at (7.5,12.96)
-  {Inference-available conditioning and 17-channel concatenation};
-
-\node[font=\small\bfseries,text=condition] at (2.55,12.52)
+% Shared conditioning column.
+\draw[panel=condition] (0,0) rectangle (4.55,10.10);
+\node[font=\small\bfseries,text=condition] at (2.275,9.80)
+  {(a) Shared conditioning};
+\node[font=\bfseries,text=condition] at (2.275,9.34)
   {Condition preparation};
 
-\node[imageblock=condition] (xv) at (0.95,11.48)
+\node[imageblock=condition] (xv) at (0.83,8.35)
   {\begin{tabular}{@{}c@{}}
-     \includegraphics[width=1.00cm]{catch_architecture_voided}\\[-1pt]
+     \includegraphics[width=0.70cm]{catch_architecture_voided}\\[1pt]
      \scriptsize Voided $x_v$
    \end{tabular}};
-\node[operator,minimum width=1.05cm,right=0.26cm of xv] (dwtv)
+\node[operator,minimum width=0.82cm,right=0.15cm of xv] (dwtv)
   {Haar\\DWT};
-\node[conditionblock,minimum width=1.65cm,right=0.26cm of dwtv] (cv)
+\node[conditionblock,font=\scriptsize,minimum width=1.32cm,inner xsep=2pt,
+  right=0.12cm of dwtv] (cv)
   {$c_v=\mathcal W(x_v)$\\$8\!\times\!128^3$};
 \draw[arrow] (xv) -- (dwtv);
 \draw[arrow] (dwtv) -- (cv);
 
-\node[imageblock=condition] (mask) at (0.95,9.92)
+\node[imageblock=condition] (mask) at (0.83,6.55)
   {\begin{tabular}{@{}c@{}}
-     \includegraphics[width=1.00cm]{catch_architecture_mask}\\[-1pt]
+     \includegraphics[width=0.70cm]{catch_architecture_mask}\\[1pt]
      \scriptsize Mask $m$
    \end{tabular}};
-\node[operator,minimum width=1.50cm,right=0.26cm of mask] (maskmap)
+\node[operator,minimum width=1.18cm,right=0.15cm of mask] (maskmap)
   {nearest $\downarrow$\\$2m-1$};
-\node[conditionblock,minimum width=1.42cm,right=0.26cm of maskmap] (signed)
+\node[conditionblock,minimum width=1.12cm,right=0.15cm of maskmap] (signed)
   {$s$\\$1\!\times\!128^3$};
 \draw[arrow] (mask) -- (maskmap);
 \draw[arrow] (maskmap) -- (signed);
 
-\draw[linegray,line width=0.45pt] (5.35,9.15) -- (5.35,12.42);
-\node[font=\small\bfseries,text=fusion] at (10.15,12.52)
-  {Final conditioning fusion};
-
-\draw[rounded corners=2pt,draw=fusion!75,fill=fusion!5,line width=0.55pt]
-  (5.65,9.35) rectangle (14.70,11.92);
-\node[font=\small\bfseries,text=fusion] at (10.175,11.57) {Concatenation};
-\node[align=center] at (10.175,10.83)
-  {$F_{\mathrm{concat}}(z_t,c_v,s)$\\[2pt]
+\draw[linegray,line width=0.45pt] (0.30,5.30) -- (4.25,5.30);
+\node[font=\bfseries,text=fusion] at (2.275,4.98) {Concatenation};
+\node[fusionblock,text width=3.24cm,inner ysep=4pt] (sharedfusion)
+  at (2.275,4.10)
+  {$F_{\mathrm{concat}}(z_t,c_v,s)$\\[1pt]
    $=[z_t\,\|\,c_v\,\|\,s]$};
-\node[dimension] at (10.175,9.78)
+\node[dimension] at (2.275,3.37)
   {$8+8+1=17$ channels at $128^3$};
+\node[conditionblock,font=\scriptsize,minimum width=1.45cm,inner ysep=2pt]
+  (sharedcond) at (2.275,2.35) {shared $c_v,s$};
+\node[lossblock,font=\scriptsize,text width=1.15cm,inner xsep=2pt,inner ysep=2pt]
+  (trainuse) at (1.22,1.05) {training (b)};
+\node[fusionblock,font=\scriptsize,text width=1.40cm,inner xsep=2pt,inner ysep=2pt]
+  (inferuse) at (3.30,1.05) {inference (c)\\five seeds};
+\coordinate (sharedfork) at (2.275,1.59);
+\draw[draw=muted,line width=0.65pt] (sharedcond.south) -- (sharedfork);
+\draw[softarrow,shorten <=0pt] (sharedfork) -| (trainuse.north);
+\draw[softarrow,shorten <=0pt] (sharedfork) -| (inferuse.north);
 
-% Training graph.
-\draw[panel=objective] (0,5.15) rectangle (15,8.55);
-\node[font=\small\bfseries,text=objective] at (7.5,8.27) {(a) Training};
+% Training panel.
+\draw[panel=objective] (4.80,5.65) rectangle (15.50,10.10);
+\node[font=\small\bfseries,text=objective] at (10.15,9.80) {(b) Training};
 
-\node[imageblock=objective] (trainx) at (0.95,7.25)
+\node[imageblock=objective] (trainx) at (5.75,8.70)
   {\begin{tabular}{@{}c@{}}
-     \includegraphics[width=1.00cm]{catch_architecture_complete}\\[-1pt]
+     \includegraphics[width=0.64cm]{catch_architecture_complete}\\[1pt]
      \scriptsize Complete $x$
    \end{tabular}};
 \node[operator,minimum width=0.76cm,right=0.20cm of trainx] (traindwt)
   {Haar\\DWT};
-\node[waveletblock,minimum width=1.08cm,right=0.20cm of traindwt] (zclean)
+\node[waveletblock,minimum width=1.02cm,right=0.20cm of traindwt] (zclean)
   {clean $z_0$\\$8\!\times\!128^3$};
 \node[operator,minimum width=1.08cm,right=0.20cm of zclean] (forward)
   {noise at $t$\\$q(z_t\mid z_0)$};
-\node[waveletblock,minimum width=1.05cm,right=0.20cm of forward] (znoisy)
+\node[waveletblock,minimum width=0.98cm,right=0.20cm of forward] (znoisy)
   {noisy $z_t$\\$8\!\times\!128^3$};
-\node[fusionblock,minimum width=1.10cm]
-  (trainfusion) at ($(znoisy.center)+(-0.45cm,-1.13cm)$)
-  {$F_{\mathrm{concat}}(z_t,c_v,s)$};
-\node[networkblock,text width=2.35cm,font=\scriptsize,inner xsep=2pt,inner ysep=2pt,
+
+\node[fusionblock,minimum width=1.18cm] (trainfusion) at (7.20,6.95)
+  {$F_{\mathrm{concat}}$};
+\node[networkblock,text width=2.00cm,font=\scriptsize,inner xsep=2pt,inner ysep=2pt,
   right=0.20cm of trainfusion] (trainnet)
   {\textbf{3D WavUNet} $D_\theta$\\[-1pt]
    HF Haar skips\\[-1pt]
    $t$-ResBlocks};
-\node[waveletblock,minimum width=1.18cm,right=0.20cm of trainnet] (zpred)
+\node[waveletblock,minimum width=1.10cm,right=0.20cm of trainnet] (zpred)
   {predicted $\hat z_0$\\$8\!\times\!128^3$};
-\node[lossblock,text width=1.75cm,font=\scriptsize,right=0.20cm of zpred] (loss)
+\node[lossblock,text width=2.50cm,font=\scriptsize,inner xsep=2pt,inner ysep=1pt,
+  right=0.30cm of zpred] (loss)
   {training loss\\[-1pt]
    $\mathcal L=\mathcal L_{\mathrm{wav}}$\\[-1pt]
    $+\,10\mathcal L_{\mathrm{mask}}$};
@@ -152,36 +160,40 @@
 \draw[arrow] (traindwt) -- (zclean);
 \draw[arrow] (zclean) -- (forward);
 \draw[arrow] (forward) -- (znoisy);
-\draw[arrow] (znoisy.south) -- ([xshift=0.45cm]trainfusion.north);
+\draw[arrow] (znoisy.south) -- ++(0,-0.34) -| (trainfusion.north);
 \draw[arrow] (trainfusion) -- (trainnet);
 \draw[arrow] (trainnet) -- (zpred);
 \draw[arrow] (zpred) -- (loss);
-\draw[arrow] (zclean.south) -- ++(0,-1.45) -| (loss.south);
+\draw[softarrow] (zclean.south) -- ++(0,-0.27) -- (6.00,8.03)
+  -- (6.00,6.07) -| (loss.south);
+\node[note,fill=objective!3,inner sep=1pt] at (10.75,5.99)
+  {clean target $z_0$};
 
-% Inference graph.
-\draw[panel=fusion] (0,0) rectangle (15,4.90);
-\node[font=\small\bfseries,text=fusion] at (7.5,4.62)
-  {(b) Inference: reverse sampling and trajectory aggregation};
-\node[note] at (7.5,4.28)
-  {One EMA checkpoint and shared conditioning; five case-stable noise seeds.};
+% Inference panel.
+\draw[panel=fusion] (4.80,0) rectangle (15.50,5.40);
+\node[font=\small\bfseries,text=fusion] at (10.15,5.12)
+  {(c) Inference: reverse sampling and $N=5$ aggregation};
+\node[note] at (10.15,4.78)
+  {One EMA checkpoint; five case-stable noise seeds.};
 
-\node[waveletblock,minimum width=1.25cm] (noise) at (1.43,3.58)
-  {$z_T^{(i)}\!\sim\!\mathcal N(0,I)$};
-\node[waveletblock,minimum width=1.05cm,right=0.20cm of noise] (current)
-  {current $z_t$};
-\node[fusionblock,minimum width=1.20cm,right=0.20cm of current] (inferfusion)
-  {$F_{\mathrm{concat}}(z_t,c_v,s)$};
-\node[networkblock,text width=2.35cm,font=\scriptsize,inner xsep=2pt,inner ysep=2pt]
-  (infernet) [right=0.20cm of inferfusion]
+\node[waveletblock,text width=1.08cm,font=\scriptsize,inner xsep=2pt]
+  (noise) at (5.58,3.82) {$z_T^{(i)}$\\$\sim\mathcal N(0,I)$};
+\node[waveletblock,text width=0.90cm,font=\scriptsize,inner xsep=2pt,
+  right=0.18cm of noise] (current) {current\\$z_t$};
+\node[fusionblock,text width=1.00cm,font=\scriptsize,inner xsep=2pt,
+  right=0.18cm of current] (inferfusion) {$F_{\mathrm{concat}}$};
+\node[networkblock,text width=1.48cm,font=\scriptsize,inner xsep=2pt,inner ysep=2pt,
+  right=0.18cm of inferfusion] (infernet)
   {\textbf{3D WavUNet} $D_\theta$\\[-1pt]
    HF Haar skips\\[-1pt]
    $t$-ResBlocks};
-\node[waveletblock,minimum width=1.08cm,right=0.20cm of infernet] (inferpred)
-  {predicted\\$\hat z_0$};
-\node[operator,text width=1.95cm,right=0.20cm of inferpred] (posterior)
+\node[waveletblock,text width=1.16cm,font=\scriptsize,inner xsep=2pt,
+  right=0.18cm of infernet] (inferpred) {predicted\\$\hat z_0$};
+\node[operator,text width=1.65cm,font=\scriptsize,inner xsep=2pt,
+  right=0.18cm of inferpred] (posterior)
   {DDPM posterior\\$p(z_{t-1}\mid z_t,\hat z_0)$};
-\node[waveletblock,minimum width=1.02cm,right=0.20cm of posterior] (next)
-  {$z_{t-1}$};
+\node[waveletblock,text width=0.64cm,font=\scriptsize,inner xsep=2pt,
+  right=0.18cm of posterior] (next) {$z_{t-1}$};
 
 \draw[arrow] (noise) -- (current);
 \draw[arrow] (current) -- (inferfusion);
@@ -189,48 +201,42 @@
 \draw[arrow] (infernet) -- (inferpred);
 \draw[arrow] (inferpred) -- (posterior);
 \draw[arrow] (posterior) -- (next);
+\draw[softarrow] (next.south) -- ++(0,-0.58) -| (current.south);
+\node[note,fill=fusion!3,inner sep=1pt] at (10.15,2.65)
+  {repeat independently for five seeds, $t=T,\ldots,2$};
 
-% The posterior receives the current latent independently of the clean prediction.
-\draw[softarrow] (current.south east) -- ++(0,-0.55) -|
-  node[pos=0.68,below,font=\scriptsize,text=muted] {current $z_t$}
-  (posterior.south);
-
-% Every posterior sample returns through the selected fusion module.
-\draw[softarrow] (next.south) -- ++(0,-0.88) -|
-  (current.south west);
-\node[note,fill=fusion!3,inner sep=1.2pt] at (5.15,2.48)
-  {repeat independently for $i=1,\ldots,5$ and $t=T,\ldots,2$};
-
-% Decode, composite, and aggregate the five final posterior samples.
-\node[waveletblock,text width=1.35cm] (finalz) at (1.38,1.30)
+\node[waveletblock,text width=1.16cm,font=\scriptsize,inner xsep=2pt]
+  (finalz) at (5.58,0.94)
   {five final states\\$\{z_0^{(i)}\}_{i=1}^{5}$};
-\node[operator,text width=2.05cm] (decode) at (3.92,1.30)
-  {Haar IDWT\\$+$ hard composite each};
+\node[operator,text width=1.25cm,font=\scriptsize] (decode) at (7.12,0.94)
+  {Haar IDWT\\$+$ hard composite};
 
-\foreach \i/\yy in {1/1.98,2/1.64,3/1.30,4/0.96,5/0.62} {
-  \node[block,draw=fusion,fill=fusion!6,minimum width=1.22cm,
-    minimum height=0.27cm,inner xsep=1.2pt,inner ysep=0.8pt,font=\scriptsize]
-    (member\i) at (6.30,\yy) {$\hat x^{(\i)}$};
-  \draw[softarrow] (decode.east) -- (member\i.west);
+\foreach \i/\yy in {1/1.60,2/1.26,3/0.92,4/0.58,5/0.24} {
+  \node[block,draw=fusion,fill=fusion!6,minimum width=0.78cm,
+    minimum height=0.21cm,inner xsep=1pt,inner ysep=0.4pt,font=\scriptsize]
+    (member\i) at (8.62,\yy) {$\hat x^{(\i)}$};
+  \draw[draw=muted,line width=0.55pt] (decode.east) -- (member\i.west);
 }
-\node[note,text=fusion] at (6.30,2.27) {five reconstructions};
-
-\node[fusionblock,text width=1.85cm] (aggregate) at (8.73,1.30)
-  {voxel-wise mean\\$\bar x=\frac{1}{5}\sum_{i=1}^{5}\hat x^{(i)}$};
+\node[note,text=fusion] at (8.62,1.98) {five reconstructions};
+\coordinate (merge) at (9.38,0.92);
 \foreach \i in {1,...,5} {
-  \draw[softarrow] (member\i.east) -- (aggregate.west);
+  \draw[draw=muted,line width=0.55pt] (member\i.east) -- (merge);
 }
-\node[fusionblock,text width=1.75cm] (composite) at (11.25,1.30)
-  {final hard composite\\with $x_v$ and $m$};
-\node[block,draw=fusion,fill=fusion!12,minimum width=1.25cm]
-  (output) at (13.65,1.30)
-  {$N=5$\\prediction};
+\fill[fusion] (merge) circle (0.8pt);
 
-\draw[finalarrow] (next.east) -- ++(0.08,0) -- ++(0,-1.48) -|
-  node[pos=0.76,above,fill=fusion!3,inner sep=1.2pt,font=\scriptsize,text=fusion]
-    {at $t=1$ for each $i$}
-  (finalz.north);
+\node[fusionblock,text width=1.18cm,font=\scriptsize] (aggregate) at (10.46,0.94)
+  {voxel-wise mean\\$\bar x=\frac{1}{5}\sum_i\hat x^{(i)}$};
+\node[fusionblock,text width=1.26cm,font=\scriptsize] (composite) at (12.38,0.94)
+  {final hard composite\\with $x_v,m$};
+\node[block,draw=fusion,fill=fusion!12,minimum width=0.98cm,font=\scriptsize]
+  (output) at (14.42,0.94) {$N=5$\\prediction};
+
+\draw[finalarrow] (next.east) -- (15.27,3.82) -- (15.27,2.24)
+  -- node[midway,above,fill=fusion!3,inner sep=1.2pt,
+    font=\scriptsize,text=fusion] {at $t=1$: retain five states}
+  (5.58,2.24) -- (finalz.north);
 \draw[arrow] (finalz) -- (decode);
+\draw[softarrow] (merge) -- (aggregate);
 \draw[arrow] (aggregate) -- (composite);
 \draw[arrow] (composite) -- (output);
 

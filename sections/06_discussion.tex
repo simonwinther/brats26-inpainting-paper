@@ -12,15 +12,13 @@ most paired cases argue against an outlier-only effect, but 15 all-metric losses
 it is not uniformly superior. One training seed and arm-specific checkpoints
 prevent component-level causal attribution.
 
-The fixed-mask pipeline uses $N=1$ by design. On development data, mean $N=3$
-improved joint rank by only 0.1333 at three times the trajectory count, while mean
-$N=5$ was worse. Thus fixed versus augmented compares unequal trajectory counts;
-weighted versus random is the equal-trajectory contrast.
+Fixed mask uses $N=1$: mean $N=3$ improved development joint rank by only 0.1333
+at triple trajectory cost, while mean $N=5$ was worse. Thus only weighted versus
+random is trajectory-matched; fixed versus augmented is not.
 
-The invertible wavelet representation enables full-volume 3D sampling, while hard
-compositing preserves observed tissue. Sampling remains costly: mean $N=5$ runs
-five 1000-step ancestral trajectories. Recent work on faster wavelet
-inpainting~\cite{durrer2026fastwdm3d} motivates sampler validation under the same
+Invertible wavelets enable full-volume 3D sampling and hard compositing preserves
+observed tissue, but mean $N=5$ needs five 1000-step ancestral trajectories. Faster
+wavelet inpainting~\cite{durrer2026fastwdm3d} motivates validation under the same
 frozen cohort and scoring protocol.
 
 Metrics cover artificially removed healthy voxels. Because observed T1n remains
@@ -52,7 +50,7 @@ splits and multimodal conditioning.
 \label{sec:conclusion}
 
 CATCH combines conditional 3D Haar-wavelet diffusion, tumor-excluded supervision,
-hard preservation of observed tissue, and development-selected trajectory
-aggregation. In this single-seed internal study, weighted-mixture augmentation is
-strongest under matched compute on artificially removed healthy tissue; clinical
-and cross-method superiority remain unestablished.
+hard compositing, and development-selected aggregation. In this single-seed
+internal study, weighted-mixture augmentation is strongest under matched compute on
+artificially removed healthy tissue; clinical and cross-method superiority remain
+unestablished.
