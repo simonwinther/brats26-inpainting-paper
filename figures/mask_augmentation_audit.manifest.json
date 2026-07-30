@@ -1,0 +1,28 @@
+{
+  "example_figure": "/home/simon/dev/bratz2026-dev/brats26-inpainting-paper/figures/mask_augmentation.png",
+  "example_figure_sha256": "74957e9a9c507f692b9e5b9c94b9e82ed8f17bdf853ffb2878366bd279b0209b",
+  "generated_at_utc": "2026-07-30T00:52:12.996499+00:00",
+  "layout": "audit",
+  "metadata_json": "/home/simon/dev/bratz2026-dev/brats26-inpainting-paper/data/mask_augmentation_metadata.json",
+  "metadata_json_sha256": "3914fec6c87557cd266484bafb06ff6fa343ab6a191bab0245701a84f7643aa8",
+  "outputs": [
+    {
+      "path": "/home/simon/dev/bratz2026-dev/brats26-inpainting-paper/figures/mask_augmentation_audit.pdf",
+      "sha256": "d4ff36d20794a2db3dfb96dfbb7abc0be8d340b61fecb4899dd065c58ab00fc0"
+    },
+    {
+      "path": "/home/simon/dev/bratz2026-dev/brats26-inpainting-paper/figures/mask_augmentation_audit.png",
+      "sha256": "c45500c294aaba5c5f481239163a528cb5a1c65664301bba1699e062903517ac"
+    }
+  ],
+  "panels": {
+    "a": "Provided fixed mask, tumor-only random augmentation, and the three weighted-mixture mask families.",
+    "b": "Tenth-to-90th percentile, interquartile range, and median of artificial-hole/brain volume ratio by training policy."
+  },
+  "plot_only": true,
+  "plot_script": "/home/simon/dev/bratz2026-dev/brats26-inpainting-paper/scripts/plot_mask_augmentation.py",
+  "plot_script_sha256": "529375054b23316066cc87f7eda9d4d9281d268f86a00e0c30ce7e8481b19f8d",
+  "samples_csv": "/home/simon/dev/bratz2026-dev/brats26-inpainting-paper/data/mask_augmentation_samples.csv",
+  "samples_csv_sha256": "c4fd17d715a66606af0a913c8d77707e680ce5ca97bd492a447cd6185c8e5d6f",
+  "schema_version": 1
+}

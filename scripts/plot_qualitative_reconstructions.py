@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """Create the audited qualitative figure for the locked confirmation cohort.
 
-The low and median cases are selected deterministically at the 10th and 50th
-percentiles of the selected weighted-mixture pipeline's SSIM. The high-performing case
-is the upper-SSIM-quintile case with the largest maximum-slice scored
-healthy-mask area. Each row uses that case's maximum-area axial slice.
+Cases are selected deterministically at the 10th, 50th, and 90th percentiles of
+the selected weighted-mixture pipeline's SSIM. Each row uses a near-maximum-area
+axial slice that favors a larger scored-region share of the full hole.
 """
 
 from __future__ import annotations
@@ -41,8 +40,8 @@ PREDICTION_SUFFIXES = (
 QUANTILES = (
     (0.10, "10th percentile"),
     (0.50, "Median"),
+    (0.90, "90th percentile"),
 )
-HIGH_POOL_FRACTION = 0.20
 METRIC_ANNOTATION_MARGIN = 0.035
 METRIC_ANNOTATION_MASK_DILATION = 2
 METRIC_ANNOTATION_CORNERS = (
@@ -52,6 +51,7 @@ METRIC_ANNOTATION_CORNERS = (
     ("upper right", "right", "top"),
 )
 ZOOM_MINIMUM_CROP_PIXELS = 48
+SLICE_MINIMUM_RELATIVE_HEALTHY_AREA = 0.90
 
 
 def parse_args() -> argparse.Namespace:
@@ -68,6 +68,12 @@ def parse_args() -> argparse.Namespace:
         "--output-stem",
         type=Path,
         default=PAPER_ROOT / "figures" / "qualitative_reconstructions",
+    )
+    parser.add_argument(
+        "--zoom-layout",
+        choices=("bottom", "column"),
+        default="bottom",
+        help="Place paired reconstruction/reference zooms below the grid or in column 4.",
     )
     parser.add_argument("--overwrite", action="store_true")
     return parser.parse_args()
@@ -122,7 +128,6 @@ def read_metrics(path: Path) -> dict[str, dict[str, float]]:
 def select_cases(
     rows: dict[str, dict[str, float]],
     case_ids: list[str],
-    data_dir: Path,
 ) -> list[dict[str, object]]:
     if set(rows) != set(case_ids):
         raise ValueError(
@@ -133,7 +138,7 @@ def select_cases(
     selections = []
     indices = set()
     for quantile, label in QUANTILES:
-        index = int(round(quantile * (len(ordered) - 1)))
+        index = int(math.floor(quantile * (len(ordered) - 1)))
         if index in indices:
             raise ValueError("Quantile rule selected a duplicate rank")
         indices.add(index)
@@ -144,41 +149,10 @@ def select_cases(
                 "rank_index_zero_based": index,
                 "rank_one_based": index + 1,
                 "case_id": ordered[index],
-                "selection_basis": "nearest cohort SSIM percentile",
+                "selection_basis": "lower empirical cohort SSIM percentile",
             }
         )
 
-    high_pool_size = math.ceil(HIGH_POOL_FRACTION * len(ordered))
-    high_candidates = ordered[-high_pool_size:]
-    high_areas = {
-        case_id: maximum_healthy_slice_area(data_dir, case_id)
-        for case_id in high_candidates
-    }
-    high_case = max(
-        high_candidates,
-        key=lambda case_id: (
-            high_areas[case_id],
-            rows[case_id]["ssim"],
-            case_id,
-        ),
-    )
-    high_index = ordered.index(high_case)
-    if high_index in indices:
-        raise ValueError("High-performance rule selected an existing quantile case")
-    selections.append(
-        {
-            "quantile": high_index / (len(ordered) - 1),
-            "quantile_label": "High SSIM (upper quintile)",
-            "rank_index_zero_based": high_index,
-            "rank_one_based": high_index + 1,
-            "case_id": high_case,
-            "selection_basis": (
-                "largest maximum-slice healthy-mask area within upper SSIM quintile"
-            ),
-            "selection_healthy_mask_slice_voxels": high_areas[high_case],
-            "upper_ssim_pool_size": high_pool_size,
-        }
-    )
     return selections
 
 
@@ -192,17 +166,6 @@ def find_case_dir(data_dir: Path, case_id: str) -> Path:
             f"Expected one source directory for {case_id}, found {len(matches)}"
         )
     return matches[0]
-
-
-def maximum_healthy_slice_area(data_dir: Path, case_id: str) -> int:
-    case_dir = find_case_dir(data_dir, case_id)
-    healthy_mask, _ = load_canonical(
-        case_dir / f"{case_id}-mask-healthy.nii.gz"
-    )
-    healthy_mask = healthy_mask > 0
-    if not healthy_mask.any():
-        raise ValueError(f"{case_id}: healthy mask is empty")
-    return int(healthy_mask.sum(axis=(0, 1)).max())
 
 
 def prediction_path(directory: Path, case_id: str) -> Path:
@@ -245,6 +208,26 @@ def display_window(voided: np.ndarray) -> tuple[float, float]:
     if not hi > lo:
         return float(source.min()), float(source.max()) + 1.0
     return lo, hi
+
+
+def select_slice(
+    healthy_mask: np.ndarray,
+    full_mask: np.ndarray,
+) -> int:
+    healthy_area = healthy_mask.sum(axis=(0, 1))
+    full_area = full_mask.sum(axis=(0, 1))
+    minimum_area = SLICE_MINIMUM_RELATIVE_HEALTHY_AREA * healthy_area.max()
+    candidates = np.flatnonzero(healthy_area >= minimum_area)
+    return int(
+        max(
+            candidates,
+            key=lambda index: (
+                healthy_area[index] / full_area[index],
+                healthy_area[index],
+                -index,
+            ),
+        )
+    )
 
 
 def brain_crop(
@@ -310,7 +293,7 @@ def load_case(
     ):
         raise ValueError(f"{case_id}: prediction changed voxels outside the full mask")
 
-    slice_index = int(np.argmax(arrays["healthy_mask"].sum(axis=(0, 1))))
+    slice_index = select_slice(arrays["healthy_mask"], arrays["full_mask"])
     crop = brain_crop(arrays["reference_t1n"], slice_index)
     metric_bounds = normalization_bounds(arrays["voided"])
     error = (
@@ -583,6 +566,7 @@ def plot_figure(
     metrics: dict[str, dict[str, float]],
     reconstruction_label: str,
     output_stem: Path,
+    zoom_layout: str,
 ) -> tuple[list[Path], float]:
     configure_style()
     pooled_errors = np.concatenate(
@@ -615,42 +599,77 @@ def plot_figure(
             },
         }
 
-    figure = plt.figure(figsize=(7.2, 5.35))
-    grid = figure.add_gridspec(
-        3,
-        5,
-        width_ratios=(1, 1, 1, 1, 0.045),
-        left=0.13,
-        right=0.95,
-        bottom=0.32,
-        top=0.93,
-        wspace=0.055,
-        hspace=0.13,
-    )
-    axes = np.asarray(
-        [
-            [figure.add_subplot(grid[row, column]) for column in range(4)]
-            for row in range(3)
-        ]
-    )
-    colorbar_axis = figure.add_subplot(grid[:, 4])
-    zoom_grid = figure.add_gridspec(
-        1,
-        8,
-        width_ratios=(1, 1, 0.16, 1, 1, 0.16, 1, 1),
-        left=0.20,
-        right=0.88,
-        bottom=0.055,
-        top=0.215,
-        wspace=0.055,
-    )
-    zoom_axes = [
-        (
-            figure.add_subplot(zoom_grid[0, first_column]),
-            figure.add_subplot(zoom_grid[0, first_column + 1]),
+    if zoom_layout == "bottom":
+        figure = plt.figure(figsize=(7.2, 5.35))
+        grid = figure.add_gridspec(
+            3,
+            5,
+            width_ratios=(1, 1, 1, 1, 0.045),
+            left=0.13,
+            right=0.95,
+            bottom=0.32,
+            top=0.93,
+            wspace=0.055,
+            hspace=0.13,
         )
-        for first_column in (0, 3, 6)
-    ]
+        axes = np.asarray(
+            [
+                [figure.add_subplot(grid[row, column]) for column in range(4)]
+                for row in range(3)
+            ]
+        )
+        colorbar_axis = figure.add_subplot(grid[:, 4])
+        zoom_grid = figure.add_gridspec(
+            1,
+            8,
+            width_ratios=(1, 1, 0.16, 1, 1, 0.16, 1, 1),
+            left=0.20,
+            right=0.88,
+            bottom=0.055,
+            top=0.215,
+            wspace=0.055,
+        )
+        zoom_axes = [
+            (
+                figure.add_subplot(zoom_grid[0, first_column]),
+                figure.add_subplot(zoom_grid[0, first_column + 1]),
+            )
+            for first_column in (0, 3, 6)
+        ]
+        legend_anchor = (0.49, 0.255)
+    else:
+        figure = plt.figure(figsize=(7.2, 3.75))
+        grid = figure.add_gridspec(
+            3,
+            6,
+            width_ratios=(1, 1, 1, 2, 1, 0.045),
+            left=0.13,
+            right=0.95,
+            bottom=0.16,
+            top=0.91,
+            wspace=0.025,
+            hspace=0.10,
+        )
+        axes = np.asarray(
+            [
+                [
+                    figure.add_subplot(grid[row, column])
+                    for column in (0, 1, 2, 4)
+                ]
+                for row in range(3)
+            ]
+        )
+        colorbar_axis = figure.add_subplot(grid[:, 5])
+        zoom_axes = []
+        for row in range(3):
+            zoom_grid = grid[row, 3].subgridspec(1, 2, wspace=0.025)
+            zoom_axes.append(
+                (
+                    figure.add_subplot(zoom_grid[0, 0]),
+                    figure.add_subplot(zoom_grid[0, 1]),
+                )
+            )
+        legend_anchor = (0.5, 0.045)
     error_image = None
     metric_annotations = []
     for row_index, (case, selection) in enumerate(zip(cases, selections)):
@@ -693,10 +712,12 @@ def plot_figure(
         )
 
         case_id = str(case["case_id"])
+        row_label = str(selection["quantile_label"])
         axes[row_index, 0].set_ylabel(
-            f"{selection['quantile_label']}\n{case_id}\nslice {slice_index}",
-            fontsize=6.7,
-            labelpad=3,
+            f"{row_label}\n{case_id.removeprefix('BraTS-GLI-')}",
+            fontsize=6.2,
+            linespacing=0.95,
+            labelpad=2,
         )
         metric_annotation = axes[row_index, 1].text(
             METRIC_ANNOTATION_MARGIN,
@@ -724,16 +745,24 @@ def plot_figure(
             for spine in axis.spines.values():
                 spine.set_visible(False)
 
-    for axis, title in zip(
-        axes[0],
-        (
+    if zoom_layout == "bottom":
+        column_titles = (
             "Voided input",
             reconstruction_label,
             "Reference T1n",
             r"$|\mathrm{pred}-\mathrm{ref}|$",
-        ),
-    ):
-        axis.set_title(title, fontweight="bold", pad=4)
+        )
+        title_style = {"fontweight": "bold", "pad": 4}
+    else:
+        column_titles = (
+            "Voided input",
+            "Prediction",
+            "Observed T1n",
+            "Absolute error",
+        )
+        title_style = {"fontsize": 6.8, "fontweight": "normal", "pad": 2.5}
+    for axis, title in zip(axes[0], column_titles):
+        axis.set_title(title, **title_style)
 
     handles = [
         Line2D([0], [0], color="#00D5E5", linewidth=1.2, label="Full hole"),
@@ -749,7 +778,7 @@ def plot_figure(
     figure.legend(
         handles=handles,
         loc="lower center",
-        bbox_to_anchor=(0.49, 0.255),
+        bbox_to_anchor=legend_anchor,
         ncol=2,
         frameon=False,
         fontsize=6.7,
@@ -768,19 +797,27 @@ def plot_figure(
         prediction_zoom, reference_zoom = zoom_axes[row_index]
         plot_scored_region_zoom(prediction_zoom, case, "prediction")
         plot_scored_region_zoom(reference_zoom, case, "reference_t1n")
-        prediction_zoom.set_title("Weighted", fontsize=5.8, pad=1.5)
-        reference_zoom.set_title("Reference", fontsize=5.8, pad=1.5)
-        group_bounds = prediction_zoom.get_position()
-        reference_bounds = reference_zoom.get_position()
-        figure.text(
-            (group_bounds.x0 + reference_bounds.x1) / 2,
-            0.028,
-            ("Low", "Median", "High")[row_index],
-            ha="center",
-            va="center",
-            fontsize=6.1,
-            fontweight="bold",
-        )
+        if zoom_layout == "bottom":
+            prediction_zoom.set_title("Weighted", fontsize=5.8, pad=1.5)
+            reference_zoom.set_title("Reference", fontsize=5.8, pad=1.5)
+            group_bounds = prediction_zoom.get_position()
+            reference_bounds = reference_zoom.get_position()
+            figure.text(
+                (group_bounds.x0 + reference_bounds.x1) / 2,
+                0.028,
+                ("Low", "Median", "High")[row_index],
+                ha="center",
+                va="center",
+                fontsize=6.1,
+                fontweight="bold",
+            )
+        elif row_index == 0:
+            prediction_zoom.set_title(
+                "Prediction zoom", fontsize=6.8, fontweight="normal", pad=2.5
+            )
+            reference_zoom.set_title(
+                "Observed zoom", fontsize=6.8, fontweight="normal", pad=2.5
+            )
 
     output_stem.parent.mkdir(parents=True, exist_ok=True)
     outputs = [output_stem.with_suffix(".pdf"), output_stem.with_suffix(".png")]
@@ -827,6 +864,8 @@ def write_selection_csv(
         "psnr",
         "mse",
         "healthy_mask_slice_voxels",
+        "full_mask_slice_voxels",
+        "healthy_to_full_mask_slice_fraction",
         "selection_basis",
     ]
     with path.open("w", newline="") as handle:
@@ -847,6 +886,19 @@ def write_selection_csv(
                             :, :, int(case["slice_index"])
                         ].sum()
                     ),
+                    "full_mask_slice_voxels": int(
+                        case["arrays"]["full_mask"][
+                            :, :, int(case["slice_index"])
+                        ].sum()
+                    ),
+                    "healthy_to_full_mask_slice_fraction": float(
+                        case["arrays"]["healthy_mask"][
+                            :, :, int(case["slice_index"])
+                        ].sum()
+                        / case["arrays"]["full_mask"][
+                            :, :, int(case["slice_index"])
+                        ].sum()
+                    ),
                     "selection_basis": selection["selection_basis"],
                     **metrics[case_id],
                 }
@@ -864,14 +916,24 @@ def write_manifest(
 ) -> None:
     selected_cases = []
     for selection, case in zip(selections, cases):
+        healthy_mask_slice_voxels = int(
+            case["arrays"]["healthy_mask"][
+                :, :, int(case["slice_index"])
+            ].sum()
+        )
+        full_mask_slice_voxels = int(
+            case["arrays"]["full_mask"][
+                :, :, int(case["slice_index"])
+            ].sum()
+        )
         selected_cases.append(
             {
                 **selection,
                 "slice_index_canonical_ras": case["slice_index"],
-                "healthy_mask_slice_voxels": int(
-                    case["arrays"]["healthy_mask"][
-                        :, :, int(case["slice_index"])
-                    ].sum()
+                "healthy_mask_slice_voxels": healthy_mask_slice_voxels,
+                "full_mask_slice_voxels": full_mask_slice_voxels,
+                "healthy_to_full_mask_slice_fraction": (
+                    healthy_mask_slice_voxels / full_mask_slice_voxels
                 ),
                 "display_window": list(case["display_window"]),
                 "official_metric_normalization_bounds": list(case["metric_bounds"]),
@@ -885,19 +947,23 @@ def write_manifest(
             }
         )
     payload = {
-        "schema_version": 5,
+        "schema_version": 6,
         "generator": {
             "path": portable_path(Path(__file__)),
             "sha256": sha256(Path(__file__).resolve()),
         },
         "pipeline": args.reconstruction_label.replace("\n", " "),
         "selection_rule": (
-            "Nearest observed cases to the 10th and 50th percentiles of "
-            "weighted-mixture mean-N=5 SSIM, plus the upper-SSIM-quintile case "
-            "with the largest "
-            "maximum-slice healthy scoring region, in the locked confirmation cohort."
+            "Observed cases at the 10th, 50th, and 90th percentiles of "
+            "weighted-mixture mean-N=5 SSIM in the locked confirmation cohort, "
+            "using the lower empirical quantile convention."
         ),
-        "slice_rule": "Maximum healthy-mask area in canonical RAS axial space.",
+        "slice_rule": (
+            "In canonical RAS axial space, retain slices with at least 90% of "
+            "the case's maximum healthy-mask slice area, then maximize the "
+            "healthy-mask/full-hole area ratio; ties prefer larger healthy-mask "
+            "area and then the lower slice index."
+        ),
         "display_window_rule": (
             "Per-case 0.5th and 99.5th percentiles of positive voided voxels."
         ),
@@ -918,11 +984,18 @@ def write_manifest(
             "are centered without resampling on one shared square canvas whose "
             "side is the largest selected crop dimension; added pixels are zero."
         ),
-        "zoom_strip_rule": (
-            "The bottom strip shows paired weighted-reconstruction and reference "
-            "crops using the same case-specific intensity window. Each square crop "
-            "is centered on the selected-slice healthy scoring mask with 35 percent "
-            "padding and a minimum side length of 48 oriented pixels."
+        "zoom_layout": args.zoom_layout,
+        "zoom_panel_rule": (
+            "Paired weighted-reconstruction and reference crops use the same "
+            "case-specific intensity window and are placed "
+            + (
+                "in a bottom strip. "
+                if args.zoom_layout == "bottom"
+                else "side by side in the fourth grouped column. "
+            )
+            + "Each square crop is centered on the selected-slice healthy scoring "
+            "mask with 35 percent padding and a minimum side length of 48 oriented "
+            "pixels."
         ),
         "confirmation_case_file": portable_path(args.case_file),
         "confirmation_case_file_sha256": sha256(args.case_file),
@@ -946,7 +1019,7 @@ def main() -> None:
     ensure_output_targets(args.output_stem, args.overwrite)
     case_ids = read_case_file(args.case_file)
     metrics = read_metrics(args.metrics)
-    selections = select_cases(metrics, case_ids, args.data_dir)
+    selections = select_cases(metrics, case_ids)
     cases = [
         load_case(args.data_dir, args.pred_dir, str(selection["case_id"]))
         for selection in selections
@@ -957,6 +1030,7 @@ def main() -> None:
         metrics,
         args.reconstruction_label,
         args.output_stem,
+        args.zoom_layout,
     )
     selection_csv = args.output_stem.with_suffix(".csv")
     write_selection_csv(selection_csv, selections, metrics, cases)

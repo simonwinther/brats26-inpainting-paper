@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.27)  29 JUL 2026 15:01
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.27)  30 JUL 2026 02:55
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -691,24 +691,24 @@ File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 (build/paper.aux)
 \openout1 = `paper.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 34.
+LaTeX Font Info:    ... okay on input line 34.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 34.
+LaTeX Font Info:    ... okay on input line 34.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 34.
+LaTeX Font Info:    ... okay on input line 34.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 34.
+LaTeX Font Info:    ... okay on input line 34.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 34.
+LaTeX Font Info:    ... okay on input line 34.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 34.
+LaTeX Font Info:    ... okay on input line 34.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 34.
+LaTeX Font Info:    ... okay on input line 34.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 34.
+LaTeX Font Info:    ... okay on input line 34.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 34.
+LaTeX Font Info:    ... okay on input line 34.
  (/usr/share/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count367
@@ -731,7 +731,7 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-Package hyperref Info: Link coloring OFF on input line 25.
+Package hyperref Info: Link coloring OFF on input line 34.
 
 (build/paper.out) (build/paper.out)
 \@outlinefile=\write4
@@ -744,76 +744,110 @@ Package hyperref Info: Link coloring OFF on input line 25.
 /enc/dvips/cm-super/cm-super-t1.enc}{/usr/share/texmf-dist/fonts/enc/dvips/cm-s
 uper/cm-super-ts1.enc}])
 (./sections/02_related_work.tex) (./sections/03_method.tex [2]
-<figures/catch_architecture.pdf, id=96, 431.49104pt x 380.41022pt>
+<figures/catch_architecture.pdf, id=103, 431.49104pt x 380.41022pt>
 File: figures/catch_architecture.pdf Graphic file (type pdf)
 <use figures/catch_architecture.pdf>
-Package pdftex.def Info: figures/catch_architecture.pdf  used on input line 13.
+Package pdftex.def Info: figures/catch_architecture.pdf  used on input line 16.
 
 (pdftex.def)             Requested size: 340.17958pt x 299.9229pt.
- [3 <./figures/catch_architecture.pdf>] [4]) (./sections/04_experiments.tex [5]
-)
-(./sections/05_results.tex
-<figures/checkpoint_selection.pdf, id=255, 537.35257pt x 180.18605pt>
+ [3 <./figures/catch_architecture.pdf>] [4]
+<figures/mask_augmentation_audit.pdf, id=237, 510.61147pt x 181.30336pt>
+File: figures/mask_augmentation_audit.pdf Graphic file (type pdf)
+<use figures/mask_augmentation_audit.pdf>
+Package pdftex.def Info: figures/mask_augmentation_audit.pdf  used on input lin
+e 104.
+(pdftex.def)             Requested size: 347.12354pt x 123.25697pt.
+) (./sections/04_experiments.tex [5 <./figures/mask_augmentation_audit.pdf>]) (
+./sections/05_results.tex [6]
+<figures/checkpoint_selection.pdf, id=312, 537.35257pt x 180.18605pt>
 File: figures/checkpoint_selection.pdf Graphic file (type pdf)
 <use figures/checkpoint_selection.pdf>
 Package pdftex.def Info: figures/checkpoint_selection.pdf  used on input line 1
-5.
+6.
 (pdftex.def)             Requested size: 347.12354pt x 116.39919pt.
- [6] (./tables/confirmation75.tex) [7 <./figures/checkpoint_selection.pdf>]
-<figures/qualitative_reconstructions.pdf, id=314, 489.82857pt x 302.55475pt>
-File: figures/qualitative_reconstructions.pdf Graphic file (type pdf)
-<use figures/qualitative_reconstructions.pdf>
-Package pdftex.def Info: figures/qualitative_reconstructions.pdf  used on input
- line 77.
-(pdftex.def)             Requested size: 347.12354pt x 214.41373pt.
-) (./sections/06_discussion.tex [8 <./figures/qualitative_reconstructions.pdf>]
-) (./sections/07_credits.tex) (build/paper.bbl [9]
-[10]) [11] (build/paper.aux)
+
+(./tables/confirmation75.tex) [7 <./figures/checkpoint_selection.pdf>]
+<figures/confirmation_effects.pdf, id=358, 520.34402pt x 177.0615pt>
+File: figures/confirmation_effects.pdf Graphic file (type pdf)
+<use figures/confirmation_effects.pdf>
+Package pdftex.def Info: figures/confirmation_effects.pdf  used on input line 7
+8.
+(pdftex.def)             Requested size: 347.12354pt x 118.12263pt.
+<figures/qualitative_reconstructions_column.pdf, id=360, 483.45331pt x 253.2124
+pt>
+File: figures/qualitative_reconstructions_column.pdf Graphic file (type pdf)
+<use figures/qualitative_reconstructions_column.pdf>
+Package pdftex.def Info: figures/qualitative_reconstructions_column.pdf  used o
+n input line 97.
+(pdftex.def)             Requested size: 347.12354pt x 181.81049pt.
+)
+(./sections/06_discussion.tex [8] [9 <./figures/confirmation_effects.pdf> <./fi
+gures/qualitative_reconstructions_column.pdf>]) (./sections/07_credits.tex
+[10]) (build/paper.bbl
+Underfull \hbox (badness 1072) in paragraph at lines 38--44
+\T1/cmr/m/n/9 M.A., Bercea, C.I., Hamamci, I.E., Wiestler, B., Pi-raud, M., Yal
+di-zli, O.,
+ []
+
+[11]
+Underfull \hbox (badness 7397) in paragraph at lines 98--102
+[]\T1/cmr/m/n/9 Said, S.D., Gho-la-mal-izadeh, T., Ghazi, M.M.: Tooth-diffusion
+: Guided
+ []
+
+
+Underfull \hbox (badness 2582) in paragraph at lines 98--102
+\T1/cmr/m/n/9 3D CBCT syn-the-sis with fine-grained tooth con-di-tion-ing. arXi
+v preprint
+ []
+
+) [12] (build/paper.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
 Package rerunfilecheck Info: File `paper.out' has not changed.
-(rerunfilecheck)             Checksum: 34E0B6C24808837CB96D8C11F6877D68;563.
+(rerunfilecheck)             Checksum: 2CE410665F1999B83F1B933E343F596E;517.
  ) 
 Here is how much of TeX's memory you used:
- 20955 strings out of 469515
- 389489 string characters out of 5470807
- 788051 words of memory out of 5000000
- 49175 multiletter control sequences out of 15000+600000
+ 20985 strings out of 469515
+ 390517 string characters out of 5470807
+ 791820 words of memory out of 5000000
+ 49200 multiletter control sequences out of 15000+600000
  639809 words of font info for 67 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 99i,11n,118p,666b,732s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 99i,13n,118p,737b,732s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/publi
-c/amsfonts/cm/cmmi5.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/c
-mmi6.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/
-share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-dis
-t/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texmf-dist/fonts/type1/p
-ublic/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmr5.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></us
-r/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texmf-di
-st/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-dist/fonts/type1/p
-ublic/amsfonts/cm/cmr9.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/c
-m/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></
-usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texmf
--dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texmf-dist/fonts/typ
-e1/public/amsfonts/cm/cmsy9.pfb></usr/share/texmf-dist/fonts/type1/public/cm-su
-per/sfbx0700.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx0900.pf
-b></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1000.pfb></usr/share/t
-exmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/share/texmf-dist/fonts
-/type1/public/cm-super/sfbx1440.pfb></usr/share/texmf-dist/fonts/type1/public/c
-m-super/sfrm0700.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm080
-0.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm0900.pfb></usr/sha
-re/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/share/texmf-dist/f
-onts/type1/public/cm-super/sfti1000.pfb></usr/share/texmf-dist/fonts/type1/publ
-ic/cm-super/sftt0900.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sft
-t1000.pfb>
-Output written on build/paper.pdf (11 pages, 903983 bytes).
+ts/type1/public/amsfonts/cmextra/cmex8.pfb></usr/share/texmf-dist/fonts/type1/p
+ublic/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmmi5.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb><
+/usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmmi9.pfb></usr/share/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pf
+b></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmr9.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.p
+fb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texmf-dist/font
+s/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texmf-dist/fonts/type1/public/
+amsfonts/cm/cmsy9.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx07
+00.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx0900.pfb></usr/sh
+are/texmf-dist/fonts/type1/public/cm-super/sfbx1000.pfb></usr/share/texmf-dist/
+fonts/type1/public/cm-super/sfbx1200.pfb></usr/share/texmf-dist/fonts/type1/pub
+lic/cm-super/sfbx1440.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sf
+rm0700.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm0800.pfb></us
+r/share/texmf-dist/fonts/type1/public/cm-super/sfrm0900.pfb></usr/share/texmf-d
+ist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/share/texmf-dist/fonts/type1
+/public/cm-super/sfti1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-supe
+r/sftt0900.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb>
+
+Output written on build/paper.pdf (12 pages, 1021120 bytes).
 PDF statistics:
- 534 PDF objects out of 1000 (max. 8388607)
- 358 compressed objects within 4 object streams
- 61 named destinations out of 1000 (max. 500000)
- 36 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 611 PDF objects out of 1000 (max. 8388607)
+ 401 compressed objects within 5 object streams
+ 66 named destinations out of 1000 (max. 500000)
+ 46 words of extra memory for PDF output out of 10000 (max. 10000000)
 

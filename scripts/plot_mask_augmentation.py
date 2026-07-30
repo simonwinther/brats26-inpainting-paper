@@ -9,7 +9,7 @@ import hashlib
 import json
 import subprocess
 import sys
-from collections import Counter, defaultdict
+from collections import Counter, defaultdict, deque
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -18,6 +18,8 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
+from matplotlib.lines import Line2D
+from matplotlib.patches import Patch
 from matplotlib.ticker import FixedLocator, FuncFormatter, NullFormatter
 import nibabel as nib
 import numpy as np
@@ -54,6 +56,7 @@ DEFAULT_WEIGHTED_CONFIG = BRATS_ROOT / "configs" / "masking" / "weighted_aug.jso
 DEFAULT_SAMPLES = PAPER_ROOT / "data" / "mask_augmentation_samples.csv"
 DEFAULT_METADATA = PAPER_ROOT / "data" / "mask_augmentation_metadata.json"
 DEFAULT_FIGURE = PAPER_ROOT / "figures" / "mask_augmentation"
+DEFAULT_EXAMPLE_FIGURE = DEFAULT_FIGURE.with_suffix(".png")
 
 POLICY_ORDER = ("fixed", "random", "weighted")
 POLICY_LABELS = {
@@ -132,6 +135,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--samples-csv", type=Path, default=DEFAULT_SAMPLES)
     parser.add_argument("--metadata-json", type=Path, default=DEFAULT_METADATA)
     parser.add_argument("--figure-stem", type=Path, default=DEFAULT_FIGURE)
+    parser.add_argument(
+        "--example-figure",
+        type=Path,
+        default=DEFAULT_EXAMPLE_FIGURE,
+        help="Audited source figure containing the five exemplar image panels.",
+    )
+    parser.add_argument(
+        "--layout",
+        choices=("full", "audit"),
+        default="full",
+        help="Render the complete exemplar figure or the compact two-panel audit.",
+    )
     parser.add_argument("--audit-cases", type=int, default=100)
     parser.add_argument("--audit-seed", type=int, default=2026)
     parser.add_argument("--global-seed", type=int, default=0)
@@ -615,6 +630,50 @@ def display_plane(array: np.ndarray, slice_index: int) -> np.ndarray:
     return np.rot90(array[:, :, slice_index])
 
 
+def whiten_exterior_background(image: np.ndarray) -> np.ndarray:
+    """Replace only border-connected near-black pixels with white."""
+    output = np.array(image, copy=True)
+    rgb = output[..., :3]
+    threshold = 0.04 if np.issubdtype(rgb.dtype, np.floating) else 10
+    dark = np.max(rgb, axis=-1) <= threshold
+    exterior = np.zeros(dark.shape, dtype=bool)
+    queue: deque[tuple[int, int]] = deque()
+
+    height, width = dark.shape
+    for row, column in (
+        *((0, column) for column in range(width)),
+        *((height - 1, column) for column in range(width)),
+        *((row, 0) for row in range(1, height - 1)),
+        *((row, width - 1) for row in range(1, height - 1)),
+    ):
+        if dark[row, column] and not exterior[row, column]:
+            exterior[row, column] = True
+            queue.append((row, column))
+
+    while queue:
+        row, column = queue.popleft()
+        for next_row, next_column in (
+            (row - 1, column),
+            (row + 1, column),
+            (row, column - 1),
+            (row, column + 1),
+        ):
+            if (
+                0 <= next_row < height
+                and 0 <= next_column < width
+                and dark[next_row, next_column]
+                and not exterior[next_row, next_column]
+            ):
+                exterior[next_row, next_column] = True
+                queue.append((next_row, next_column))
+
+    white = 1.0 if np.issubdtype(output.dtype, np.floating) else 255
+    output[exterior, :3] = white
+    if output.shape[-1] == 4:
+        output[exterior, 3] = white
+    return output
+
+
 def ecdf(values: list[float]) -> tuple[np.ndarray, np.ndarray]:
     x = np.sort(np.asarray(values, dtype=np.float64))
     y = np.arange(1, len(x) + 1, dtype=np.float64) / len(x)
@@ -813,6 +872,219 @@ def plot_figure(
     return outputs
 
 
+def plot_audit_figure(
+    records: list[dict],
+    examples: list[dict],
+    example_figure: Path,
+    output_stem: Path,
+) -> list[Path]:
+    configure_style()
+    source = plt.imread(example_figure)
+    if source.shape[:2] != (1190, 1603):
+        raise ValueError(
+            f"Expected audited exemplar source shape (1190, 1603), got "
+            f"{source.shape[:2]} from {example_figure}"
+        )
+    panel_bounds = [
+        (135 + 268 * index, 92, 395 + 268 * index, 351)
+        for index in range(5)
+    ]
+    panel_images = [
+        whiten_exterior_background(source[y0:y1, x0:x1])
+        for x0, y0, x1, y1 in panel_bounds
+    ]
+    if len(examples) != len(panel_images):
+        raise ValueError(
+            f"Expected {len(panel_images)} exemplar records, got {len(examples)}"
+        )
+
+    figure = plt.figure(figsize=(7.2, 2.55))
+    outer = figure.add_gridspec(
+        1,
+        2,
+        width_ratios=(1.08, 1.0),
+        left=0.015,
+        right=0.99,
+        bottom=0.18,
+        top=0.86,
+        wspace=0.24,
+    )
+    example_grid = outer[0].subgridspec(2, 3, wspace=0.045, hspace=0.34)
+    example_positions = ((0, 0), (0, 1), (0, 2), (1, 0), (1, 1))
+    example_titles = (
+        "Provided (fixed)",
+        "Tumor-only (random)",
+        "Mixture: tumor",
+        "Mixture: blob",
+        "Mixture: ellipsoid",
+    )
+    for panel, example, title, (row, column) in zip(
+        panel_images,
+        examples,
+        example_titles,
+        example_positions,
+    ):
+        axis = figure.add_subplot(example_grid[row, column])
+        axis.imshow(panel, interpolation="nearest")
+        axis.set_title(title, fontsize=6.2, fontweight="normal", pad=1.5)
+        axis.text(
+            0.5,
+            -0.06,
+            f"{100.0 * float(example['mask_to_brain_ratio']):.1f}% of brain",
+            transform=axis.transAxes,
+            ha="center",
+            va="top",
+            fontsize=5.4,
+        )
+        axis.set_axis_off()
+
+    key_axis = figure.add_subplot(example_grid[1, 2])
+    key_axis.set_axis_off()
+    key_axis.legend(
+        handles=[
+            Patch(
+                facecolor=(0.0, 0.78, 0.83, 0.48),
+                edgecolor="#00C7D2",
+                label="Artificial hole\n+ supervised target",
+            ),
+            Line2D(
+                [0],
+                [0],
+                color="#F97316",
+                linestyle="--",
+                linewidth=1.0,
+                label="Real tumor\n(excluded)",
+            ),
+        ],
+        loc="center",
+        frameon=False,
+        fontsize=5.7,
+        handlelength=1.4,
+        borderaxespad=0,
+    )
+    left_bounds = outer[0].get_position(figure)
+    figure.text(
+        (left_bounds.x0 + left_bounds.x1) / 2,
+        0.965,
+        "(a) Artificial training-hole examples",
+        ha="center",
+        va="top",
+        fontsize=7.2,
+    )
+
+    volume_axis = figure.add_subplot(outer[1])
+    y_positions = {"fixed": 2, "random": 1, "weighted": 0}
+    policy_labels = {
+        "fixed": "Provided\n$n=100$",
+        "random": "Tumor-only\n$n=500$",
+        "weighted": "Mixture\n$n=500$",
+    }
+    for policy in POLICY_ORDER:
+        values = np.asarray(
+            [
+                100.0 * float(row["mask_to_brain_ratio"])
+                for row in records
+                if row["policy"] == policy
+            ],
+            dtype=np.float64,
+        )
+        q10, q25, median, q75, q90 = np.percentile(
+            values, [10, 25, 50, 75, 90]
+        )
+        y = y_positions[policy]
+        color = POLICY_COLORS[policy]
+        volume_axis.hlines(y, q10, q90, color=color, linewidth=1.2, alpha=0.60)
+        volume_axis.hlines(
+            y, q25, q75, color=color, linewidth=6.0, alpha=0.88
+        )
+        volume_axis.scatter(
+            [median],
+            [y],
+            color="white",
+            edgecolor=color,
+            linewidth=1.1,
+            s=28,
+            zorder=3,
+        )
+        volume_axis.annotate(
+            f"{median:.1f}%",
+            (median, y),
+            xytext=(0, 8),
+            textcoords="offset points",
+            ha="center",
+            va="bottom",
+            fontsize=5.7,
+            color=color,
+        )
+
+    volume_axis.set_xscale("log")
+    volume_axis.xaxis.set_major_formatter(
+        FuncFormatter(lambda value, _: f"{value:g}")
+    )
+    volume_axis.set_xlim(0.04, 25)
+    volume_axis.set_ylim(-0.65, 2.65)
+    volume_axis.set_yticks(
+        [y_positions[policy] for policy in POLICY_ORDER],
+        [policy_labels[policy] for policy in POLICY_ORDER],
+    )
+    volume_axis.set_title(
+        "(b) Artificial-hole size",
+        fontsize=7.2,
+        fontweight="normal",
+        pad=13,
+    )
+    volume_axis.text(
+        0.5,
+        1.025,
+        "thin: 10--90%   thick: middle 50%   circle: median",
+        transform=volume_axis.transAxes,
+        ha="center",
+        va="bottom",
+        fontsize=5.5,
+    )
+    volume_axis.set_xlabel("Hole volume / brain volume (%)")
+    volume_axis.grid(True, axis="x", color="#E5E7EB", linewidth=0.4)
+    volume_axis.spines["top"].set_visible(False)
+    volume_axis.spines["right"].set_visible(False)
+    volume_axis.spines["left"].set_visible(False)
+    volume_axis.tick_params(axis="y", length=0, pad=4)
+    volume_axis.tick_params(axis="x", length=2, width=0.5)
+
+    output_stem.parent.mkdir(parents=True, exist_ok=True)
+    outputs = [output_stem.with_suffix(".pdf"), output_stem.with_suffix(".png")]
+    figure.savefig(
+        outputs[0],
+        bbox_inches="tight",
+        metadata={"CreationDate": None, "ModDate": None},
+    )
+    figure.savefig(outputs[1], dpi=300, bbox_inches="tight")
+    plt.close(figure)
+    return outputs
+
+
+def panel_descriptions(layout: str) -> dict[str, str]:
+    if layout == "audit":
+        return {
+            "a": (
+                "Provided fixed mask, tumor-only random augmentation, and the "
+                "three weighted-mixture mask families."
+            ),
+            "b": (
+                "Tenth-to-90th percentile, interquartile range, and median of "
+                "artificial-hole/brain volume ratio by training policy."
+            ),
+        }
+    return {
+        "a-e": (
+            "Fixed, random, and weighted-family mask overlays on one "
+            "deterministic training case."
+        ),
+        "f": "Configured and realized mask-family composition.",
+        "g": "Empirical CDF of healthy-mask/brain volume ratio.",
+        "h": "Final-mask bounding-box elongation and fill-ratio distribution.",
+    }
+
+
 def git_state(repository: Path) -> dict:
     try:
         revision = subprocess.run(
@@ -950,6 +1222,7 @@ def main() -> None:
     args.samples_csv = args.samples_csv.resolve()
     args.metadata_json = args.metadata_json.resolve()
     args.figure_stem = args.figure_stem.resolve()
+    args.example_figure = args.example_figure.resolve()
     figure_output_paths = [
         args.figure_stem.with_suffix(".pdf"),
         args.figure_stem.with_suffix(".png"),
@@ -966,6 +1239,53 @@ def main() -> None:
     )
     if args.audit_cases < 1:
         raise ValueError("--audit-cases must be positive.")
+
+    if args.plot_only and args.layout == "audit":
+        if (
+            not args.samples_csv.is_file()
+            or not args.metadata_json.is_file()
+            or not args.example_figure.is_file()
+        ):
+            raise FileNotFoundError(
+                "--plot-only audit layout requires the existing audit CSV, "
+                "metadata JSON, and audited exemplar source figure."
+            )
+        metadata = json.loads(args.metadata_json.read_text())
+        if metadata.get("samples_csv_sha256") != sha256_file(args.samples_csv):
+            raise ValueError("Audit CSV hash does not match the saved metadata.")
+        records = read_csv(args.samples_csv)
+        examples = metadata.get("examples", [])
+        outputs = plot_audit_figure(
+            records,
+            examples,
+            args.example_figure,
+            args.figure_stem,
+        )
+        manifest = {
+            "schema_version": 1,
+            "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+            "plot_only": True,
+            "layout": args.layout,
+            "metadata_json": str(args.metadata_json),
+            "metadata_json_sha256": sha256_file(args.metadata_json),
+            "samples_csv": str(args.samples_csv),
+            "samples_csv_sha256": sha256_file(args.samples_csv),
+            "example_figure": str(args.example_figure),
+            "example_figure_sha256": sha256_file(args.example_figure),
+            "plot_script": str(Path(__file__).resolve()),
+            "plot_script_sha256": sha256_file(Path(__file__).resolve()),
+            "outputs": [
+                {"path": str(path), "sha256": sha256_file(path)}
+                for path in outputs
+            ],
+            "panels": panel_descriptions(args.layout),
+        }
+        manifest_path = args.figure_stem.with_suffix(".manifest.json")
+        manifest_path.write_text(
+            json.dumps(manifest, indent=2, sort_keys=True) + "\n"
+        )
+        print(*(str(path) for path in [*outputs, manifest_path]), sep="\n")
+        return
 
     train_ids, holdout_ids, split_info = build_brats_split(
         str(args.data_dir),
@@ -1017,26 +1337,33 @@ def main() -> None:
             weighted_config,
             weighted_sampler,
         )
-        outputs = plot_figure(records, examples, weighted_config, args.figure_stem)
+        outputs = (
+            plot_figure(records, examples, weighted_config, args.figure_stem)
+            if args.layout == "full"
+            else plot_audit_figure(
+                records,
+                examples,
+                args.example_figure,
+                args.figure_stem,
+            )
+        )
         manifest = {
             "schema_version": 1,
             "generated_at_utc": datetime.now(timezone.utc).isoformat(),
             "plot_only": True,
+            "layout": args.layout,
             "metadata_json": str(args.metadata_json),
             "metadata_json_sha256": sha256_file(args.metadata_json),
             "samples_csv": str(args.samples_csv),
             "samples_csv_sha256": sha256_file(args.samples_csv),
+            "example_figure": str(args.example_figure),
+            "example_figure_sha256": sha256_file(args.example_figure),
             "plot_script": str(Path(__file__).resolve()),
             "plot_script_sha256": sha256_file(Path(__file__).resolve()),
             "outputs": [
                 {"path": str(path), "sha256": sha256_file(path)} for path in outputs
             ],
-            "panels": {
-                "a-e": "Fixed, random, and weighted-family mask overlays on one deterministic training case.",
-                "f": "Configured and realized mask-family composition.",
-                "g": "Empirical CDF of healthy-mask/brain volume ratio.",
-                "h": "Final-mask bounding-box elongation and fill-ratio distribution.",
-            },
+            "panels": panel_descriptions(args.layout),
         }
         manifest_path = args.figure_stem.with_suffix(".manifest.json")
         manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
@@ -1062,7 +1389,16 @@ def main() -> None:
         weighted_config,
         weighted_sampler,
     )
-    outputs = plot_figure(records, examples, weighted_config, args.figure_stem)
+    outputs = (
+        plot_figure(records, examples, weighted_config, args.figure_stem)
+        if args.layout == "full"
+        else plot_audit_figure(
+            records,
+            examples,
+            args.example_figure,
+            args.figure_stem,
+        )
+    )
     write_csv(args.samples_csv, records)
 
     policy_counts = Counter(row["policy"] for row in records)
@@ -1141,6 +1477,7 @@ def main() -> None:
     manifest = {
         "schema_version": 1,
         "generated_at_utc": metadata["generated_at_utc"],
+        "layout": args.layout,
         "metadata_json": str(args.metadata_json),
         "metadata_json_sha256": sha256_file(args.metadata_json),
         "samples_csv": str(args.samples_csv),
@@ -1148,12 +1485,7 @@ def main() -> None:
         "outputs": [
             {"path": str(path), "sha256": sha256_file(path)} for path in outputs
         ],
-        "panels": {
-            "a-e": "Fixed, random, and weighted-family mask overlays on one deterministic training case.",
-            "f": "Configured and realized mask-family composition.",
-            "g": "Empirical CDF of healthy-mask/brain volume ratio.",
-            "h": "Final-mask bounding-box elongation and fill-ratio distribution.",
-        },
+        "panels": panel_descriptions(args.layout),
     }
     manifest_path = args.figure_stem.with_suffix(".manifest.json")
     manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")

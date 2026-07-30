@@ -1,6 +1,9 @@
 \section{Method}
 \label{sec:method}
 
+CATCH adapts Tooth-Diffusion~\cite{said2025toothdiffusion} from dental CBCT
+synthesis to brain-MRI inpainting.
+
 Let $x_v$ be the voided T1n volume and
 $m\in\{0,1\}^{H\times W\times D}$ the full region to inpaint. During training, the
 provided mask is partitioned into an artificially removed healthy region $m_h$ and a
@@ -11,12 +14,13 @@ $x_v$ and $m$ are available to the model at inference.
 \begin{figure}[!t]
   \centering
   \includegraphics[width=0.98\textwidth]{catch_architecture}
-  \caption{CATCH training and one-trajectory inference. A Haar transform maps the
+  \caption{CATCH training and inference. A Haar transform maps the
   voided image to eight subbands, concatenated with noisy target subbands and a
   signed mask. WavUNet predicts clean coefficients; inverse transformation and hard
-  compositing restore the observed region. Selected random and weighted-mixture
-  pipelines repeat this path five times and aggregate voxel-wise; fixed mask uses
-  $N=1$. Thumbnails were selected without reconstruction metrics.}
+  compositing restore the observed region. For selected random and weighted models,
+  five case-stable noise seeds traverse one EMA checkpoint; their reconstructions
+  are averaged voxel-wise and composited again. Fixed mask uses $N=1$. Input
+  thumbnails were selected without reconstruction metrics.}
   \label{fig:catch-architecture}
 \end{figure}
 
@@ -94,6 +98,20 @@ and refreshes slots by epoch. Generated masks are connected, contain
 800--225,070 voxels, remain at least five voxels from $m_u$, and overlap background by at
 most 25\%. Exhausted generation falls back to a supplied mask verified only as
 nonempty and nonoverlapping with $m_u$.
+
+\begin{figure}[!t]
+  \centering
+  \includegraphics[width=\textwidth]{mask_augmentation_audit}
+  \caption{Artificial training holes. (a) Fixed uses the supplied healthy mask,
+  random uses tumor-derived masks only, and weighted mixture samples tumor, blob,
+  or ellipsoid shapes. Cyan is the supervised hole; dashed orange is real tumor
+  excluded from supervision. Percentages give 3D hole/brain volume. (b) Epoch-0
+  size audit over 100 optimization cases (thin: 10th--90th percentiles; thick:
+  interquartile range; circle: median; $n=100/500/500$; seed 0). Weighted realizes
+  82.2/14.0/3.8\% tumor/blob/ellipsoid masks with no fallback. This describes the
+  training distribution, not reconstruction quality.}
+  \label{fig:mask-augmentation-audit}
+\end{figure}
 
 \subsection{Sampling and Compositing}
 \label{sec:method:inference}

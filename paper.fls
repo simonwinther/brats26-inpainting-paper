@@ -280,6 +280,12 @@ INPUT ./figures/catch_architecture.pdf
 INPUT /usr/share/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm
 INPUT /usr/share/texmf-dist/fonts/tfm/public/cm/cmbx7.tfm
 INPUT /usr/share/texmf-dist/fonts/tfm/public/cm/cmbx5.tfm
+INPUT ./figures/mask_augmentation_audit.pdf
+INPUT ./figures/mask_augmentation_audit.pdf
+INPUT ./figures/mask_augmentation_audit.pdf
+INPUT ./figures/mask_augmentation_audit.pdf
+INPUT /usr/share/texmf-dist/fonts/tfm/public/cm/cmbx9.tfm
+INPUT /usr/share/texmf-dist/fonts/tfm/public/cm/cmbx6.tfm
 INPUT /usr/share/texmf-dist/fonts/tfm/jknappen/ec/ectt1000.tfm
 INPUT ./sections/04_experiments.tex
 INPUT ./sections/04_experiments.tex
@@ -295,8 +301,6 @@ INPUT ./figures/checkpoint_selection.pdf
 INPUT ./figures/checkpoint_selection.pdf
 INPUT ./figures/checkpoint_selection.pdf
 INPUT ./figures/checkpoint_selection.pdf
-INPUT /usr/share/texmf-dist/fonts/tfm/public/cm/cmbx9.tfm
-INPUT /usr/share/texmf-dist/fonts/tfm/public/cm/cmbx6.tfm
 INPUT ./tables/confirmation75.tex
 INPUT ./tables/confirmation75.tex
 INPUT ./tables/confirmation75.tex
@@ -306,10 +310,10 @@ INPUT ./figures/confirmation_effects.pdf
 INPUT ./figures/confirmation_effects.pdf
 INPUT ./figures/confirmation_effects.pdf
 INPUT ./figures/confirmation_effects.pdf
-INPUT ./figures/qualitative_reconstructions.pdf
-INPUT ./figures/qualitative_reconstructions.pdf
-INPUT ./figures/qualitative_reconstructions.pdf
-INPUT ./figures/qualitative_reconstructions.pdf
+INPUT ./figures/qualitative_reconstructions_column.pdf
+INPUT ./figures/qualitative_reconstructions_column.pdf
+INPUT ./figures/qualitative_reconstructions_column.pdf
+INPUT ./figures/qualitative_reconstructions_column.pdf
 INPUT ./sections/06_discussion.tex
 INPUT ./sections/06_discussion.tex
 INPUT ./sections/06_discussion.tex
@@ -328,6 +332,7 @@ INPUT ./paper.out
 INPUT ./paper.out
 INPUT /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 INPUT /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb
+INPUT /usr/share/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex8.pfb
 INPUT /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
 INPUT /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb
 INPUT /usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb

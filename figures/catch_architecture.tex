@@ -160,12 +160,13 @@
 
 % Inference graph.
 \draw[panel=fusion] (0,0) rectangle (15,4.90);
-\node[font=\small\bfseries,text=fusion] at (7.5,4.62) {(b) Inference: reverse DDPM sampling};
+\node[font=\small\bfseries,text=fusion] at (7.5,4.62)
+  {(b) Inference: reverse sampling and trajectory aggregation};
 \node[note] at (7.5,4.28)
-  {Reuse the trained concatenation conditioning and corresponding WavUNet weights.};
+  {One EMA checkpoint and shared conditioning; five case-stable noise seeds.};
 
-\node[waveletblock,minimum width=1.10cm] (noise) at (1.43,3.58)
-  {$z_T\!\sim\!\mathcal N(0,I)$};
+\node[waveletblock,minimum width=1.25cm] (noise) at (1.43,3.58)
+  {$z_T^{(i)}\!\sim\!\mathcal N(0,I)$};
 \node[waveletblock,minimum width=1.05cm,right=0.20cm of noise] (current)
   {current $z_t$};
 \node[fusionblock,minimum width=1.20cm,right=0.20cm of current] (inferfusion)
@@ -198,35 +199,39 @@
 \draw[softarrow] (next.south) -- ++(0,-0.88) -|
   (current.south west);
 \node[note,fill=fusion!3,inner sep=1.2pt] at (5.15,2.48)
-  {loop through $F_{\mathrm{concat}}$ for $t=T,\ldots,2$};
+  {repeat independently for $i=1,\ldots,5$ and $t=T,\ldots,2$};
 
-% Decode only the final posterior sample.
-\node[waveletblock,minimum width=1.15cm] (finalz) at (4.60,1.35)
-  {final $z_0$};
-\node[operator,minimum width=0.85cm,right=0.26cm of finalz] (idwt)
-  {Haar\\IDWT};
-\node[block,minimum width=1.18cm,right=0.26cm of idwt] (xgen)
-  {generated\\$x_{\mathrm{gen}}$};
-\node[fusionblock,text width=2.85cm,right=0.26cm of xgen] (composite)
-  {hard compositing\\
-   $\hat x=m\odot x_{\mathrm{gen}}+(1-m)\odot x_v$};
-\node[block,draw=fusion,fill=fusion!12,minimum width=1.12cm,right=0.26cm of composite]
-  (output)
-  {inpainted\\$\hat x$};
-\node[conditionblock,minimum width=0.72cm,minimum height=0.45cm,inner ysep=1pt]
-  (xvfinal) at ($(composite.south)+(-0.75cm,-0.35cm)$) {$x_v$};
-\node[conditionblock,minimum width=0.72cm,minimum height=0.45cm,inner ysep=1pt]
-  (mfinal) at ($(composite.south)+(0.75cm,-0.35cm)$) {$m$};
+% Decode, composite, and aggregate the five final posterior samples.
+\node[waveletblock,text width=1.35cm] (finalz) at (1.38,1.30)
+  {five final states\\$\{z_0^{(i)}\}_{i=1}^{5}$};
+\node[operator,text width=2.05cm] (decode) at (3.92,1.30)
+  {Haar IDWT\\$+$ hard composite each};
+
+\foreach \i/\yy in {1/1.98,2/1.64,3/1.30,4/0.96,5/0.62} {
+  \node[block,draw=fusion,fill=fusion!6,minimum width=1.22cm,
+    minimum height=0.27cm,inner xsep=1.2pt,inner ysep=0.8pt,font=\scriptsize]
+    (member\i) at (6.30,\yy) {$\hat x^{(\i)}$};
+  \draw[softarrow] (decode.east) -- (member\i.west);
+}
+\node[note,text=fusion] at (6.30,2.27) {five reconstructions};
+
+\node[fusionblock,text width=1.85cm] (aggregate) at (8.73,1.30)
+  {voxel-wise mean\\$\bar x=\frac{1}{5}\sum_{i=1}^{5}\hat x^{(i)}$};
+\foreach \i in {1,...,5} {
+  \draw[softarrow] (member\i.east) -- (aggregate.west);
+}
+\node[fusionblock,text width=1.75cm] (composite) at (11.25,1.30)
+  {final hard composite\\with $x_v$ and $m$};
+\node[block,draw=fusion,fill=fusion!12,minimum width=1.25cm]
+  (output) at (13.65,1.30)
+  {$N=5$\\prediction};
 
 \draw[finalarrow] (next.east) -- ++(0.08,0) -- ++(0,-1.48) -|
   node[pos=0.76,above,fill=fusion!3,inner sep=1.2pt,font=\scriptsize,text=fusion]
-    {at $t=1$}
+    {at $t=1$ for each $i$}
   (finalz.north);
-\draw[arrow] (finalz) -- (idwt);
-\draw[arrow] (idwt) -- (xgen);
-\draw[arrow] (xgen) -- (composite);
-\draw[arrow] (xvfinal.north) -- ([xshift=-0.75cm]composite.south);
-\draw[arrow] (mfinal.north) -- ([xshift=0.75cm]composite.south);
+\draw[arrow] (finalz) -- (decode);
+\draw[arrow] (aggregate) -- (composite);
 \draw[arrow] (composite) -- (output);
 
 \end{tikzpicture}

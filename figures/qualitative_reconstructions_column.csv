@@ -1,0 +1,4 @@
+quantile,quantile_label,rank_index_zero_based,rank_one_based,case,slice_index_canonical_ras,ssim,psnr,mse,healthy_mask_slice_voxels,full_mask_slice_voxels,healthy_to_full_mask_slice_fraction,selection_basis
+0.1,10th percentile,7,8,BraTS-GLI-00340-000,41,0.6337496042251587,20.20208168029785,0.009545346722006798,4364,4364,1.0,lower empirical cohort SSIM percentile
+0.5,Median,37,38,BraTS-GLI-00650-000,30,0.7947859168052673,20.822790145874023,0.00794150959700346,474,474,1.0,lower empirical cohort SSIM percentile
+0.9,90th percentile,66,67,BraTS-GLI-01229-000,116,0.9699362516403198,18.11260986328125,0.007409007288515568,270,270,1.0,lower empirical cohort SSIM percentile

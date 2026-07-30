@@ -38,17 +38,15 @@ random obtains 0.7911, 18.33\,dB, and 0.011664; and fixed obtains 0.7703,
 17.93\,dB, and 0.012764. The ordering is unchanged. This removes confirmation
 overlap only, not possible influence on development-stage selection.
 
-Other limitations are one training seed per variant; checkpoint diagnostics on five
-cases with one trajectory; transfer of inference policies from terminal to
-separately selected arm checkpoints; and no completed external baseline. Across-case
-standard deviations and bootstrap intervals do not measure training-seed
-variability, so superiority over prior methods is not established. The development
-artifact retains aggregate ranks but not its original per-case predictions. For one
-random-augmentation evaluation, the dirty-worktree diff was not preserved; its
-checkpoint, configuration, metrics, sampling metadata, and prediction hashes are
-archived. Future work should add seeds and baselines, retain complete development
-outputs, validate accelerated sampling, and test multimodal conditioning under
-patient-level splits.
+Other limitations are one seed per variant, five-case one-trajectory checkpoint
+diagnostics, transfer of terminally selected inference policies to arm-specific
+checkpoints, and no completed external baseline. Across-case variability does not
+measure seed variability, so prior-method superiority is unestablished. Development
+ranks lack their original per-case predictions; one random-arm dirty-worktree diff
+was not preserved, although its checkpoint, configuration, metrics, sampling
+metadata, and prediction hashes are archived. Future work should add seeds and
+baselines, preserve all outputs, validate faster sampling, and use patient-level
+splits and multimodal conditioning.
 
 \section{Conclusion}
 \label{sec:conclusion}

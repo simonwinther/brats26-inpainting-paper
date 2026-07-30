@@ -42,7 +42,11 @@ uv run --with-requirements requirements.txt python scripts/plot_training_dynamic
 ```
 
 ```sh
-uv run --with-requirements requirements.txt python scripts/plot_qualitative_reconstructions.py --metrics ../brats_inpainting/results/paper300k-concat-weighted-s0-maxnorm-confirm75-ckpt200000-mean-n5/ensemble_metrics/mean_n5/metrics.csv --pred-dir ../brats_inpainting/results/paper300k-concat-weighted-s0-maxnorm-confirm75-ckpt200000-mean-n5/brats_inpainting/mean_n5 --data-dir ../brats_inpainting/data/ASNR-MICCAI-BraTS2023-Local-Synthesis-Challenge-Training --overwrite
+uv run --with-requirements requirements.txt python scripts/plot_qualitative_reconstructions.py --metrics ../brats_inpainting/results/paper300k-concat-weighted-s0-maxnorm-confirm75-ckpt200000-mean-n5/ensemble_metrics/mean_n5/metrics.csv --pred-dir ../brats_inpainting/results/paper300k-concat-weighted-s0-maxnorm-confirm75-ckpt200000-mean-n5/brats_inpainting/mean_n5 --data-dir ../brats_inpainting/data/ASNR-MICCAI-BraTS2023-Local-Synthesis-Challenge-Training --output-stem figures/qualitative_reconstructions_column --zoom-layout column --overwrite
+```
+
+```sh
+uv run --with-requirements requirements.txt python scripts/plot_mask_augmentation.py --layout audit --plot-only --figure-stem figures/mask_augmentation_audit --overwrite
 ```
 
 The architecture source is a standalone LaTeX document:

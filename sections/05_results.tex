@@ -94,16 +94,13 @@ three metrics in 46 cases and obtains the lowest mean joint rank.
 
 \begin{figure}[!t]
   \centering
-  \includegraphics[width=\textwidth]{qualitative_reconstructions}
-  \caption{Weighted-mixture mean-$N=5$ cases selected deterministically: nearest
-  cohort SSIM percentiles 10 and 50, plus the upper-quintile case with the largest
-  maximum-slice scored region. Zero-padded square panels (no resampling) show
-  voided input, reconstruction, observed T1n, and normalized absolute error.
-  Cyan marks the full hole; dashed yellow marks healthy voxels scored by the
-  official metrics; reference outside yellow may contain pathology. Error is
-  restricted to yellow on one pooled 99th-percentile-clipped scale. Bottom pairs
-  zoom reconstruction/reference with matched row-specific windows; each row uses
-  its maximum-area axial slice.}
+  \includegraphics[width=\textwidth]{qualitative_reconstructions_column}
+  \caption{Weighted-mixture mean-$N=5$ examples at the lower empirical 10th,
+  50th, and 90th SSIM quantiles. Panels show voided input, prediction, observed
+  T1n, paired zooms, and normalized absolute error. Cyan marks the full hole and
+  dashed yellow the healthy scoring region; error is shown only there on a shared
+  clipped scale. High-coverage axial slices are selected by mask geometry,
+  independently of reconstruction error.}
   \label{fig:qualitative-reconstructions}
 \end{figure}
 
@@ -111,5 +108,5 @@ Figure~\ref{fig:qualitative-reconstructions} illustrates substantial variation i
 case difficulty. The low-SSIM example retains gross structure but has a localized
 intensity and boundary mismatch; the median is coherent with residual error in the
 scored region; and the high-SSIM example closely matches the target there. Because
-the observed reference may be pathological elsewhere in the hole, its score is not
+the observed T1n may be pathological elsewhere in the hole, its score is not
 evidence of counterfactual accuracy over the full cyan outline.

@@ -94,6 +94,12 @@ Saharia, C., Chan, W., Chang, H., Lee, C.A., Ho, J., Salimans, T., Fleet, D.,
   Norouzi, M.: {Palette}: Image-to-image diffusion models. In: ACM SIGGRAPH
   2022 Conference Proceedings. pp. 1--10 (2022)
 
+\bibitem{said2025toothdiffusion}
+Said, S.D., Gholamalizadeh, T., Ghazi, M.M.: Tooth-diffusion: Guided {3D}
+  {CBCT} synthesis with fine-grained tooth conditioning. arXiv preprint
+  arXiv:2508.14276  (2025). \doi{10.48550/arXiv.2508.14276},
+  \url{https://arxiv.org/abs/2508.14276}
+
 \bibitem{song2021scoresde}
 Song, Y., Sohl-Dickstein, J., Kingma, D.P., Kumar, A., Ermon, S., Poole, B.:
   Score-based generative modeling through stochastic differential equations.
