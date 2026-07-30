@@ -1,0 +1,301 @@
+\documentclass[runningheads]{llncs}
+
+% Packages
+\usepackage[T1]{fontenc}
+\usepackage{graphicx,booktabs,tabularx,xcolor,hyperref}
+\usepackage{amsmath,subcaption,amsfonts,amssymb,mathtools,booktabs,threeparttable,nccmath}
+\usepackage{placeins,url,orcidlink}
+\usepackage[title]{appendix}
+\hypersetup{colorlinks=true,linkcolor=[rgb]{0.1,0.3,0.9},urlcolor=[rgb]{0.2,0.2,0.2},citecolor=[rgb]{0.1,0.3,0.9}}
+
+% ORCID helper
+\renewcommand{\orcidID}[1]{\nobreak\hspace{0.15em}\orcidlink{#1}}
+
+% Figures path
+\graphicspath{{figures/}}
+
+% Paths for imported .tex files
+\makeatletter
+\def\input@path{{sections/}{tables/}}
+\makeatother
+
+
+\begin{document}
+
+\title{CATCH: Counterfactual Anatomical Tissue Inpainting with Conditional Haar Diffusion}
+\titlerunning{CATCH}
+
+% Authors 
+\author{
+Simon Winther Albertsen\orcidID{0009-0004-0655-6664}
+\and
+Hjalte Bjoernstrup\orcidID{0009-0009-7757-4225}
+\and
+Said Djafar Said\orcidID{0009-0009-3570-2057}
+\and
+Mostafa Mehdipour Ghazi\orcidID{0000-0002-8473-281X}
+}
+
+% Running author
+\authorrunning{S. W. Albertsen et al.}
+
+% Institutes 
+\institute{
+Department of Computer Science,
+University of Copenhagen, Copenhagen, Denmark \\
+\email{\{zlp616,fhz806,hdn456\}@alumni.ku.dk, ghazi@di.ku.dk}
+}
+
+\maketitle
+
+
+\begin{abstract}
+
+The BraTS local-synthesis task requires plausible tumor-free tissue to be generated inside a masked region of a T1-weighted brain MRI while preserving the observed anatomy. We present CATCH, a conditional 3D diffusion framework operating on an invertible Haar-wavelet representation. The denoiser receives noisy target coefficients, voided-image coefficients, and a signed mask. Training combines tumor-excluded wavelet reconstruction with a hole-focused loss, while hard compositing preserves the observed image. We compare fixed-mask training, tumor-component random augmentation, and a weighted mixture of tumor-derived, irregular-blob, and ellipsoidal masks. Checkpoints and trajectory-aggregation policies are selected on development data and frozen for evaluation on a held-out 75-case confirmation set restricted to artificially removed healthy tissue. The selected weighted-mixture pipeline, averaging five stochastic trajectories, achieved SSIM $0.80\pm0.13$, PSNR $19.18\pm1.80$\,dB, and MSE $0.010\pm0.005$ (mean$\pm$SD). Relative to compute-matched random augmentation, it improved SSIM by 0.019 (95\% bootstrap CI: 0.013--0.025), PSNR by 0.95\,dB, and MSE by 0.003; all three paired comparisons remained significant after Holm correction. Fixed-mask single-trajectory inference achieved SSIM $0.76\pm0.16$. These results favor the complete weighted-mixture policy within CATCH, but the absence of an external baseline limits broader conclusions.
+
+\keywords{Brain MRI inpainting \and Healthy-tissue synthesis \and Denoising diffusion models \and Wavelet transform \and Medical image synthesis \and BraTS}
+
+\end{abstract}
+
+
+\section{Introduction} \label{sec:introduction}
+
+Brain tumors alter local anatomy and can undermine registration, parcellation, tissue-segmentation, and atlas-based pipelines developed for non-pathological brains. Healthy-tissue inpainting replaces a pathological region with plausible tumor-free anatomy so that downstream tools can operate on a completed image. The BraTS local-synthesis task \cite{kofler2023inpainting} formalizes this setting: given a voided T1-native (T1n) volume and an inpainting mask, synthesize the missing anatomy while leaving the observed image unchanged.
+
+Denoising diffusion probabilistic models (DDPMs) \cite{ho2020ddpm} provide a flexible framework for conditional image generation \cite{lugmayr2022repaint,saharia2022palette}, but direct full-resolution 3D diffusion is computationally demanding. Wavelet diffusion models (WDMs) \cite{friedrich2024wdm} reduce the spatial cost via a fixed invertible transform, and conditional WDM \cite{friedrich2024cwdm} extends this idea to paired volumetric synthesis. We adapt this framework as CATCH and study how artificial healthy-tissue holes should be sampled during training.
+
+Training only on supplied masks offers limited spatial and morphological variation. Additional holes may improve coverage, but their source, size, shape, placement, and refresh strategy can alter the learned reconstruction distribution. We therefore compare three mask policies within the same conditional 3D wavelet-diffusion framework. Our main contributions are: (1) a full-volume conditional 3D Haar-wavelet diffusion model with tumor-excluded supervision and hard preservation of observed voxels; (2) a controlled comparison of fixed masks, tumor-component augmentation, and a weighted mixture of tumor-derived, irregular blob, and ellipsoidal masks, including a compute-matched comparison of the two augmented pipelines; and (3) development-only model and inference selection followed by frozen 75-case confirmation with paired uncertainty, statistical testing, patient-disjoint sensitivity analysis, and qualitative inspection.
+
+
+\section{Related Work} \label{sec:related-work}
+
+\paragraph{\textbf{Diffusion and inpainting.}}
+DDPMs learn the reverse of a gradual noising process \cite{ho2020ddpm}, while score-based formulations connect diffusion to stochastic differential equations \cite{song2021scoresde}. RePaint conditions an unconditional model by repeatedly restoring known pixels during sampling \cite{lugmayr2022repaint}, whereas Palette directly supplies the observed image to a conditional denoiser \cite{saharia2022palette}. CATCH follows the latter strategy and applies final hard compositing.
+
+\paragraph{\textbf{Volumetric medical synthesis.}}
+Latent diffusion reduces high-resolution cost through a learned latent space \cite{rombach2022ldm}. WDM instead applies an exactly invertible 3D wavelet transform \cite{friedrich2024wdm}, and its conditional extension supports volumetric image-to-image synthesis \cite{friedrich2024cwdm}. Diffusion has also been used for 3D healthy-brain inpainting \cite{durrer2024inpainting} in the BraTS local-synthesis setting \cite{kofler2023inpainting}, based on the broader BraTS benchmark \cite{menze2015brats,bakas2017advancing,baid2021rsna}. fastWDM3D further reduces wavelet-domain sampling cost through a shortened reverse process \cite{durrer2026fastwdm3d}. Our work retains full ancestral sampling and focuses on mask representation, tumor-excluded supervision, online healthy-hole sampling, and trajectory aggregation. Differences in data and evaluation preclude direct numerical comparison with prior scores.
+
+
+\section{Method} \label{sec:method}
+
+CATCH adapts Tooth-Diffusion \cite{said2025toothdiffusion} from dental CBCT synthesis to brain-MRI inpainting. Let $x_v$ denote the voided T1n volume and $m\in\{0,1\}^{H\times W\times D}$ the complete inpainting region. During training, $m$ is decomposed into disjoint healthy and pathological components, $m=m_h\lor m_u$ and $m_h\odot m_u=0$. The complete T1n image $x$ provides a valid target in $m_h$ but remains pathological in $m_u$, which is therefore excluded from supervision. At inference, only $x_v$ and $m$ are available to the model.
+
+\begin{figure}[!t]
+  \centering
+  \includegraphics[width=0.98\textwidth]{catch_architecture}
+  \caption{CATCH training and inference. A one-level 3D Haar transform produces eight subbands. Noisy target coefficients, voided-image coefficients, and the signed mask form the 17-channel WavUNet input. Predictions are inverse-transformed and hard-composited with the observed image. Random and weighted-mixture pipelines average five case-stable noise trajectories from one exponential-moving-average (EMA) checkpoint; fixed mask uses $N=1$.}
+  \label{fig:catch-architecture}
+\end{figure}
+
+
+\subsection{Conditional Wavelet Diffusion} \label{sec:method:wavelet}
+
+Volumes are reoriented to RAS and center-padded from $240\times240\times155$ to $256^3$ without resampling. A one-level 3D Haar transform $\mathcal W$ produces eight $128^3$ subbands. Following WDM \cite{friedrich2024wdm}, the LLL channel is divided by 3 after the forward transform and restored before inversion for target and conditioning coefficients. The transform is therefore fixed and invertible rather than a learned autoencoder.
+
+Let $z_0=\mathcal W(x)$ denote the clean target coefficients. With $T=1000$, $\alpha_t=1-\beta_t$, and $\bar\alpha_t=\prod_{j=1}^{t}\alpha_j$, the forward process is
+\begin{equation}
+q(z_t\mid z_0)=\mathcal N\!\left(z_t;\sqrt{\bar\alpha_t}\,z_0,(1-\bar\alpha_t)\mathbf I\right),
+\label{eq:forward-process}
+\end{equation}
+where $\{\beta_t\}_{t=1}^{T}$ follows the variance-preserving SDE schedule \cite{song2021scoresde} with $\beta_{\min}=0.1$ and $\beta_{\max}=20$. The network predicts $\hat z_0$ directly; ancestral sampling uses the DDPM posterior parameterized by $(z_t,\hat z_0)$ with fixed-large reverse variance.
+
+The voided image is transformed as $c_v=\mathcal W(x_v)$. The mask is nearest-neighbor downsampled and encoded as $s=2\,\operatorname{NN}(m)-1\in\{-1,1\}^{128^3}$. The denoiser therefore receives
+\begin{equation}
+\hat z_0=D_\theta([z_t\|c_v\|s],t),
+\end{equation}
+a 17-channel input. $D_\theta$ is a fully 3D wavelet U-Net \cite{ronneberger2015unet,friedrich2024wdm}, referred to as \emph{WavUNet} here, with base width 64, channel multipliers $(1,2,2,4,4,4)$, two residual blocks per level, GroupNorm, SiLU, timestep-conditioned scale-and-shift modulation, wavelet skip connections, and no self-attention.
+
+
+\subsection{Healthy-Tissue Objective} \label{sec:method:objective}
+
+Target and conditioning image share the inference-available scale $a=\max(x_v)$. Intensities are divided by $a$, clipped to $[0,1]$, and mapped to $[-1,1]$. Let $e_{k,p}=(\hat z_0^{(k)}(p)-z_0^{(k)}(p))^2$ denote the error in subband $k$ at wavelet location $p\in\Omega$. We set $u_p=0$ if the corresponding $2^3$ voxel cell intersects $m_u$, and $u_p=1$ otherwise:
+\begin{equation}
+\mathcal L_{\mathrm{wav}}=
+\frac{1}{8|\Omega|}
+\sum_{k=1}^{8}\sum_{p\in\Omega}u_p e_{k,p}.
+\label{eq:wavelet-loss}
+\end{equation}
+This matches the implemented fixed-grid normalization: cells touching the real tumor contribute zero error but remain part of the fixed denominator.
+
+For the hole-focused term, cells intersecting $m_h$ form a binary coverage map that is Gaussian-smoothed ($\sigma=2$ on the wavelet grid) and multiplied by $u$ to obtain $w_p\ge0$:
+\begin{equation}
+\mathcal L_{\mathrm{mask}}=
+\frac{\sum_{k=1}^{8}\sum_{p\in\Omega}w_p e_{k,p}}
+{8\sum_{p\in\Omega}w_p},
+\quad
+\mathcal L=\mathcal L_{\mathrm{wav}}+10\mathcal L_{\mathrm{mask}}.
+\label{eq:training-objective}
+\end{equation}
+Accepted masks retain supervised support after tumor exclusion, so $\sum_p w_p>0$. Both terms exclude cells touching the real tumor.
+
+
+\subsection{Healthy-Mask Training Variants} \label{sec:method:augmentation}
+
+The \emph{fixed-mask} variant uses the supplied $m_h$. Online variants sample $m_h'$, void $m_h'\cup m_u$, and supervise $m_h'$ while excluding $m_u$. Their tumor-component bank contains only the 1,151 optimization cases, with five repeat slots per case.
+
+\paragraph{\textbf{Random augmentation.}}
+This reference-style policy uses tumor components only. Current-case components are allowed; source masks are sampled by inverse tumor-to-brain-ratio rank within a conditioned 10\% window, transformed by the reference flips and rotations, and fixed across epoch runs. Exhausted placement raises an error rather than silently changing the policy.
+
+\paragraph{\textbf{Weighted-mixture augmentation.}}
+This policy samples 80\% tumor components, 15\% irregular blobs, and 5\% ellipsoids. Current-case tumor components are excluded; empirical target volumes, bounded 3D rotations, optional anisotropic scaling, and epoch-wise slot refresh are used. Accepted masks are connected, contain 800--225,070 voxels, remain at least five voxels from $m_u$, and overlap background by at most 25\%. Exhausted generation falls back to a nonempty supplied healthy mask that does not overlap $m_u$.
+
+\begin{figure}[!t]
+  \centering
+  \includegraphics[width=\textwidth]{mask_augmentation_audit}
+  \caption{Training-mask audit. (a) Supplied and generated masks; cyan and orange denote supervised voxels and excluded tumor. (b) Epoch-0 hole-volume distributions (10th--90th percentile, interquartile range, and median; $n=100/500/500$). (c) Target and observed weighted-mixture proportions: tumor/blob/ellipsoid $80/15/5\%$ and $82.2/14.0/3.8\%$ (411/70/19); no fallback occurred.}
+  \label{fig:mask-augmentation-audit}
+\end{figure}
+
+
+\subsection{Sampling and Compositing} \label{sec:method:inference}
+
+We use exponential-moving-average (EMA) weights and the full 1000-step ancestral reverse process. At each step, \texttt{clip\_denoised=True} inverse-transforms the predicted clean state, clips it in normalized voxel space, and returns it to the wavelet domain. The final reconstruction is restored to native scale, shape, and orientation and hard-composited:
+\begin{equation}
+\hat x=x_v\odot(1-m)+\hat x_{\mathrm{gen}}\odot m.
+\label{eq:hard-compositing}
+\end{equation}
+So, outside the hole, the prediction is explicitly copied from the voided input.
+
+Global seed 0 and the case- and member-stable \texttt{brats-validation-noise-v1} scheme make trajectories shard-independent and preserve the first members across larger $N$. Multi-trajectory policies independently decode and composite each sample, aggregate volumes voxel-wise, and composite once more. Thus, trajectories come from one checkpoint rather than independently trained models.
+
+
+\section{Experiments} \label{sec:experiments}
+
+
+\subsection{Data and Split Protocol} \label{sec:exp:data}
+
+The ASNR-MICCAI BraTS Local Synthesis release \cite{kofler2023inpainting,menze2015brats,bakas2017advancing,baid2021rsna,bakas2017tcgagbm,bakas2017tcgalgg} contains 1,251 training cases with complete and voided T1n volumes, a complete inpainting mask, and healthy and unhealthy submasks. However, the organizer-validation ground truth is hidden.
+
+A deterministic 100-case hold-out (seed 2026) leaves 1,151 optimization cases, excluded from the hold-out loader and component bank. The hold-out is split into 25 development and 75 confirmation cases. Development and confirmation patients are disjoint, but the split is case-keyed: 3/25 development and 11/75 confirmation cases have sibling timepoints in the pool. None of the five checkpoint-diagnostic cases has such a sibling. We therefore also report a post-hoc analysis on the 64 confirmation cases that are patient-disjoint from optimization.
+
+
+\subsection{Training Configuration} \label{sec:exp:training}
+
+The three 17-channel models differ only in healthy-mask policy. Each uses seed 0, batch size one per GPU, AdamW \cite{loshchilov2019adamw} with learning rate $10^{-5}$ and zero weight decay, linear decay over 300,000 steps, and EMA decay 0.9999. Training is FP32 on NVIDIA A100 40\,GB GPUs. Checkpoints are saved every 5,000 steps, with a terminal EMA state at step 299,999.
+
+
+\subsection{Checkpoint and Inference-Policy Selection} \label{sec:exp:selection}
+
+Selection uses only the 25-case development set and consists of two stages.
+
+\paragraph{\textbf{Checkpoint selection.}}
+Every 10,000 steps, one deterministic 1000-step trajectory is evaluated on five fixed development cases; fixed-mask step 200,000 is unavailable. Within each training arm, checkpoints are ranked by aggregate SSIM, PSNR, and MSE, and the lowest mean rank is retained. Fixed-mask steps 170,000 and 180,000 tie; step 180,000 is chosen because it leads in PSNR and MSE. Random-augmentation step 290,000 and weighted-mixture step 200,000 uniquely minimize mean rank. These five-case diagnostics are used only for checkpoint selection and are not reported as final performance estimates.
+
+\paragraph{\textbf{Trajectory-policy selection.}}
+At each terminal EMA state, all 25 development cases compare nested $N\in\{1,3,5\}$ trajectories with voxel-wise mean or median aggregation. Mean $N=5$ is selected for both augmented arms. For fixed mask, mean $N=3$ lowers joint rank from 2.920 to 2.787 but triples inference cost, while mean $N=5$ is worse (3.240); we therefore retain $N=1$. Each selected policy is then transferred to the corresponding selected checkpoint and frozen before confirmation. This design reduces development-time computation but assumes that the preferred aggregation policy is sufficiently stable across late checkpoints.
+
+
+\subsection{Evaluation and Statistical Analysis} \label{sec:exp:evaluation}
+
+The official evaluator normalizes prediction and target to $[0,1]$ using the voided-image $[0.5,99.5]$ percentiles and scores only the supplied healthy submask. We report SSIM and PSNR (higher is better) and MSE (lower is better). Means and sample standard deviations describe case heterogeneity, not training-seed variability.
+
+
+For case $i$ and pipeline $j$, let $r_{ij}^{\mathrm{SSIM}}$, $r_{ij}^{\mathrm{PSNR}}$, and $r_{ij}^{\mathrm{MSE}}$ denote the ranks among the selected pipelines, with rank one indicating the best value. The reported mean joint rank is
+\begin{equation}
+R_j = \frac{1}{3n} \sum_{i=1}^{n} \left(r_{ij}^{\mathrm{SSIM}}+r_{ij}^{\mathrm{PSNR}}+r_{ij}^{\mathrm{MSE}}\right),
+\label{eq:joint-rank}
+\end{equation}
+where $n=75$ for the confirmation analysis. Development configurations are ranked analogously within each training arm.
+
+For each metric, we assess the omnibus difference among the three pipelines using a Friedman test and report two-sided paired Wilcoxon signed-rank tests for the three pairwise contrasts. Holm correction is applied separately to the three contrasts within each metric. Mean paired differences are accompanied by deterministic 100,000-resample case-bootstrap 95\% confidence intervals using seed 2026. Compressed NIfTI predictions, per-case metrics, split audits, hashes, and run metadata are retained in CSV or JSON format. Code, experiment manifests, and analysis scripts are released at \url{https://github.com/simonwinther/brats2026}.
+
+
+\section{Results} \label{sec:results}
+
+
+\subsection{Development Selection} \label{sec:results:selection}
+
+Figure \ref{fig:checkpoint-selection} shows the periodic five-case development diagnostics and the selected EMA checkpoints. Fixed-mask steps 170,000 and 180,000 tie for the lowest mean rank; step 180,000 is retained because it has the best aggregate PSNR and MSE, while ranking third in SSIM. Random-augmentation step 290,000 and weighted-mixture step 200,000 are best on all three aggregate metrics within their respective recorded histories.
+
+\begin{figure}[!t]
+  \centering
+  \includegraphics[width=\textwidth]{checkpoint_selection}
+   \caption{Raw five-case EMA checkpoint diagnostics without dashboard smoothing. Stars mark the retained checkpoints after ranking aggregate SSIM, PSNR, and MSE. Fixed-mask steps 170k and 180k tie in mean rank; step 180k is retained because it leads in PSNR and MSE. Each point uses one deterministic 1000-step trajectory. These curves are selection diagnostics rather than confirmation results.}
+  \label{fig:checkpoint-selection}
+\end{figure}
+
+Table \ref{tab:ensemble-selection} summarizes trajectory-policy selection at the terminal EMA states on all 25 development cases, including the five checkpoint-diagnostic cases. Mean $N=5$ attains the lowest joint rank for both augmented models. The fixed-mask arm has a nominal optimum at mean $N=3$, but the improvement over $N=1$ is only 0.1333 in joint rank at three times the trajectory cost, and mean $N=5$ is worse. We therefore select a fixed mask with $N=1$ and both augmented models with mean $N=5$.
+
+\begin{table}[t]
+  \centering
+  \caption{Development-set joint rank at the terminal EMA states (lower is better). Bold and underlining mark the lowest and second-lowest values within each training arm. Fixed-mask $N=1$ was retained for the compute--performance trade-off described in the text.}
+  \label{tab:ensemble-selection}
+  \small
+  \setlength{\tabcolsep}{8pt}
+  \begin{tabular}{@{}lrrr@{}}
+    \toprule
+    Configuration & Fixed mask & Random aug. & Weighted mixture \\
+    \midrule
+    $N=1$         & \underline{2.920} & 4.707 & 4.400 \\
+    Mean $N=3$    & \textbf{2.787} & \underline{2.133} & 2.693 \\
+    Median $N=3$  & 2.973 & 3.533 & 3.773 \\
+    Mean $N=5$    & 3.240 & \textbf{1.600} & \textbf{1.587} \\
+    Median $N=5$  & 3.080 & 3.027 & \underline{2.547} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+
+\subsection{Case-Disjoint 75-Case Confirmation} \label{sec:results:confirmation}
+
+Table~\ref{tab:confirmation-results} summarizes the frozen confirmation results.
+\input{confirmation75}
+
+The omnibus differences are significant for SSIM ($\chi_F^2(2)=52.83$), PSNR, and MSE (both $\chi_F^2(2)=52.91$; all $p<3.4\times10^{-12}$). In the non-compute-matched comparison with the fixed-mask pipeline, the weighted-mixture pipeline improves mean SSIM by $0.041$ (95\% case-bootstrap confidence interval: $0.032$--$0.050$), improves PSNR by $1.34$\,dB ($1.08$--$1.61$), and reduces raw $[0,1]$-scale MSE by $0.0038$ ($0.0029$--$0.0047$).
+
+Relative to the compute-matched random-augmentation pipeline, weighted-mixture training improves mean SSIM by $0.019$ ($0.013$--$0.025$), improves PSNR by $0.95$\,dB ($0.66$--$1.27$), and reduces raw $[0,1]$-scale MSE by $0.0026$ ($0.0019$--$0.0034$). For each metric separately, all three paired Wilcoxon comparisons remain significant after Holm correction across the three pipeline contrasts; the largest adjusted $p$-value among the resulting nine tests is 0.0178.
+
+\begin{figure}[!t]
+  \centering
+  \includegraphics[width=\textwidth]{confirmation_effects}
+  \caption{Compute-matched paired effects of weighted-mixture versus random augmentation across the 75 confirmation cases. Positive values favor the weighted-mixture pipeline. Each point represents one case; diamonds show the mean paired difference and deterministic 100,000-resample case-bootstrap 95\% CI. W/L denotes weighted-mixture wins/losses, with no ties. MSE is plotted as a reduction, so positive values are favorable. Both pipelines use the same five case-stable trajectories and voxel-wise mean aggregation.}
+  \label{fig:confirmation-effects}
+\end{figure}
+
+Figure \ref{fig:confirmation-effects} shows that the compute-matched gain is not universal but occurs in most cases. The weighted-mixture pipeline outperforms random augmentation in 54/75 cases for SSIM and 57/75 cases for both PSNR and MSE. It improves all three metrics in 51 cases, loses on all three in 15, and produces mixed directions in 9. Among the three selected pipelines, weighted mixture is simultaneously best on all three metrics in 46 cases and attains the lowest mean joint rank.
+
+\begin{figure}[!t]
+  \centering
+  \includegraphics[width=\textwidth]{qualitative_reconstructions_column}
+  \caption{Weighted-mixture mean-$N=5$ reconstructions at the empirical 10th, 50th, and 90th SSIM percentiles. Columns show the voided input, prediction, observed T1n, paired zooms, and normalized absolute error. Cyan denotes the complete inpainting region and dashed yellow the scored healthy region; error is displayed within the scored region using a shared clipped scale. Axial slices were selected to maximize mask coverage independently of reconstruction error.}
+  \label{fig:qualitative-reconstructions}
+\end{figure}
+
+Figure \ref{fig:qualitative-reconstructions} illustrates substantial variation in case difficulty. The low-SSIM example preserves the gross structure but shows a localized intensity and boundary mismatch. The median example is anatomically coherent but retains residual error within the scored region, whereas the high-SSIM example closely matches the observed target there. Because the observed T1n may remain pathological elsewhere inside the complete inpainting region, these scores do not establish counterfactual accuracy over the full cyan outline.
+
+
+\section{Discussion} \label{sec:discussion}
+
+The weighted-mixture policy yields the strongest selected pipeline on the case-disjoint confirmation set. The random and weighted-mixture pipelines use the same architecture, optimization horizon, mean-$N=5$ inference policy, data split, noise trajectories, and evaluator; their comparison is therefore matched for inference compute. Their training policies nevertheless differ jointly in mask families, volume sampling, spatial transforms, eligibility of current-case sources, epoch-wise refresh, and fallback behavior. The evidence consequently supports the complete configured policy rather than its 80/15/5 family proportions or any individual component in isolation. Improvements in most paired cases argue against an effect driven only by a few outliers, but the 15 all-metric losses show that the weighted mixture is not uniformly superior. A single training seed and arm-specific checkpoint selection further prevent component-level attribution.
+
+The fixed-mask pipeline uses one trajectory. Mean $N=3$ improved its development joint rank by only 0.133 at three times the reverse-sampling cost, while mean $N=5$ performed worse. Consequently, only the random-versus-weighted comparison is trajectory matched; comparisons between the fixed-mask and augmented pipelines combine differences in training policy and inference compute.
+
+The invertible wavelet representation enables full-volume 3D sampling, and hard compositing explicitly preserves the observed input outside the requested hole. However, mean-$N=5$ inference requires five complete 1000-step ancestral trajectories per case. Faster wavelet-domain inpainting \cite{durrer2026fastwdm3d} therefore motivates evaluating shortened sampling under the same frozen cohort and scoring protocol.
+
+The quantitative metrics cover only artificially removed healthy voxels. Because the observed T1n remains pathological in $m_u$, neither the numerical evaluation nor the qualitative reference establishes patient-specific counterfactual correctness in the real tumor region, for which ground truth does not exist. Anatomically plausible-looking reconstructions may still hallucinate incorrect structures, and the method has not been clinically validated. Moreover, hidden ground truth for organizer validation prevents local evaluation on that external set.
+
+The case-keyed split is not fully patient independent: the optimization pool contains sibling timepoints for 3/25 development cases and 11/75 confirmation cases, although development and confirmation patients are mutually disjoint. In a post-hoc analysis restricted to the 64 confirmation cases that are patient-disjoint from optimization, weighted mixture achieves SSIM 0.810, PSNR 19.27\,dB, and MSE 0.0092; random augmentation achieves 0.791, 18.33\,dB, and 0.0117; and fixed mask achieves 0.770, 17.93\,dB, and 0.0128. The ordering is unchanged. This analysis removes patient overlap from confirmation, but it does not remove possible influence of optimization-pool siblings on development-stage selection.
+
+Additional limitations include one training seed per variant, checkpoint selection from five cases using one trajectory, transfer of a terminally selected inference policy to an arm-specific checkpoint, and the absence of a completed external baseline. Across-case standard deviations and case-bootstrap confidence intervals do not quantify training-seed variability; superiority to prior methods therefore remains unestablished. The original per-case predictions used to compute the development ranks were not retained, and one random-arm dirty-worktree difference was not preserved, although its checkpoint, configuration, aggregate metrics, sampling metadata, and prediction hashes remain archived. Future work should add independent training seeds and external baselines, retain all intermediate outputs, evaluate faster samplers, adopt patient-level splitting from the outset, and investigate multimodal conditioning and anatomy-aware plausibility assessment.
+
+
+\section{Conclusion} \label{sec:conclusion}
+
+We presented CATCH, a conditional 3D Haar-wavelet diffusion framework for healthy brain-tissue inpainting. The method combines full-volume wavelet-domain diffusion, tumor-excluded reconstruction supervision, hole-focused loss weighting, and hard compositing of the observed image. Within this framework, a weighted mixture of tumor-derived, irregular-blob, and ellipsoidal training masks outperformed a compute-matched tumor-component random-augmentation policy on a case-disjoint 75-case confirmation set. The same ordering was retained in a post-hoc patient-disjoint sensitivity analysis.
+
+These results support the complete weighted-mixture policy under the reported experimental configuration, but they do not isolate the contribution of its individual components. One training seed, development-based model selection, the absence of an external baseline, and evaluation only on artificially removed healthy tissue limit broader conclusions. Clinical validity and cross-method superiority therefore remain unestablished.
+
+
+\begin{credits}
+\subsubsection{\ackname}
+This project is supported by the Pioneer Centre for AI, funded by the Danish National Research Foundation (grant number P1).
+
+\subsubsection{\discintname}
+The authors declare no competing interests.
+\end{credits}
+
+
+\bibliographystyle{splncs}
+\bibliography{references}
+
+\end{document}
