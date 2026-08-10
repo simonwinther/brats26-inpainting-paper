@@ -1,21 +1,193 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
+  "analysis_role": "development_only_inference_policy_selection",
   "cohort": {
     "name": "checkpoint_dev_from_holdout_seed2026_n25",
     "case_count": 25,
-    "role": "development-only inference-policy selection"
+    "role": "development-only inference-policy selection",
+    "upstream_manifest": "brats_inpainting/splits/checkpoint_dev_from_holdout_seed2026_n25.txt",
+    "upstream_manifest_sha256": "6483c4d3e2046830b2086229b3a075d20a7f5a477a884518d15e7642bc053698",
+    "case_ids": [
+      "BraTS-GLI-00071-000",
+      "BraTS-GLI-01302-000",
+      "BraTS-GLI-00186-000",
+      "BraTS-GLI-01266-000",
+      "BraTS-GLI-00085-000",
+      "BraTS-GLI-00386-000",
+      "BraTS-GLI-01122-000",
+      "BraTS-GLI-00204-000",
+      "BraTS-GLI-01110-000",
+      "BraTS-GLI-01171-000",
+      "BraTS-GLI-01490-000",
+      "BraTS-GLI-00432-000",
+      "BraTS-GLI-01328-000",
+      "BraTS-GLI-00694-001",
+      "BraTS-GLI-01162-000",
+      "BraTS-GLI-01236-000",
+      "BraTS-GLI-01306-000",
+      "BraTS-GLI-01208-000",
+      "BraTS-GLI-00273-000",
+      "BraTS-GLI-01018-000",
+      "BraTS-GLI-00400-000",
+      "BraTS-GLI-00613-000",
+      "BraTS-GLI-00241-000",
+      "BraTS-GLI-00504-000",
+      "BraTS-GLI-00608-000"
+    ]
   },
   "candidate_rule": "The identical mean and median N=1 output is represented once. For each arm and case, candidates were ranked by SSIM descending, PSNR descending, and MSE ascending; the reported joint rank averages the three per-case metric ranks.",
-  "canonical_sources": {
-    "fixed": "results/paper300k-concat-fixed-s0-maxnorm-dev25-ensemble-screen-n5/ensemble_metrics/",
-    "random": "results/paper300k-concat-random-s0-maxnorm-dev25-ensemble-screen-n5/ensemble_metrics/",
-    "weighted": "results/paper300k-concat-weighted-s0-maxnorm-dev25-ensemble-screen-n5/ensemble_metrics/"
+  "tracked_source_snapshot": {
+    "path": "data/ensemble_selection_per_case.csv",
+    "sha256": "d69dfd048dd08d644661683c1742ad512553c7459b6d7d45c40eb83eeec29ad2",
+    "row_count": 375,
+    "columns": [
+      "arm",
+      "configuration",
+      "case",
+      "ssim",
+      "psnr",
+      "mse"
+    ],
+    "scope": "Exact per-case inputs needed to recompute the five candidate ranks for all three training arms. N=1 comes from mean_n1; median_n1 is the same single trajectory and is intentionally not duplicated."
   },
-  "checkpoint_provenance": {
-    "weights": "EMA 0.9999",
+  "source_protocol": {
+    "source_git_commit": "288cce9679c10c527fb2aa64ba5bf764b63957ba",
+    "source_git_dirty": false,
+    "checkpoint_weights": "EMA 0.9999",
     "checkpoint_step": 299999,
-    "scope": "The inference-policy screen used each arm's terminal checkpoint. The selected policy was subsequently transferred unchanged to that arm's development-selected checkpoint for the held-out 75-case confirmation evaluation.",
-    "checkpoint_hashes": "Not available in this compact local snapshot; the canonical source directories above are the source of truth."
+    "global_seed": 0,
+    "sample_seed_schema": "brats-validation-noise-v1",
+    "diffusion_steps": 1000,
+    "ensemble_sizes": [
+      1,
+      3,
+      5
+    ],
+    "aggregation_methods": [
+      "mean",
+      "median"
+    ],
+    "normalization": "voided_max_v1",
+    "fusion": "concat",
+    "mask_conditioning": "nearest_signed",
+    "scope": "The inference-policy screen used each arm's terminal checkpoint. The selected policy was subsequently transferred unchanged to that arm's development-selected checkpoint and frozen before the 75-case internal training-policy-selection comparison."
+  },
+  "canonical_sources": {
+    "fixed": {
+      "run_id": "paper300k-concat-fixed-s0-maxnorm-dev25-ensemble-screen-n5",
+      "checkpoint": {
+        "artifact_name": "ema_0.9999_brats_inpainting_299999.pt",
+        "size_bytes": 562832414,
+        "sha256": "0201f75d434e201e0e74e4bcc91986ecca4092fdddbe2b4c203b69ebbd6753b9"
+      },
+      "sampling_metadata": {
+        "artifact_name": "sampling_metadata.json",
+        "size_bytes": 61999,
+        "sha256": "891e05ea06202d3bdec9df7981abca8335c40934caffaf8a5fdf157bc531daee"
+      },
+      "metric_sources": {
+        "n1": {
+          "path": "ensemble_metrics/mean_n1/metrics.csv",
+          "sha256": "00398d7d858214119d33f25af107b978ddbfe00b03edbcf9039cab54b4040532"
+        },
+        "mean_n3": {
+          "path": "ensemble_metrics/mean_n3/metrics.csv",
+          "sha256": "7cc804923549cde005695effb6d7958e49b6ff976ec133e71e2178b77208ca1d"
+        },
+        "median_n3": {
+          "path": "ensemble_metrics/median_n3/metrics.csv",
+          "sha256": "0d1c67c69d1762bed6fef25ea2b4fcd1dbedaf14da497d09a6da3d77dcd1b9bf"
+        },
+        "mean_n5": {
+          "path": "ensemble_metrics/mean_n5/metrics.csv",
+          "sha256": "eaaa100e2116c26f9882dd993a9c720ab63163faac2a2155b3ed1ee7d4b50c12"
+        },
+        "median_n5": {
+          "path": "ensemble_metrics/median_n5/metrics.csv",
+          "sha256": "c3ae02d35cc81c124fc5925494668dc9b7bd9f5fd8421702280e049b85dfec1c"
+        }
+      }
+    },
+    "random": {
+      "run_id": "paper300k-concat-random-s0-maxnorm-dev25-ensemble-screen-n5",
+      "checkpoint": {
+        "artifact_name": "ema_0.9999_brats_inpainting_299999.pt",
+        "size_bytes": 562832414,
+        "sha256": "97c05de80651163b88c413925184bf953670c329bb94d2fc0626a8172b805366"
+      },
+      "sampling_metadata": {
+        "artifact_name": "sampling_metadata.json",
+        "size_bytes": 61556,
+        "sha256": "6b5cb02fe09c27e1efc0aac24ab4c66553b51c1bdb7cdf64904acda041646a23"
+      },
+      "metric_sources": {
+        "n1": {
+          "path": "ensemble_metrics/mean_n1/metrics.csv",
+          "sha256": "5334facc5575ab7ac63d37834fad25479e098f7d97996d09690aead31917257b"
+        },
+        "mean_n3": {
+          "path": "ensemble_metrics/mean_n3/metrics.csv",
+          "sha256": "4630c0b53f69ecf5c3eebbe578a7e9b74898df8c722146593140a860dafa6786"
+        },
+        "median_n3": {
+          "path": "ensemble_metrics/median_n3/metrics.csv",
+          "sha256": "c280747fe058adb1a9f24d8f43d163cf8152b2fdb9a2ffeee0537ba12cfc3d1c"
+        },
+        "mean_n5": {
+          "path": "ensemble_metrics/mean_n5/metrics.csv",
+          "sha256": "4da142e214379551724c71ac62f0b803105899a5e13fa7d14aaf98f59c6c96c9"
+        },
+        "median_n5": {
+          "path": "ensemble_metrics/median_n5/metrics.csv",
+          "sha256": "42c2209dd25583be1c6e8599cf6565661445a38e4d2f7b97e04bff04903beb01"
+        }
+      }
+    },
+    "weighted": {
+      "run_id": "paper300k-concat-weighted-s0-maxnorm-dev25-ensemble-screen-n5",
+      "checkpoint": {
+        "artifact_name": "ema_0.9999_brats_inpainting_299999.pt",
+        "size_bytes": 562832414,
+        "sha256": "bac44d54a76021d06014339a20cce2335da4ee5619838f6d440a0f149edf4ad1"
+      },
+      "sampling_metadata": {
+        "artifact_name": "sampling_metadata.json",
+        "size_bytes": 61934,
+        "sha256": "474274734d5b243337b0bacfc7120ee0004fc6a97434f5ef534c704ac41a401f"
+      },
+      "metric_sources": {
+        "n1": {
+          "path": "ensemble_metrics/mean_n1/metrics.csv",
+          "sha256": "6e2c96d6fb6050473d90fbc10ff57eb3bb59a48112a0e56db281208cf96abecb"
+        },
+        "mean_n3": {
+          "path": "ensemble_metrics/mean_n3/metrics.csv",
+          "sha256": "4372e9f3dfb33da1d32fae86b240ada049da3c099648375f64032c0469cefb15"
+        },
+        "median_n3": {
+          "path": "ensemble_metrics/median_n3/metrics.csv",
+          "sha256": "69ffff4e079322759519d66538687bcfce727c952861a2be50e71d80c9199f4b"
+        },
+        "mean_n5": {
+          "path": "ensemble_metrics/mean_n5/metrics.csv",
+          "sha256": "62b5f8cc3ca3579bc2b4012bd0881520816569ee566507bfe830ec9cbff14809"
+        },
+        "median_n5": {
+          "path": "ensemble_metrics/median_n5/metrics.csv",
+          "sha256": "6fc0293b44f66e7d7c1d8fbe5856094d5c7aefdfd98a23eb83c6675459e5ab52"
+        }
+      }
+    }
+  },
+  "derived_summary": {
+    "path": "data/ensemble_selection_summary.csv",
+    "sha256": "d4483b9e8f66db546e73ab3f521c5b11396be5206ffacf6e77644833b2620d2c",
+    "pooled_definition": "For each configuration, Pooled is the arithmetic mean of the Fixed, Random, and Weighted joint-rank columns; it is not a separately ranked population."
+  },
+  "verification": {
+    "script": "scripts/verify_policy_selection.py",
+    "script_sha256": "e163858d9b5608863ffcab172bd1af8fbc413233e11293bb0de3341e339075c9",
+    "command": "python scripts/verify_policy_selection.py"
   },
   "selection": {
     "fixed": {
@@ -31,6 +203,5 @@
       "reason": "Lowest within-arm joint rank."
     }
   },
-  "pooled_definition": "For each configuration, Pooled is the arithmetic mean of the Fixed, Random, and Weighted joint-rank columns; it is not a separately ranked population.",
-  "provenance_note": "This file is a compact rank-only snapshot of the previously computed development summary used by the manuscript. The canonical per-case metric directories are recorded above and remain the source of truth; aggregate SSIM, PSNR, and MSE from the screen are not reproduced in this compact snapshot."
+  "provenance_note": "The tracked snapshot contains exactly the case identifiers and SSIM, PSNR, and MSE values needed for rank reproduction. The hashes above identify the original full per-configuration metric files, sampling metadata, and terminal checkpoints without retaining predictions, checkpoint binaries, cluster paths, or unrelated run artifacts."
 }

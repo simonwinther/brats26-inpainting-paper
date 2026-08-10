@@ -1,0 +1,88 @@
+{
+  "analysis_role": "post_hoc_sensitivity",
+  "analysis_scope": "post_hoc_post_review_compute_matched_fixed_n5_sensitivity",
+  "bootstrap": {
+    "interval": "two-sided percentile 95%",
+    "resamples": 100000,
+    "seed": 2026,
+    "unit": "case"
+  },
+  "case_split_audit": {
+    "checkpoint_diagnostic_case_count": 5,
+    "checkpoint_diagnostic_sibling_overlap_case_count": 0,
+    "development_case_count": 25,
+    "development_model_selection_patient_overlap_count": 0,
+    "development_patient_disjoint_case_count": 22,
+    "development_sibling_overlap_case_count": 3,
+    "development_sibling_overlap_cases": [
+      "BraTS-GLI-00694-001",
+      "BraTS-GLI-00613-000",
+      "BraTS-GLI-00608-000"
+    ],
+    "holdout_case_count": 100,
+    "model_selection_patient_disjoint_case_count": 64,
+    "model_selection_sibling_overlap_case_count": 11,
+    "model_selection_sibling_overlap_cases": [
+      "BraTS-GLI-00017-001",
+      "BraTS-GLI-00045-000",
+      "BraTS-GLI-00087-001",
+      "BraTS-GLI-00494-001",
+      "BraTS-GLI-00517-001",
+      "BraTS-GLI-00540-000",
+      "BraTS-GLI-00559-001",
+      "BraTS-GLI-00610-000",
+      "BraTS-GLI-00655-001",
+      "BraTS-GLI-00675-000",
+      "BraTS-GLI-00692-001"
+    ],
+    "optimization_case_count": 1151,
+    "split_unit": "case ID"
+  },
+  "model_selection_cohort_size": 75,
+  "omnibus": {
+    "mse": {
+      "degrees_of_freedom": 2,
+      "friedman_statistic": 52.90666666666675,
+      "p_value": 3.2468580750254195e-12
+    },
+    "psnr": {
+      "degrees_of_freedom": 2,
+      "friedman_statistic": 52.90666666666675,
+      "p_value": 3.2468580750254195e-12
+    },
+    "ssim": {
+      "degrees_of_freedom": 2,
+      "friedman_statistic": 52.82666666666671,
+      "p_value": 3.379364866760076e-12
+    }
+  },
+  "paired_test": {
+    "alternative": "two-sided",
+    "continuity_correction": false,
+    "method": "asymptotic",
+    "multiplicity": "Holm adjustment over the three pipeline contrasts separately within each metric",
+    "name": "Wilcoxon signed-rank"
+  },
+  "patient_disjoint_sensitivity": {
+    "case_count": 64,
+    "omnibus": {
+      "mse": {
+        "degrees_of_freedom": 2,
+        "friedman_statistic": 42.21875,
+        "p_value": 6.796963239041177e-10
+      },
+      "psnr": {
+        "degrees_of_freedom": 2,
+        "friedman_statistic": 42.21875,
+        "p_value": 6.796963239041177e-10
+      },
+      "ssim": {
+        "degrees_of_freedom": 2,
+        "friedman_statistic": 39.40625,
+        "p_value": 2.7735853597511685e-09
+      }
+    },
+    "post_hoc": true
+  },
+  "schema_version": 2
+}

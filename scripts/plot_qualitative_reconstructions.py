@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Create the audited qualitative figure for the locked confirmation cohort.
+"""Create the audited qualitative figure for the internal model-selection cohort.
 
 Cases are selected deterministically at the 10th, 50th, and 90th percentiles of
 the selected weighted-mixture pipeline's SSIM. Each row uses a near-maximum-area
@@ -67,12 +67,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--output-stem",
         type=Path,
-        default=PAPER_ROOT / "figures" / "qualitative_reconstructions",
+        default=PAPER_ROOT / "figures" / "qualitative_reconstructions_column",
     )
     parser.add_argument(
         "--zoom-layout",
         choices=("bottom", "column"),
-        default="bottom",
+        default="column",
         help="Place paired reconstruction/reference zooms below the grid or in column 4.",
     )
     parser.add_argument("--overwrite", action="store_true")
@@ -947,7 +947,7 @@ def write_manifest(
             }
         )
     payload = {
-        "schema_version": 6,
+        "schema_version": 7,
         "generator": {
             "path": portable_path(Path(__file__)),
             "sha256": sha256(Path(__file__).resolve()),
@@ -955,7 +955,8 @@ def write_manifest(
         "pipeline": args.reconstruction_label.replace("\n", " "),
         "selection_rule": (
             "Observed cases at the 10th, 50th, and 90th percentiles of "
-            "weighted-mixture mean-N=5 SSIM in the locked confirmation cohort, "
+            "weighted-mixture mean-N=5 SSIM in the 75-case internal model-selection "
+            "cohort, "
             "using the lower empirical quantile convention."
         ),
         "slice_rule": (
@@ -997,8 +998,12 @@ def write_manifest(
             "mask with 35 percent padding and a minimum side length of 48 oriented "
             "pixels."
         ),
-        "confirmation_case_file": portable_path(args.case_file),
-        "confirmation_case_file_sha256": sha256(args.case_file),
+        "model_selection_case_file": portable_path(args.case_file),
+        "model_selection_case_file_sha256": sha256(args.case_file),
+        "legacy_source_naming_note": (
+            "The immutable split filename contains 'confirmation'; it is the "
+            "75-case internal model-selection cohort."
+        ),
         "metrics_csv": portable_path(args.metrics),
         "metrics_csv_sha256": sha256(args.metrics),
         "selected_cases": selected_cases,

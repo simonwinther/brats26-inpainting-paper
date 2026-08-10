@@ -1,6 +1,4 @@
 {
-  "confirmation_case_file": "../brats_inpainting/splits/checkpoint_confirmation_from_holdout_seed2026_n75.txt",
-  "confirmation_case_file_sha256": "9c86a971b9098a5c9cb53891ca4ec32cb662f93e3ed3a2e14cbd79e18ac58026",
   "display_window_rule": "Per-case 0.5th and 99.5th percentiles of positive voided voxels.",
   "error_color_limit": [
     0.0,
@@ -9,12 +7,15 @@
   "error_rule": "Absolute prediction-reference error after official voided-image 0.5th/99.5th percentile normalization, displayed only within the provided healthy scoring mask.",
   "generator": {
     "path": "scripts/plot_qualitative_reconstructions.py",
-    "sha256": "0d132c0374d27e89dcff0b85e6fccfe11b1a0b26d49a705b34936758edeb3cb3"
+    "sha256": "c5bdd27bf673430b4779e361fd7a5907a859897d2cfe2ad1abd1cf186939a702"
   },
+  "legacy_source_naming_note": "The immutable split filename contains 'confirmation'; it is the 75-case internal model-selection cohort.",
   "main_panel_layout_rule": "After the case-specific brain crop and orientation, all main panels are centered without resampling on one shared square canvas whose side is the largest selected crop dimension; added pixels are zero.",
   "metric_annotation_rule": "Place the in-panel metric block in the first of four corners with minimum overlap against the plotted full-hole mask dilated by two image pixels; ties prefer lower left, lower right, upper left, then upper right.",
   "metrics_csv": "../brats_inpainting/results/paper300k-concat-weighted-s0-maxnorm-confirm75-ckpt200000-mean-n5/ensemble_metrics/mean_n5/metrics.csv",
   "metrics_csv_sha256": "b83e7a06a09003cca80b4ec3188c97e16c3440d697e86caaef0f1dc254f7ed7b",
+  "model_selection_case_file": "../brats_inpainting/splits/checkpoint_confirmation_from_holdout_seed2026_n75.txt",
+  "model_selection_case_file_sha256": "9c86a971b9098a5c9cb53891ca4ec32cb662f93e3ed3a2e14cbd79e18ac58026",
   "outputs": [
     {
       "path": "figures/qualitative_reconstructions_column.pdf",
@@ -26,7 +27,7 @@
     }
   ],
   "pipeline": "Weighted mixture mean ($N=5$)",
-  "schema_version": 6,
+  "schema_version": 7,
   "selected_cases": [
     {
       "case_id": "BraTS-GLI-00340-000",
@@ -304,7 +305,7 @@
   ],
   "selection_csv": "figures/qualitative_reconstructions_column.csv",
   "selection_csv_sha256": "6ec1db12ee1ff5395e7718d6ff484c768c4e9f85b6cfa12cae6b31fe9d8c236d",
-  "selection_rule": "Observed cases at the 10th, 50th, and 90th percentiles of weighted-mixture mean-N=5 SSIM in the locked confirmation cohort, using the lower empirical quantile convention.",
+  "selection_rule": "Observed cases at the 10th, 50th, and 90th percentiles of weighted-mixture mean-N=5 SSIM in the 75-case internal model-selection cohort, using the lower empirical quantile convention.",
   "slice_rule": "In canonical RAS axial space, retain slices with at least 90% of the case's maximum healthy-mask slice area, then maximize the healthy-mask/full-hole area ratio; ties prefer larger healthy-mask area and then the lower slice index.",
   "zoom_layout": "column",
   "zoom_panel_rule": "Paired weighted-reconstruction and reference crops use the same case-specific intensity window and are placed side by side in the fourth grouped column. Each square crop is centered on the selected-slice healthy scoring mask with 35 percent padding and a minimum side length of 48 oriented pixels."

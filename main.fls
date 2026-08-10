@@ -317,6 +317,16 @@ INPUT ./figures/checkpoint_selection.pdf
 INPUT ./figures/checkpoint_selection.pdf
 INPUT /usr/share/texmf-dist/fonts/tfm/public/cm/cmbx9.tfm
 INPUT /usr/share/texmf-dist/fonts/tfm/public/cm/cmbx6.tfm
+INPUT ./tables/model_selection75.tex
+INPUT ./tables/model_selection75.tex
+INPUT ./tables/model_selection75.tex
+INPUT ./tables/model_selection75.tex
+INPUT tables/model_selection75.tex
+INPUT ./tables/model_selection75_fixed_n5_sensitivity.tex
+INPUT ./tables/model_selection75_fixed_n5_sensitivity.tex
+INPUT ./tables/model_selection75_fixed_n5_sensitivity.tex
+INPUT ./tables/model_selection75_fixed_n5_sensitivity.tex
+INPUT tables/model_selection75_fixed_n5_sensitivity.tex
 INPUT ./figures/confirmation_effects.pdf
 INPUT ./figures/confirmation_effects.pdf
 INPUT ./figures/confirmation_effects.pdf

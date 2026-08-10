@@ -1,0 +1,69 @@
+{
+  "analysis_role": "post_hoc_exploratory_sensitivity",
+  "canonical": true,
+  "canonical_size_definition": {
+    "complete_mask_suffix_excluded": "-mask.nii.gz",
+    "mask_suffix": "-mask-healthy.nii.gz",
+    "meaning": "provided healthy scoring mask used by the official evaluator"
+  },
+  "case_manifest": {
+    "case_count": 75,
+    "legacy_filename_note": "The immutable filename contains 'confirmation'; its inferential role is internal model selection.",
+    "path": "../brats_inpainting/splits/checkpoint_confirmation_from_holdout_seed2026_n75.txt",
+    "sha256": "9c86a971b9098a5c9cb53891ca4ec32cb662f93e3ed3a2e14cbd79e18ac58026"
+  },
+  "cohort_role": "internal_training_policy_selection",
+  "generator": "scripts/summarize_void_size_sensitivity.py",
+  "generator_sha256": "ab4471cebc0956444d996412720d71d9de804ce43f0922997fe1d82f11c29c45",
+  "legacy_healthy_mask_cross_check": {
+    "case_count": 75,
+    "comparison": "Canonical healthy-mask voxel counts and tertile assignments match for all 75 cases.",
+    "legacy_basename": "void_sizes_confirm75_healthymask.csv",
+    "sha256": "d83232ff30108efdfb05da33aa7a98c4894a79bd70b495e98f9eaf9e02ce0f54"
+  },
+  "obsolete_artifact": {
+    "case_count": 75,
+    "legacy_basename": "void_sizes_confirm75.csv",
+    "reason": "It counted the complete -mask.nii.gz inpainting region rather than the -mask-healthy.nii.gz scoring mask. It is not copied into the canonical paper artifacts.",
+    "sha256": "0ece309703e725a9e7c4897440cd7b28bb70d28d934ba555fad367739672157e",
+    "status": "obsolete_do_not_use",
+    "tertile_assignments_differing_from_canonical": 40
+  },
+  "outputs": {
+    "data/model_selection75_void_size_sensitivity/healthy_mask_void_sizes.csv": "32debdb651a4ebacec398c43350ac2ca6d260fa31ac2d59b8871cd8088ba98b7",
+    "data/model_selection75_void_size_sensitivity/paired_by_tertile.csv": "e809cc1787ea645eec764425fb53a59a2d1049967890912dd1670616ba9238cb",
+    "data/model_selection75_void_size_sensitivity/paired_cases.csv": "6818b637b8950efdbc7bed97338ccf51ec644e190a396ce8bede890871aca3b7",
+    "data/model_selection75_void_size_sensitivity/random_metrics.csv": "67b142ca54524071bd79970a453c83b0df4566da2cc9c68ec011a9a3965bb192",
+    "data/model_selection75_void_size_sensitivity/random_metrics.summary.json": "228dda0b9822aa938813d8af7b81fa43aa7624690c77bcc9c014e44df6988617",
+    "data/model_selection75_void_size_sensitivity/summary.json": "0d7b37013f6990a68de8861661aea8b02048e55e222f7723867b453f8279c165",
+    "data/model_selection75_void_size_sensitivity/weighted_metrics.csv": "b83e7a06a09003cca80b4ec3188c97e16c3440d697e86caaef0f1dc254f7ed7b",
+    "data/model_selection75_void_size_sensitivity/weighted_metrics.summary.json": "f5bd65373e714cb3b03646012d1aeec369977fb93bd6a59c06e91e095937aa1e"
+  },
+  "schema_version": 1,
+  "source_metrics": {
+    "random": {
+      "checkpoint_sha256": "69a4169fbead074819b3ed3b5392e08934dc1e7ac570933b4c825cb649d1ac27",
+      "ensemble": {
+        "method": "mean",
+        "size": 5
+      },
+      "metrics_path": "../brats_inpainting/results/paper300k-concat-random-s0-maxnorm-confirm75-ckpt290000-mean-n5/ensemble_metrics/mean_n5/metrics.csv",
+      "metrics_sha256": "67b142ca54524071bd79970a453c83b0df4566da2cc9c68ec011a9a3965bb192",
+      "summary_path": "../brats_inpainting/results/paper300k-concat-random-s0-maxnorm-confirm75-ckpt290000-mean-n5/ensemble_metrics/mean_n5/metrics.summary.json",
+      "summary_sha256": "228dda0b9822aa938813d8af7b81fa43aa7624690c77bcc9c014e44df6988617"
+    },
+    "weighted": {
+      "checkpoint_sha256": "46578c5e1e41ed66c6d6ba65818279d78c5f104e1ae8c59507511c5e16883e2a",
+      "ensemble": {
+        "method": "mean",
+        "size": 5
+      },
+      "metrics_path": "../brats_inpainting/results/paper300k-concat-weighted-s0-maxnorm-confirm75-ckpt200000-mean-n5/ensemble_metrics/mean_n5/metrics.csv",
+      "metrics_sha256": "b83e7a06a09003cca80b4ec3188c97e16c3440d697e86caaef0f1dc254f7ed7b",
+      "summary_path": "../brats_inpainting/results/paper300k-concat-weighted-s0-maxnorm-confirm75-ckpt200000-mean-n5/ensemble_metrics/mean_n5/metrics.summary.json",
+      "summary_sha256": "f5bd65373e714cb3b03646012d1aeec369977fb93bd6a59c06e91e095937aa1e"
+    }
+  },
+  "void_size_generator": "../brats_inpainting/scripts/analysis/compute_void_sizes.py",
+  "void_size_generator_sha256": "67de6f5a0facef0114877e6fd42f86a265dc2e3d2abb0c24dc5396087e58b6a0"
+}

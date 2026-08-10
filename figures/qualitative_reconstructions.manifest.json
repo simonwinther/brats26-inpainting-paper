@@ -1,4 +1,6 @@
 {
+  "artifact_status": "legacy_noncanonical",
+  "canonical": false,
   "confirmation_case_file": "../brats_inpainting/splits/checkpoint_confirmation_from_holdout_seed2026_n75.txt",
   "confirmation_case_file_sha256": "9c86a971b9098a5c9cb53891ca4ec32cb662f93e3ed3a2e14cbd79e18ac58026",
   "display_window_rule": "Per-case 0.5th and 99.5th percentiles of positive voided voxels.",
@@ -26,7 +28,9 @@
     }
   ],
   "pipeline": "Weighted mixture mean ($N=5$)",
-  "schema_version": 5,
+  "schema_version": 6,
+  "superseded_by": "figures/qualitative_reconstructions_column.manifest.json",
+  "terminology_note": "The immutable source filename uses 'confirmation'; the cohort's inferential role is internal training-policy selection.",
   "selected_cases": [
     {
       "case_id": "BraTS-GLI-00340-000",

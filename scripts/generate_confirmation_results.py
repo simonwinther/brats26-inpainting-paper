@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Audit and summarize the held-out 75-case confirmation evaluation.
+"""Audit and summarize the 75-case internal training-policy selection.
 
 The script snapshots the three canonical per-case CSV/JSON files into the
-paper repository, verifies that the runs use the same held-out cohort and sampling
-protocol, audits sibling-timepoint overlap with the optimization pool, and writes
-the aggregate and paired statistics used by the manuscript.
+paper repository, verifies that the frozen pipelines use the same internal
+model-selection cohort and sampling protocol, audits sibling-timepoint overlap
+with the optimization pool, and writes the aggregate and paired statistics used
+by the manuscript. Historical run and split names retain ``confirm75`` for
+provenance; that label does not change the cohort's inferential role.
 """
 
 from __future__ import annotations
@@ -48,8 +50,14 @@ DEFAULT_DATA_DIR = (
     / "data"
     / "ASNR-MICCAI-BraTS2023-Local-Synthesis-Challenge-Training"
 )
-DEFAULT_OUTPUT_DIR = PAPER_ROOT / "data" / "confirmation75"
-DEFAULT_TABLE = PAPER_ROOT / "tables" / "confirmation75.tex"
+DEFAULT_OUTPUT_DIR = PAPER_ROOT / "data" / "model_selection75"
+DEFAULT_TABLE = PAPER_ROOT / "tables" / "model_selection75.tex"
+DEFAULT_FIXED_N5_OUTPUT_DIR = (
+    PAPER_ROOT / "data" / "model_selection75_fixed_n5_sensitivity"
+)
+DEFAULT_FIXED_N5_TABLE = (
+    PAPER_ROOT / "tables" / "model_selection75_fixed_n5_sensitivity.tex"
+)
 
 METRICS = ("ssim", "psnr", "mse")
 HIGHER_IS_BETTER = {"ssim": True, "psnr": True, "mse": False}
@@ -70,17 +78,24 @@ class Pipeline:
     sampling_metadata_path: Path
 
 
-def default_pipelines() -> list[Pipeline]:
+def default_pipelines(*, fixed_n5_sensitivity: bool = False) -> list[Pipeline]:
     results = REPOSITORY_ROOT / "brats_inpainting" / "results"
+    fixed_run = (
+        "paper300k-concat-fixed-s0-maxnorm-confirm75-ckpt180000-mean-n5-r2"
+        if fixed_n5_sensitivity
+        else "paper300k-concat-fixed-s0-maxnorm-confirm75-ckpt180000-n1"
+    )
+    fixed_ensemble_size = 5 if fixed_n5_sensitivity else 1
+    fixed_ensemble_name = "mean_n5" if fixed_n5_sensitivity else "mean_n1"
     specifications = (
         (
             "fixed",
             "Fixed mask",
             180_000,
             "ddc717d8d822e94ff0de62e05c02ea2351468e46648843d85f7bed52455e1c49",
-            1,
-            "paper300k-concat-fixed-s0-maxnorm-confirm75-ckpt180000-n1",
-            "mean_n1",
+            fixed_ensemble_size,
+            fixed_run,
+            fixed_ensemble_name,
         ),
         (
             "random",
@@ -144,6 +159,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--data-dir", type=Path, default=DEFAULT_DATA_DIR)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     parser.add_argument("--table", type=Path, default=DEFAULT_TABLE)
+    parser.add_argument(
+        "--fixed-n5-sensitivity",
+        action="store_true",
+        help=(
+            "Generate the post-hoc, post-review compute-matched analysis with mean N=5 "
+            "for all three pipelines"
+        ),
+    )
     parser.add_argument("--overwrite", action="store_true")
     return parser.parse_args()
 
@@ -174,7 +197,7 @@ def read_cases(path: Path) -> list[str]:
         raise ValueError(f"Expected 75 unique cases in {path}, found {len(cases)}")
     patient_ids = [case.rsplit("-", 1)[0] for case in cases]
     if len(patient_ids) != len(set(patient_ids)):
-        raise ValueError("The confirmation cohort contains repeated patient IDs")
+        raise ValueError("The model-selection cohort contains repeated patient IDs")
     return cases
 
 
@@ -549,29 +572,51 @@ def write_csv(path: Path, rows: list[dict[str, object]]) -> None:
         writer.writerows(rows)
 
 
-def write_table(path: Path, summaries: list[dict[str, object]]) -> None:
+def write_table(
+    path: Path,
+    summaries: list[dict[str, object]],
+    *,
+    fixed_n5_sensitivity: bool,
+) -> None:
+    if fixed_n5_sensitivity:
+        caption = (
+            r"  \caption{\revision{Post-hoc compute-matched sensitivity analysis on the "
+            r"75-case internal model-selection set. Values are mean $\pm$ sample SD and all "
+            r"pipelines use voxel-wise mean aggregation with $N=5$. Joint rank "
+            r"averages each pipeline's per-case SSIM, PSNR, and MSE ranks; lower "
+            r"is better. Bold and underlining mark the best and second-best value "
+            r"in each numeric column. This sensitivity does not replace the frozen, "
+            r"development-selected comparison, in which fixed mask uses $N=1$.}}"
+        )
+        label = r"  \label{tab:fixed-n5-sensitivity}"
+    else:
+        caption = (
+            r"  \caption{\revision{Internal 75-case training-policy selection "
+            r"results. Values are mean $\pm$ sample SD. Joint rank averages each "
+            r"pipeline's per-case SSIM, PSNR, and MSE ranks; lower is better. "
+            r"Bold and underlining mark the best and second-best value in each "
+            r"numeric column. Fixed, Random, and Weighted denote the fixed-mask, "
+            r"random-augmentation, and weighted-mixture pipelines. Fixed uses "
+            r"$N=1$, so its contrasts with the mean-$N=5$ pipelines are not "
+            r"compute matched.}}"
+        )
+        label = r"  \label{tab:model-selection-results}"
+    header = (
+        r"    \revision{Pipeline} & \revision{SSIM $\uparrow$} "
+        r"& \revision{PSNR (dB) $\uparrow$} "
+        r"& \revision{MSE $\downarrow$ ($\times10^{-2}$)} "
+        r"& \revision{Rank $\downarrow$} \\"
+    )
     lines = [
         r"\begin{table}[t]",
         r"  \centering",
-        (
-            r"  \caption{Held-out 75-case confirmation results. Values are "
-            r"mean $\pm$ sample SD. Joint rank averages each pipeline's per-case "
-            r"SSIM, PSNR, and MSE ranks; lower is better. Bold and underlining "
-            r"mark the best and second-best value in each numeric column. Fixed, "
-            r"Random, and Weighted denote the fixed-mask, random-augmentation, "
-            r"and weighted-mixture pipelines. Fixed uses $N=1$, so its contrasts "
-            r"with the mean-$N=5$ pipelines "
-            r"are not compute matched.}"
-        ),
-        r"  \label{tab:confirmation-results}",
+        caption,
+        label,
         r"  \small",
         r"  \setlength{\tabcolsep}{2.0pt}",
         r"  \begin{tabular}{@{}lrrrr@{}}",
         r"    \toprule",
-        (
-            r"    Pipeline & SSIM $\uparrow$ & PSNR (dB) $\uparrow$ "
-            r"& MSE $\downarrow$ ($\times10^{-2}$) & Rank $\downarrow$ \\"
-        ),
+        header,
         r"    \midrule",
     ]
     best = {
@@ -620,13 +665,15 @@ def write_table(path: Path, summaries: list[dict[str, object]]) -> None:
                 formatted[key] = rf"\textbf{{{formatted[key]}}}"
             elif np.isclose(source, second[key], rtol=0, atol=1e-15):
                 formatted[key] = rf"\underline{{{formatted[key]}}}"
-        lines.append(
-            "    "
-            + f"{table_labels[row['pipeline']]} ({inference}) & "
-            + f"{formatted['ssim']} & "
-            + f"{formatted['psnr']} & {formatted['mse']} & "
-            + f"{formatted['rank']} \\\\"
-        )
+        cells = [
+            f"{table_labels[row['pipeline']]} ({inference})",
+            formatted["ssim"],
+            formatted["psnr"],
+            formatted["mse"],
+            formatted["rank"],
+        ]
+        cells = [rf"\revision{{{cell}}}" for cell in cells]
+        lines.append("    " + " & ".join(cells) + r" \\")
     lines.extend(
         [
             r"    \bottomrule",
@@ -649,13 +696,25 @@ def ensure_fresh(paths: list[Path], overwrite: bool) -> None:
 
 def main() -> None:
     args = parse_args()
+    if args.fixed_n5_sensitivity:
+        if args.output_dir == DEFAULT_OUTPUT_DIR:
+            args.output_dir = DEFAULT_FIXED_N5_OUTPUT_DIR
+        if args.table == DEFAULT_TABLE:
+            args.table = DEFAULT_FIXED_N5_TABLE
     args.case_file = args.case_file.expanduser().resolve()
     args.development_file = args.development_file.expanduser().resolve()
     args.holdout_file = args.holdout_file.expanduser().resolve()
     args.data_dir = args.data_dir.expanduser().resolve()
     args.output_dir = args.output_dir.expanduser().resolve()
     args.table = args.table.expanduser().resolve()
-    pipelines = default_pipelines()
+    pipelines = default_pipelines(
+        fixed_n5_sensitivity=args.fixed_n5_sensitivity
+    )
+    analysis_scope = (
+        "post_hoc_post_review_compute_matched_fixed_n5_sensitivity"
+        if args.fixed_n5_sensitivity
+        else "internal_training_policy_selection"
+    )
     cases = read_cases(args.case_file)
     development_cases = read_case_list(args.development_file, expected_count=25)
     if len({patient_id(case) for case in development_cases}) != len(
@@ -663,15 +722,17 @@ def main() -> None:
     ):
         raise ValueError("The development cohort contains repeated patient IDs")
     if set(development_cases) & set(cases):
-        raise ValueError("Development and confirmation cohorts overlap")
+        raise ValueError("Development and model-selection cohorts overlap")
     if {patient_id(case) for case in development_cases} & {
         patient_id(case) for case in cases
     }:
-        raise ValueError("Development and confirmation cohorts overlap by patient")
+        raise ValueError(
+            "Development and model-selection cohorts overlap by patient"
+        )
     holdout_cases = set(read_case_list(args.holdout_file, expected_count=100))
     if set(development_cases) | set(cases) != holdout_cases:
         raise ValueError(
-            "Development and confirmation manifests do not partition the holdout"
+            "Development and model-selection manifests do not partition the holdout"
         )
     split_audit, disjoint_cases, overlapping_cases = audit_patient_overlap(
         cases,
@@ -736,7 +797,7 @@ def main() -> None:
         order, metric_rows = read_metrics(pipeline.metrics_path)
         if order != cases:
             raise ValueError(
-                f"{pipeline.key}: metric order differs from the confirmation manifest"
+                f"{pipeline.key}: metric order differs from the model-selection manifest"
             )
         summary = json.loads(pipeline.summary_path.read_text())
         validate_summary(pipeline, summary, cases, metric_rows, args.case_file)
@@ -752,7 +813,7 @@ def main() -> None:
         }
         if prediction_names != set(cases):
             raise ValueError(
-                f"{pipeline.key}: prediction set does not equal confirmation cohort"
+                f"{pipeline.key}: prediction set does not equal model-selection cohort"
             )
         prediction_inventory_digest = hashlib.sha256()
         for prediction_path in sorted(
@@ -824,6 +885,13 @@ def main() -> None:
             raise ValueError(
                 f"Random and weighted seed lists differ for {case}"
             )
+        if args.fixed_n5_sensitivity and (
+            sampling_seeds_by_pipeline["fixed"][case]
+            != sampling_seeds_by_pipeline["random"][case]
+        ):
+            raise ValueError(
+                f"Fixed and augmented mean-N=5 seed lists differ for {case}"
+            )
 
     summaries = summarize_pipelines(pipelines, cases, all_rows)
     pairwise, omnibus = pairwise_statistics(pipelines, cases, all_rows)
@@ -856,8 +924,14 @@ def main() -> None:
     analysis_path.write_text(
         json.dumps(
             {
-                "schema_version": 1,
-                "primary_cohort_size": len(cases),
+                "schema_version": 2,
+                "analysis_scope": analysis_scope,
+                "analysis_role": (
+                    "post_hoc_sensitivity"
+                    if args.fixed_n5_sensitivity
+                    else "internal_training_policy_selection"
+                ),
+                "model_selection_cohort_size": len(cases),
                 "bootstrap": {
                     "resamples": BOOTSTRAP_SAMPLES,
                     "seed": BOOTSTRAP_SEED,
@@ -891,14 +965,14 @@ def main() -> None:
                     ),
                     "checkpoint_diagnostic_case_count": len(diagnostic_cases),
                     "checkpoint_diagnostic_sibling_overlap_case_count": 0,
-                    "development_confirmation_patient_overlap_count": 0,
-                    "confirmation_patient_disjoint_case_count": len(
+                    "development_model_selection_patient_overlap_count": 0,
+                    "model_selection_patient_disjoint_case_count": len(
                         disjoint_cases
                     ),
-                    "confirmation_sibling_overlap_case_count": len(
+                    "model_selection_sibling_overlap_case_count": len(
                         overlapping_cases
                     ),
-                    "confirmation_sibling_overlap_cases": overlapping_cases,
+                    "model_selection_sibling_overlap_cases": overlapping_cases,
                 },
                 "patient_disjoint_sensitivity": {
                     "post_hoc": True,
@@ -911,15 +985,73 @@ def main() -> None:
         )
         + "\n"
     )
-    write_table(args.table, summaries)
+    write_table(
+        args.table,
+        summaries,
+        fixed_n5_sensitivity=args.fixed_n5_sensitivity,
+    )
+    if args.fixed_n5_sensitivity:
+        caveats = [
+            (
+                "This is a post-hoc, post-review sensitivity analysis. Fixed-mask "
+                "mean N=5 was evaluated after the frozen 75-case selection analysis "
+                "and does not replace the development-selected fixed-mask N=1 "
+                "pipeline."
+            ),
+            (
+                "Inference trajectory count and aggregation are compute-matched "
+                "at mean N=5, but checkpoint step and training policy still differ "
+                "between arms."
+            ),
+        ]
+    else:
+        caveats = [
+            (
+                "The comparison is between selected pipelines; checkpoint "
+                "step and inference compute differ between arms."
+            )
+        ]
+    caveats.extend(
+        [
+            (
+                "All arms use one training seed. Across-case uncertainty "
+                "does not quantify training-seed variability."
+            ),
+            (
+                "The deterministic split is keyed by case ID rather than "
+                "patient ID. Three development cases and eleven model-selection "
+                "cases have a sibling timepoint in the optimization pool. "
+                "A post-hoc 64-case patient-disjoint model-selection sensitivity "
+                "analysis is provided; it does not remove overlap from "
+                "development-stage inference-policy selection."
+            ),
+            (
+                "Some source runs recorded a dirty worktree; checkpoint, "
+                "split, configuration, metric, and prediction hashes remain "
+                "available, but the exact dirty diff was not captured."
+            ),
+        ]
+    )
     manifest_path.write_text(
         json.dumps(
             {
-                "schema_version": 1,
+                "schema_version": 2,
+                "analysis_scope": analysis_scope,
+                "analysis_role": (
+                    "post_hoc_sensitivity"
+                    if args.fixed_n5_sensitivity
+                    else "internal_training_policy_selection"
+                ),
                 "generator": portable_path(Path(__file__)),
                 "generator_sha256": sha256(Path(__file__).resolve()),
-                "confirmation_case_file": portable_path(args.case_file),
-                "confirmation_case_file_sha256": sha256(args.case_file),
+                "model_selection_case_file": portable_path(args.case_file),
+                "model_selection_case_file_sha256": sha256(args.case_file),
+                "legacy_source_naming_note": (
+                    "The immutable split filename and source run names contain "
+                    "'confirmation'/'confirm75'. They are historical identifiers; "
+                    "the 75-case cohort's inferential role is internal training-policy "
+                    "selection."
+                ),
                 "development_case_file": portable_path(args.development_file),
                 "development_case_file_sha256": sha256(args.development_file),
                 "holdout_case_file": portable_path(args.holdout_file),
@@ -950,7 +1082,8 @@ def main() -> None:
                         "official voided-image percentile normalization"
                     ),
                     "candidate_rank_scope": (
-                        "three selected pipelines on the held-out 75-case cohort"
+                        "three frozen pipelines on the 75-case internal "
+                        "training-policy-selection cohort"
                     ),
                 },
                 "sources": source_records,
@@ -968,29 +1101,7 @@ def main() -> None:
                         args.table,
                     )
                 },
-                "caveats": [
-                    (
-                        "The comparison is between selected pipelines; checkpoint "
-                        "step and inference compute differ between arms."
-                    ),
-                    (
-                        "All arms use one training seed. Across-case uncertainty "
-                        "does not quantify training-seed variability."
-                    ),
-                    (
-                        "The deterministic split is keyed by case ID rather than "
-                        "patient ID. Three development cases and eleven confirmation "
-                        "cases have a sibling timepoint in the optimization pool. "
-                        "A post-hoc 64-case patient-disjoint confirmation sensitivity "
-                        "analysis is provided; it does not remove overlap from "
-                        "development-stage inference-policy selection."
-                    ),
-                    (
-                        "Some source runs recorded a dirty worktree; checkpoint, "
-                        "split, configuration, metric, and prediction hashes remain "
-                        "available, but the exact dirty diff was not captured."
-                    ),
-                ],
+                "caveats": caveats,
             },
             indent=2,
             sort_keys=True,

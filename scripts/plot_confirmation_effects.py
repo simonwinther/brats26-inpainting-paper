@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Plot paired, compute-matched weighted-versus-random confirmation effects."""
+"""Plot paired weighted-versus-random effects for internal model selection."""
 
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ from matplotlib.lines import Line2D
 
 
 PAPER_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_DATA_DIR = PAPER_ROOT / "data" / "confirmation75"
+DEFAULT_DATA_DIR = PAPER_ROOT / "data" / "model_selection75"
 DEFAULT_OUTPUT_STEM = PAPER_ROOT / "figures" / "confirmation_effects"
 METRICS = (
     ("ssim", r"(a) $\Delta$SSIM", "Weighted $-$ random", 1.0),
@@ -327,9 +327,9 @@ def main() -> None:
         outputs["pdf"],
         dpi=300,
         metadata={
-            "Title": "Paired weighted-versus-random confirmation effects",
+            "Title": "Paired weighted-versus-random model-selection effects",
             "Author": "",
-            "Subject": "BraTS 2026 CATCH confirmation analysis",
+            "Subject": "BraTS 2026 CATCH internal model-selection analysis",
             "Keywords": "BraTS, MRI inpainting, paired effects",
             "Creator": "plot_confirmation_effects.py",
             "Producer": "Matplotlib",
@@ -345,10 +345,12 @@ def main() -> None:
     plt.close(figure)
 
     manifest = {
-        "schema_version": 1,
+        "schema_version": 2,
+        "analysis_role": "internal_training_policy_selection",
         "analysis": (
-            "Paired weighted-mixture versus random-augmentation confirmation "
-            "effects under matched mean-N=5 inference compute."
+            "Paired weighted-mixture versus random-augmentation effects on the "
+            "75-case internal model-selection cohort under matched mean-N=5 "
+            "inference compute."
         ),
         "case_count": len(case_order),
         "positive_direction": {

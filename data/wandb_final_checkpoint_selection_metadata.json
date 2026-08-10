@@ -53,5 +53,5 @@
       "note": "Best recorded aggregate SSIM, PSNR, and MSE."
     }
   ],
-  "caveat": "These periodic five-case diagnostics were used for development-only checkpoint selection. They are not final confirmation results and do not estimate performance uncertainty."
+  "caveat": "These periodic five-case diagnostics were used only for within-arm development checkpoint selection. They are not 75-case model-selection or official performance results and do not estimate performance uncertainty."
 }

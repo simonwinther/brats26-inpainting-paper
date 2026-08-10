@@ -1,0 +1,4 @@
+size_bin,case_count,healthy_mask_volume_min_voxels,healthy_mask_volume_max_voxels,mean_delta_ssim_weighted_minus_random,mean_delta_psnr_db_weighted_minus_random,mean_delta_mse_weighted_minus_random
+small,25,859,6678,0.01156576633453369,1.0769918060302734,-0.001969715126324445
+medium,25,6745,34797,0.02310197114944458,0.8837309646606445,-0.003133459137752652
+large,25,40371,191353,0.02158374071121216,0.8826596450805664,-0.0028212760295718907

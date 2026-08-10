@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.27)  30 JUL 2026 23:24
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.27)  10 AUG 2026 18:56
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -806,24 +806,24 @@ File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 ) (./main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
 
 (/usr/share/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -855,7 +855,7 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-Package hyperref Info: Link coloring ON on input line 23.
+Package hyperref Info: Link coloring ON on input line 32.
  (./main.out)
 (./main.out)
 \@outlinefile=\write4
@@ -864,97 +864,102 @@ Package hyperref Info: Link coloring ON on input line 23.
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: threeparttable package is loaded.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 42.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 51.
 
  (/usr/share/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 42.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 51.
 
 
 (/usr/share/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-Overfull \hbox (1.48944pt too wide) in paragraph at lines 57--58
-[]\T1/cmr/m/n/10 Denoising dif-fu-sion prob-a-bilis-tic mod-els (DDPMs) [[]] pr
-o-vide a flex-i-ble frame-
- []
-
-[1
+) [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texmf-dist/fonts
 /enc/dvips/cm-super/cm-super-t1.enc}{/usr/share/texmf-dist/fonts/enc/dvips/cm-s
 uper/cm-super-ts1.enc}]
-<figures/catch_architecture.pdf, id=83, 445.7172pt x 292.07318pt>
+Overfull \hbox (1.48944pt too wide) in paragraph at lines 66--67
+[]\T1/cmr/m/n/10 Denoising dif-fu-sion prob-a-bilis-tic mod-els (DDPMs) [[]] pr
+o-vide a flex-i-ble frame-
+ []
+
+[2]
+<figures/catch_architecture.pdf, id=100, 445.7172pt x 292.07318pt>
 File: figures/catch_architecture.pdf Graphic file (type pdf)
 <use figures/catch_architecture.pdf>
-Package pdftex.def Info: figures/catch_architecture.pdf  used on input line 77.
+Package pdftex.def Info: figures/catch_architecture.pdf  used on input line 86.
 
 (pdftex.def)             Requested size: 329.7663pt x 216.10402pt.
- [2] [3 <./figures/catch_architecture.pdf>]
-Overfull \hbox (6.28906pt too wide) in paragraph at lines 132--133
+ [3 <./figures/catch_architecture.pdf>] [4]
+Overfull \hbox (6.28906pt too wide) in paragraph at lines 141--142
 \T1/cmr/m/n/10 are ex-cluded; em-pir-i-cal tar-get vol-umes, bounded 3D ro-ta-t
 ions, op-tional anisotropic
  []
 
-<figures/mask_augmentation_audit.pdf, id=252, 445.44136pt x 165.27293pt>
+<figures/mask_augmentation_audit.pdf, id=262, 445.44136pt x 165.27293pt>
 File: figures/mask_augmentation_audit.pdf Graphic file (type pdf)
 <use figures/mask_augmentation_audit.pdf>
 Package pdftex.def Info: figures/mask_augmentation_audit.pdf  used on input lin
-e 136.
+e 145.
 (pdftex.def)             Requested size: 329.7663pt x 122.353pt.
-[4]
-Overfull \hbox (0.42026pt too wide) in paragraph at lines 151--152
+[5 <./figures/mask_augmentation_audit.pdf>]
+Overfull \hbox (0.42026pt too wide) in paragraph at lines 160--161
 []\T1/cmr/m/n/10 Global seed 0 and the case- and member-stable \T1/cmtt/m/n/10 
 brats-validation-noise-v1
  []
 
-[5 <./figures/mask_augmentation_audit.pdf>] [6]
-<figures/checkpoint_selection.pdf, id=339, 537.35257pt x 180.18605pt>
+[6] [7]
+<figures/checkpoint_selection.pdf, id=345, 537.35257pt x 180.18605pt>
 File: figures/checkpoint_selection.pdf Graphic file (type pdf)
 <use figures/checkpoint_selection.pdf>
 Package pdftex.def Info: figures/checkpoint_selection.pdf  used on input line 2
 08.
 (pdftex.def)             Requested size: 329.7663pt x 110.57867pt.
- [7 <./figures/checkpoint_selection.pdf>]
-Overfull \hbox (1.37836pt too wide) in paragraph at lines 260--261
+ [8 <./figures/checkpoint_selection.pdf>]
+(./tables/model_selection75.tex)
+(./tables/model_selection75_fixed_n5_sensitivity.tex)
+Overfull \hbox (1.37836pt too wide) in paragraph at lines 247--248
 []\T1/cmr/m/n/10 Figure [][]4[][] shows that the compute-matched gain oc-curs i
 n most cases. Weighted
  []
 
-<figures/confirmation_effects.pdf, id=385, 520.34402pt x 177.0615pt>
+[9]
+<figures/confirmation_effects.pdf, id=399, 520.34402pt x 177.0615pt>
 File: figures/confirmation_effects.pdf Graphic file (type pdf)
 <use figures/confirmation_effects.pdf>
 Package pdftex.def Info: figures/confirmation_effects.pdf  used on input line 2
-64.
+53.
 (pdftex.def)             Requested size: 329.7663pt x 112.21664pt.
-<figures/qualitative_reconstructions_column.pdf, id=387, 483.45331pt x 253.2124
+<figures/qualitative_reconstructions_column.pdf, id=401, 483.45331pt x 253.2124
 pt>
 File: figures/qualitative_reconstructions_column.pdf Graphic file (type pdf)
 <use figures/qualitative_reconstructions_column.pdf>
 Package pdftex.def Info: figures/qualitative_reconstructions_column.pdf  used o
-n input line 273.
+n input line 262.
 (pdftex.def)             Requested size: 329.7663pt x 172.7192pt.
-[8] [9 <./figures/confirmation_effects.pdf> <./figures/qualitative_reconstructi
-ons_column.pdf>]
-Overfull \hbox (4.65167pt too wide) in paragraph at lines 296--297
+ [10 <./figures/confirmation_effects.pdf>]
+Overfull \hbox (0.65265pt too wide) in paragraph at lines 293--294
+[]\T1/cmr/m/n/10 Weighted mix-ture is the strongest pipeline on the 75-case in-
+ter-nal model-selection
+ []
+
+[11 <./figures/qualitative_reconstructions_column.pdf>]
+Underfull \vbox (badness 4072) has occurred while \output is active []
+
+ [12]
+Overfull \hbox (4.65167pt too wide) in paragraph at lines 310--311
 \T1/cmr/m/n/10 healthy brain-tissue in-paint-ing. The method com-bines full-vol
 ume wavelet-domain
  []
 
 
-Overfull \hbox (6.068pt too wide) in paragraph at lines 296--297
-\T1/cmr/m/n/10 disjoint sen-si-tiv-ity anal-y-sis. These find-ings sup-port the
- com-plete weighted-mixture
- []
-
-
-Overfull \hbox (4.42407pt too wide) in paragraph at lines 301--303
+Overfull \hbox (4.42407pt too wide) in paragraph at lines 315--317
 \T1/cmr/m/n/9 ca-tion were ob-tained as part of the Chal-lenge project through 
 Synapse ID (syn74274097). 
  []
 
-(./main.bbl [10] [11]) [12] (./main.aux)
+(./main.bbl [13] [14]) [15] (./main.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
@@ -963,13 +968,13 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 9F718306B0AA4BC47EB6909CD8743BB3;477.
  ) 
 Here is how much of TeX's memory you used:
- 23950 strings out of 469515
- 440805 string characters out of 5470807
- 836809 words of memory out of 5000000
- 52127 multiletter control sequences out of 15000+600000
+ 23984 strings out of 469515
+ 441843 string characters out of 5470807
+ 838094 words of memory out of 5000000
+ 52148 multiletter control sequences out of 15000+600000
  642582 words of font info for 78 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 99i,12n,108p,1514b,764s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 99i,12n,108p,1816b,764s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-dist/fon
 ts/type1/public/amsfonts/cmextra/cmex7.pfb></usr/share/texmf-dist/fonts/type1/p
@@ -998,10 +1003,10 @@ ist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/share/texmf-dist/fonts/type1
 r/sfrm1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfti1000.pfb>
 </usr/share/texmf-dist/fonts/type1/public/cm-super/sftt0900.pfb></usr/share/tex
 mf-dist/fonts/type1/public/cm-super/sftt1000.pfb>
-Output written on main.pdf (12 pages, 1045554 bytes).
+Output written on main.pdf (15 pages, 1057364 bytes).
 PDF statistics:
- 627 PDF objects out of 1000 (max. 8388607)
- 411 compressed objects within 5 object streams
- 75 named destinations out of 1000 (max. 500000)
+ 653 PDF objects out of 1000 (max. 8388607)
+ 430 compressed objects within 5 object streams
+ 81 named destinations out of 1000 (max. 500000)
  46 words of extra memory for PDF output out of 10000 (max. 10000000)
 

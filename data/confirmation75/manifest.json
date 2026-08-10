@@ -1,4 +1,6 @@
 {
+  "artifact_status": "legacy_noncanonical_snapshot",
+  "canonical": false,
   "case_count": 75,
   "caveats": [
     "The comparison is between selected pipelines; checkpoint step and inference compute differ between arms.",
@@ -40,7 +42,8 @@
     "sampling_steps": 1000,
     "weights": "EMA 0.9999"
   },
-  "schema_version": 1,
+  "schema_version": 2,
+  "superseded_by": "data/model_selection75/manifest.json",
   "sibling_overlap_case_count": 11,
   "sources": [
     {

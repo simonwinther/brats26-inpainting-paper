@@ -1,0 +1,331 @@
+{
+  "analysis": "Steady-state end-to-end inference time for the 75-case internal model-selection runs on NVIDIA A100 40 GB GPUs, measured as the interval between adjacent saved predictions within each deterministic Slurm shard.",
+  "analysis_role": "descriptive_runtime_measurement_on_model_selection_runs",
+  "case_manifest": {
+    "case_count": 75,
+    "inferential_role": "internal_training_policy_selection",
+    "legacy_filename_note": "The immutable split filename contains 'confirmation'; it is the 75-case internal model-selection cohort.",
+    "path": "brats_inpainting/splits/checkpoint_confirmation_from_holdout_seed2026_n75.txt",
+    "sha256": "9c86a971b9098a5c9cb53891ca4ec32cb662f93e3ed3a2e14cbd79e18ac58026"
+  },
+  "generator": "scripts/summarize_inference_timing.py",
+  "generator_sha256": "555c279f55381e9a49f85086f64ff8580b1e58dd68afc29de826f8d4eaca8db8",
+  "mean_time_ratios": {
+    "random_n5_over_fixed_n1": 4.941581,
+    "weighted_n5_over_fixed_n1": 4.966828
+  },
+  "measurement_scope": "Intervals include case loading, preprocessing, 1000-step ancestral sampling, trajectory aggregation, hard compositing, and NIfTI output for the later case; one-time process and model startup are excluded.",
+  "mtime_requirement": "Recomputation requires the canonical prediction files with their original Hendrix modification timestamps. Per-shard interval summaries are snapshotted below so the aggregate remains auditable.",
+  "runs": [
+    {
+      "case_count": 75,
+      "ensemble_size": 1,
+      "key": "fixed_n1",
+      "label": "Fixed mask, N=1",
+      "per_shard": [
+        {
+          "case_count": 10,
+          "interval_count": 9,
+          "maximum_minutes": 5.885146,
+          "mean_minutes": 5.864262,
+          "median_minutes": 5.86241,
+          "minimum_minutes": 5.851757,
+          "sample_sd_minutes": 0.011145,
+          "shard_index": 0
+        },
+        {
+          "case_count": 10,
+          "interval_count": 9,
+          "maximum_minutes": 5.880121,
+          "mean_minutes": 5.851149,
+          "median_minutes": 5.864283,
+          "minimum_minutes": 5.816857,
+          "sample_sd_minutes": 0.027949,
+          "shard_index": 1
+        },
+        {
+          "case_count": 10,
+          "interval_count": 9,
+          "maximum_minutes": 5.943343,
+          "mean_minutes": 5.933874,
+          "median_minutes": 5.932733,
+          "minimum_minutes": 5.927772,
+          "sample_sd_minutes": 0.004159,
+          "shard_index": 2
+        },
+        {
+          "case_count": 9,
+          "interval_count": 8,
+          "maximum_minutes": 5.836286,
+          "mean_minutes": 5.83201,
+          "median_minutes": 5.831355,
+          "minimum_minutes": 5.830418,
+          "sample_sd_minutes": 0.001967,
+          "shard_index": 3
+        },
+        {
+          "case_count": 9,
+          "interval_count": 8,
+          "maximum_minutes": 5.869677,
+          "mean_minutes": 5.845229,
+          "median_minutes": 5.86087,
+          "minimum_minutes": 5.777113,
+          "sample_sd_minutes": 0.032017,
+          "shard_index": 4
+        },
+        {
+          "case_count": 9,
+          "interval_count": 8,
+          "maximum_minutes": 5.806113,
+          "mean_minutes": 5.783762,
+          "median_minutes": 5.786821,
+          "minimum_minutes": 5.759246,
+          "sample_sd_minutes": 0.021104,
+          "shard_index": 5
+        },
+        {
+          "case_count": 9,
+          "interval_count": 8,
+          "maximum_minutes": 5.93762,
+          "mean_minutes": 5.920383,
+          "median_minutes": 5.923862,
+          "minimum_minutes": 5.881485,
+          "sample_sd_minutes": 0.016584,
+          "shard_index": 6
+        },
+        {
+          "case_count": 9,
+          "interval_count": 8,
+          "maximum_minutes": 5.860693,
+          "mean_minutes": 5.841361,
+          "median_minutes": 5.842556,
+          "minimum_minutes": 5.819659,
+          "sample_sd_minutes": 0.01167,
+          "shard_index": 7
+        }
+      ],
+      "prediction_directory": "brats_inpainting/results/paper300k-concat-fixed-s0-maxnorm-confirm75-ckpt180000-n1/brats_inpainting",
+      "run_directory": "brats_inpainting/results/paper300k-concat-fixed-s0-maxnorm-confirm75-ckpt180000-n1",
+      "sampling_metadata": {
+        "path": "brats_inpainting/results/paper300k-concat-fixed-s0-maxnorm-confirm75-ckpt180000-n1/brats_inpainting/sampling_metadata.json",
+        "sha256": "32f704e096b577bfb219430694304594f2c39395b6727c860959362c6b7ff1b6"
+      },
+      "shard_count": 8,
+      "summary": {
+        "interval_count": 67,
+        "maximum_minutes": 5.943343,
+        "mean_minutes": 5.860082,
+        "median_minutes": 5.85897,
+        "minimum_minutes": 5.759246,
+        "sample_sd_minutes": 0.048777
+      }
+    },
+    {
+      "case_count": 75,
+      "ensemble_size": 5,
+      "key": "random_n5",
+      "label": "Random augmentation, mean N=5",
+      "per_shard": [
+        {
+          "case_count": 10,
+          "interval_count": 9,
+          "maximum_minutes": 27.543937,
+          "mean_minutes": 27.505846,
+          "median_minutes": 27.493699,
+          "minimum_minutes": 27.479006,
+          "sample_sd_minutes": 0.025514,
+          "shard_index": 0
+        },
+        {
+          "case_count": 10,
+          "interval_count": 9,
+          "maximum_minutes": 29.665555,
+          "mean_minutes": 29.261415,
+          "median_minutes": 29.170304,
+          "minimum_minutes": 29.021996,
+          "sample_sd_minutes": 0.245696,
+          "shard_index": 1
+        },
+        {
+          "case_count": 10,
+          "interval_count": 9,
+          "maximum_minutes": 28.826941,
+          "mean_minutes": 28.812024,
+          "median_minutes": 28.813898,
+          "minimum_minutes": 28.799073,
+          "sample_sd_minutes": 0.008917,
+          "shard_index": 2
+        },
+        {
+          "case_count": 9,
+          "interval_count": 8,
+          "maximum_minutes": 29.035599,
+          "mean_minutes": 28.817905,
+          "median_minutes": 28.776543,
+          "minimum_minutes": 28.729533,
+          "sample_sd_minutes": 0.104304,
+          "shard_index": 3
+        },
+        {
+          "case_count": 9,
+          "interval_count": 8,
+          "maximum_minutes": 29.088737,
+          "mean_minutes": 29.074707,
+          "median_minutes": 29.075731,
+          "minimum_minutes": 29.055088,
+          "sample_sd_minutes": 0.012143,
+          "shard_index": 4
+        },
+        {
+          "case_count": 9,
+          "interval_count": 8,
+          "maximum_minutes": 29.20488,
+          "mean_minutes": 29.129745,
+          "median_minutes": 29.131276,
+          "minimum_minutes": 29.064311,
+          "sample_sd_minutes": 0.050803,
+          "shard_index": 5
+        },
+        {
+          "case_count": 9,
+          "interval_count": 8,
+          "maximum_minutes": 30.105311,
+          "mean_minutes": 29.91038,
+          "median_minutes": 29.858925,
+          "minimum_minutes": 29.846539,
+          "sample_sd_minutes": 0.089703,
+          "shard_index": 6
+        },
+        {
+          "case_count": 9,
+          "interval_count": 8,
+          "maximum_minutes": 29.586513,
+          "mean_minutes": 29.314424,
+          "median_minutes": 29.244027,
+          "minimum_minutes": 29.224424,
+          "sample_sd_minutes": 0.136316,
+          "shard_index": 7
+        }
+      ],
+      "prediction_directory": "brats_inpainting/results/paper300k-concat-random-s0-maxnorm-confirm75-ckpt290000-mean-n5/brats_inpainting/mean_n5",
+      "run_directory": "brats_inpainting/results/paper300k-concat-random-s0-maxnorm-confirm75-ckpt290000-mean-n5",
+      "sampling_metadata": {
+        "path": "brats_inpainting/results/paper300k-concat-random-s0-maxnorm-confirm75-ckpt290000-mean-n5/brats_inpainting/sampling_metadata.json",
+        "sha256": "1ba1af6be3f2a2f9aa28b181ecc3fd3705f3d77dc5afba4c5d589b01765dbc29"
+      },
+      "shard_count": 8,
+      "summary": {
+        "interval_count": 67,
+        "maximum_minutes": 30.105311,
+        "mean_minutes": 28.958072,
+        "median_minutes": 29.0772,
+        "minimum_minutes": 27.479006,
+        "sample_sd_minutes": 0.669056
+      }
+    },
+    {
+      "case_count": 75,
+      "ensemble_size": 5,
+      "key": "weighted_n5",
+      "label": "Weighted mixture, mean N=5",
+      "per_shard": [
+        {
+          "case_count": 10,
+          "interval_count": 9,
+          "maximum_minutes": 30.063611,
+          "mean_minutes": 29.619679,
+          "median_minutes": 29.566882,
+          "minimum_minutes": 29.553895,
+          "sample_sd_minutes": 0.166562,
+          "shard_index": 0
+        },
+        {
+          "case_count": 10,
+          "interval_count": 9,
+          "maximum_minutes": 29.538895,
+          "mean_minutes": 29.528598,
+          "median_minutes": 29.531353,
+          "minimum_minutes": 29.506971,
+          "sample_sd_minutes": 0.010452,
+          "shard_index": 1
+        },
+        {
+          "case_count": 10,
+          "interval_count": 9,
+          "maximum_minutes": 28.731917,
+          "mean_minutes": 28.71481,
+          "median_minutes": 28.711829,
+          "minimum_minutes": 28.706951,
+          "sample_sd_minutes": 0.007684,
+          "shard_index": 2
+        },
+        {
+          "case_count": 9,
+          "interval_count": 8,
+          "maximum_minutes": 29.93952,
+          "mean_minutes": 29.840263,
+          "median_minutes": 29.849415,
+          "minimum_minutes": 29.658696,
+          "sample_sd_minutes": 0.096739,
+          "shard_index": 3
+        },
+        {
+          "case_count": 9,
+          "interval_count": 8,
+          "maximum_minutes": 28.912919,
+          "mean_minutes": 28.81381,
+          "median_minutes": 28.806909,
+          "minimum_minutes": 28.726548,
+          "sample_sd_minutes": 0.064834,
+          "shard_index": 4
+        },
+        {
+          "case_count": 9,
+          "interval_count": 8,
+          "maximum_minutes": 27.465978,
+          "mean_minutes": 27.377672,
+          "median_minutes": 27.395262,
+          "minimum_minutes": 27.270359,
+          "sample_sd_minutes": 0.079332,
+          "shard_index": 5
+        },
+        {
+          "case_count": 9,
+          "interval_count": 8,
+          "maximum_minutes": 29.961725,
+          "mean_minutes": 29.866894,
+          "median_minutes": 29.851016,
+          "minimum_minutes": 29.843029,
+          "sample_sd_minutes": 0.039426,
+          "shard_index": 6
+        },
+        {
+          "case_count": 9,
+          "interval_count": 8,
+          "maximum_minutes": 29.081569,
+          "mean_minutes": 29.018319,
+          "median_minutes": 29.01215,
+          "minimum_minutes": 28.955378,
+          "sample_sd_minutes": 0.053209,
+          "shard_index": 7
+        }
+      ],
+      "prediction_directory": "brats_inpainting/results/paper300k-concat-weighted-s0-maxnorm-confirm75-ckpt200000-mean-n5/brats_inpainting/mean_n5",
+      "run_directory": "brats_inpainting/results/paper300k-concat-weighted-s0-maxnorm-confirm75-ckpt200000-mean-n5",
+      "sampling_metadata": {
+        "path": "brats_inpainting/results/paper300k-concat-weighted-s0-maxnorm-confirm75-ckpt200000-mean-n5/brats_inpainting/sampling_metadata.json",
+        "sha256": "05b966e114cf661dec580a1a39b27684c915281b499d7bf8de154adc72f83d75"
+      },
+      "shard_count": 8,
+      "summary": {
+        "interval_count": 67,
+        "maximum_minutes": 30.063611,
+        "mean_minutes": 29.106022,
+        "median_minutes": 29.506971,
+        "minimum_minutes": 27.270359,
+        "sample_sd_minutes": 0.772036
+      }
+    }
+  ],
+  "schema_version": 2
+}
